@@ -1,6 +1,7 @@
 # Clean architecture: python
 
 https://dev.to/msc29/practical-clean-architecture-in-typescript-rust-python-3a6d
+https://dev.to/msc29/practical-clean-architecture-in-typescript-rust-python-3a6d
 
 A Clean Architecture template for a Rest API in python
 

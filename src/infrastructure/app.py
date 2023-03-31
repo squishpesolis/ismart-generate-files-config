@@ -6,6 +6,7 @@ from fastapi_injector import attach_injector
 
 from src.adapter.api.cat_facts import cat_facts_controllers as cat_facts_controller
 from src.adapter.api.dog_facts import dog_facts_controllers as dog_facts_controller
+from src.adapter.api.config_file_facts import config_file_facts_controllers as config_file_facts_controller
 from src.adapter.spi.db.db_connection import DbConnection
 from src.adapter.spi.http.http_connection import HttpConnection
 from src.adapter.spi.repositories_factory import RepositoriesFactory
@@ -23,6 +24,7 @@ def create_app(injector: Injector) -> FastAPI:
 
     app.include_router(dog_facts_controller.router, prefix="/api/v1/dogs", tags=["dogs"])
     app.include_router(cat_facts_controller.router, prefix="/api/v1/cats", tags=["cats"])
+    app.include_router(config_file_facts_controller.router, prefix="/api/v1/files-config", tags=["files-config"])
 
     injector.binder.bind(RepositoriesFactory, to=repositories_factory, scope=SingletonScope)
 
