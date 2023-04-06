@@ -10,7 +10,7 @@ class CreateGroupsSwitchUseCase(GenericUseCase):
     def __init__(self, df: pd.DataFrame) -> None:
         self.df = df
         paths_usecase: PathsIsmartUseCase = PathsIsmartUseCase()
-        self.path_ismart_principal = paths_usecase.get_root_path_ismar_home_assintant_principal()
+        self.path_ismart_principal = paths_usecase.get_root_path_ismar_home_assintant_principal_grupos()
 
        
 
@@ -96,10 +96,3 @@ class CreateGroupsSwitchUseCase(GenericUseCase):
 
 
         return data
-
-
-        #print("The python dictionary is:")
-        #print(data)
-        #yaml_string=yaml.dump(data,sort_keys=False)
-        #print("The YAML string is:")
-        #print(yaml_string)

@@ -14,7 +14,7 @@ router = APIRouter()
 
 
 @router.post("/")
-async def upload_file_facts(file: UploadFile, factory: RepositoriesFactory = Injected(RepositoriesFactory)):
+async def grupos_config_file_facts(file: UploadFile, factory: RepositoriesFactory = Injected(RepositoriesFactory)):
     try:
         
 

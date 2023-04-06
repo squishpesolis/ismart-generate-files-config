@@ -25,7 +25,6 @@ class PathsIsmartUseCase():
     def get_path_files_yaml_generates(self):
         return os.path.join(self.get_root_path(), "yaml_generados")
 
-
     def get_root_path_ismar_home_assintant(self):
         return os.path.join(self.get_path_files_yaml_generates(),'config', 'ismart')
 
@@ -35,6 +34,12 @@ class PathsIsmartUseCase():
          return os.path.join(self.get_root_path_ismar_home_assintant(), "principal")
         except Exception as exception:
             raise ErrorHandlingUtils.application_error("Error: al obtener el get_root_path_ismar_home_assintant_principal", exception)
+
+    def get_root_path_ismar_home_assintant_principal_grupos(self):
+        try:
+         return os.path.join(self.get_root_path(), "yaml_generados","grupos" ,'config', 'ismart', "principal")
+        except Exception as exception:
+            raise ErrorHandlingUtils.application_error("Error: al obtener el get_root_path_ismar_home_assintant_principal_grupos", exception)
 
 
     def path_join_two_directores(dir1,dir2):
