@@ -19,35 +19,52 @@ class CreateGroupsSwitchUseCase(GenericUseCase):
 
             zonas = self.df['zonas'].unique()
 
+            name_group = 'Grupo Switch '
+            name_file_yaml = 'group_switch'
             for zona in zonas:
                
 
                 # Filter domain switch by Zonas
                 df_switches_by_zone = self.df[(self.df['zonas'] == zona) & (self.df['domain'] == 'switch')] 
-                dict_df_switches_by_zone = self.build_dict_group_switch(df_switches_by_zone)
+                dict_df_switches_by_zone = self.build_dict_group_switch(df_switches_by_zone, name_group +  zona)
                
                 if dict_df_switches_by_zone:
-                    print("ZONAAAAAAAAAAAAAAAAAAAdict_df_switches_by_zone")
-                    name_file =  'group_'+ zona + '.yaml'
-                    path_save_yaml = PathsIsmartUseCase.path_join_four_directores(self.path_ismart_principal,'Zonas', zona, 'Integraciones')
+  
+                    name_file =  name_file_yaml + zona + '.yaml'
+                    path_save_yaml = PathsIsmartUseCase.path_join_any_directores([self.path_ismart_principal,'Zonas', zona, 'Integraciones'])
                     
                     FolderCreator.execute(path_save_yaml)
                     
-                    YamlUtilUseCase.save_file_yaml(PathsIsmartUseCase.path_join_two_directores(path_save_yaml, name_file),dict_df_switches_by_zone )
+                    YamlUtilUseCase.save_file_yaml(PathsIsmartUseCase.path_join_any_directores([path_save_yaml, name_file]),dict_df_switches_by_zone )
 
 
                     ubicaciones = self.df['ubicacion'].unique()
-                    print("Uvicaciones")
-                    print(ubicaciones)
+       
                     for ubicacion in ubicaciones:
 
                         df_switches_by_ubicacion_and_zone = self.df[(self.df['ubicacion'] == ubicacion) & (self.df['zonas'] == zona) & (self.df['domain'] == 'switch') ] 
-                        dict_df_switches_ubicacion_and_zone = self.build_dict_group_switch(df_switches_by_ubicacion_and_zone)
+                        dict_df_switches_ubicacion_and_zone = self.build_dict_group_switch(df_switches_by_ubicacion_and_zone,  name_group +  ubicacion)
+                       
                         if dict_df_switches_ubicacion_and_zone:
-                            name_file_ubicacion =  'group_'+ ubicacion + '.yaml'
-                            path_save_yaml_ubicacion = PathsIsmartUseCase.path_join_six_directores(self.path_ismart_principal,'Zonas', zona,'Ubicacion', ubicacion, 'Integraciones')
+                            name_file_ubicacion =  name_file_yaml + ubicacion + '.yaml'
+    
+                            path_save_yaml_ubicacion = PathsIsmartUseCase.path_join_any_directores([self.path_ismart_principal,'Zonas', zona,'Ubicacion', ubicacion, 'Integraciones'])
                             FolderCreator.execute(path_save_yaml_ubicacion)
-                            YamlUtilUseCase.save_file_yaml(PathsIsmartUseCase.path_join_two_directores(path_save_yaml_ubicacion, name_file_ubicacion),dict_df_switches_ubicacion_and_zone )
+                            YamlUtilUseCase.save_file_yaml(PathsIsmartUseCase.path_join_any_directores([path_save_yaml_ubicacion, name_file_ubicacion]),dict_df_switches_ubicacion_and_zone )
+
+                            areas = self.df['areas'].unique()
+
+                            for area in areas:
+
+                                df_switches_by_ubicacion_and_zone_and_area = self.df[(self.df['ubicacion'] == ubicacion) & (self.df['zonas'] == zona)  & (self.df['areas'] == area) & (self.df['domain'] == 'switch') ] 
+                                dict_df_switches_ubicacion_and_zone_and_area = self.build_dict_group_switch(df_switches_by_ubicacion_and_zone_and_area,  name_group +  area)
+                                if dict_df_switches_ubicacion_and_zone_and_area:
+                                    name_file_area = name_file_yaml+ area + '.yaml'
+                                    list_path = [self.path_ismart_principal,'Zonas', zona,'Ubicacion', ubicacion, 'Areas',area,'Integraciones' ]
+                                    path_save_yaml_area = PathsIsmartUseCase.path_join_any_directores(list_path)
+                                    FolderCreator.execute(path_save_yaml_area)
+                                    YamlUtilUseCase.save_file_yaml(PathsIsmartUseCase.path_join_any_directores([path_save_yaml_area, name_file_area]),dict_df_switches_ubicacion_and_zone_and_area )
+
 
             return "Archivo Creado en la ruta"
         except Exception as exception:
@@ -55,7 +72,7 @@ class CreateGroupsSwitchUseCase(GenericUseCase):
             raise ErrorHandlingUtils.application_error("Error al crear el archivo group de switches", exception)
 
     
-    def build_dict_group_switch(self, df: pd.DataFrame) -> dict:
+    def build_dict_group_switch(self, df: pd.DataFrame, name_group: str) -> dict:
 
    
         data = {}
@@ -68,6 +85,7 @@ class CreateGroupsSwitchUseCase(GenericUseCase):
             'switch': [
                 {
                     'platform': 'group',
+                     'name': name_group,
                     'entities': []
                 }
             ]

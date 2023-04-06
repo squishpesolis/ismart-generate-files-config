@@ -40,13 +40,9 @@ class PathsIsmartUseCase():
     def path_join_two_directores(dir1,dir2):
         return os.path.join(dir1,dir2)
 
-    def path_join_four_directores(dir1,dir2,dir3,dir4):
-        return os.path.join(dir1,dir2,dir3,dir4)
 
-    def path_join_five_directores(dir1,dir2,dir3,dir4,dir5):
-        return os.path.join(dir1,dir2,dir3,dir4,dir5)
-    
-    def path_join_six_directores(dir1,dir2,dir3,dir4,dir5,dir6):
-        return os.path.join(dir1,dir2,dir3,dir4,dir5,dir6)
+    def path_join_any_directores(paths):
+        return os.path.join(*paths)
+
 
     
