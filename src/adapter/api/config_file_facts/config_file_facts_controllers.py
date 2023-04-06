@@ -2,13 +2,13 @@ import typing
 from fastapi import APIRouter,File, UploadFile
 from fastapi_injector import Injected
 
-from src.adapter.api.dog_facts.dog_facts_mappers import DogFactPresenterMapper
-from src.adapter.api.dog_facts.dog_facts_presenters import DogFactPresenter
+from src.application.usecases.utils.tranform_file_to_dataframe_usecase import TransformFileToDataFrameUseCase
+from src.application.usecases.utils.transform_dataframe_to_dict_usecase import TransformDataFrameToDictUseCase
+from src.application.usecases.utils.transform_dict_to_json_usecase import TransformDictToJsonUseCase
+from src.application.usecases.groups_ismart.create_groups_switch_usecase import CreateGroupsSwitchUseCase 
 from src.adapter.api.shared.api_error_handling import ApiErrorHandling
 from src.adapter.spi.repositories_factory import RepositoriesFactory
-from src.application.repositories.dog_facts_repository_abstract import DogFactsRepositoryAbstract
-from src.application.usecases.get_all_dog_facts_usecase import GetAllDogFactsUseCase
-from src.application.usecases.get_one_dog_fact_by_id_usecase import GetOneDogFactByIdUseCase
+
 
 router = APIRouter()
 
@@ -17,6 +17,16 @@ router = APIRouter()
 async def upload_file_facts(file: UploadFile, factory: RepositoriesFactory = Injected(RepositoriesFactory)):
     try:
         
+
+        tranform_file_to_dataframe_usecase:TransformFileToDataFrameUseCase =  TransformFileToDataFrameUseCase(file, 'Entidades')
+        dataframe = tranform_file_to_dataframe_usecase.execute()
+
+        #transform_dataframe_to_dict_usecase: TransformDataFrameToDictUseCase = TransformDataFrameToDictUseCase(dataframe)
+        #dict_data_config_ismart = transform_dataframe_to_dict_usecase.execute()
+
+        create_groups_switch_usecase: CreateGroupsSwitchUseCase = CreateGroupsSwitchUseCase(dataframe)
+        create_groups_switch_usecase.execute()
+
         """ dog_facts_repository: DogFactsRepositoryAbstract = factory.get_repository(
             "dog_fact_repository")
         dog_fact_presenter_mapper: DogFactPresenterMapper = DogFactPresenterMapper()
@@ -32,6 +42,6 @@ async def upload_file_facts(file: UploadFile, factory: RepositoriesFactory = Inj
         return facts """
         return {"filename": file.filename}
     except Exception as exception:
-        raise ApiErrorHandling.http_error("Unexpected error getting all dog facts", exception)
+        raise ApiErrorHandling.http_error("Unexpected error al crear archivos de configuración", exception)
 
 

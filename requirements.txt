@@ -8,6 +8,9 @@ types-requests==2.27.19
 python-dotenv==0.20.0
 peewee==3.14.10
 python-multipart==0.0.6
+openpyxl==3.1.2
+pandas==1.5.3
+
 
 # test
 vcrpy==4.1.1
