@@ -3,12 +3,16 @@ import pandas as pd
 import yaml
 from src.application.usecases.interfaces import GenericUseCase
 from src.application.utils.error_handling_utils import ErrorHandlingUtils
-from src.domain.dog_fact import DogFactEntity
-
-
+from src.application.usecases.utils.paths_usecase import PathsIsmartUseCase;
+from src.application.usecases.utils.yaml_util_usecase import YamlUtilUseCase
+from src.application.usecases.utils.folder_creator_usecase import FolderCreator
 class CreateGroupsSwitchUseCase(GenericUseCase):
     def __init__(self, df: pd.DataFrame) -> None:
         self.df = df
+        paths_usecase: PathsIsmartUseCase = PathsIsmartUseCase()
+        self.path_ismart_principal = paths_usecase.get_root_path_ismar_home_assintant_principal()
+
+       
 
     def execute(self) -> pd.DataFrame:
         try:
@@ -20,9 +24,15 @@ class CreateGroupsSwitchUseCase(GenericUseCase):
 
                 # Filter domain switch by Zonas
                 df_switches_by_zone = self.df[(self.df['zonas'] == zona) & (self.df['domain'] == 'switch')] 
+                dict_df_switches_by_zone = self.build_dict_group_switch(df_switches_by_zone)
+                name_file =  'group_'+ zona + '.yaml'
+                path_save_yaml = PathsIsmartUseCase.path_join_four_directores(self.path_ismart_principal,'Zonas', zona, 'Integraciones')
                 
-                self.build_dict_group_switch(df_switches_by_zone)
-                    
+                FolderCreator.execute(path_save_yaml)
+                
+                YamlUtilUseCase.save_file_yaml(PathsIsmartUseCase.path_join_two_directores(path_save_yaml, name_file),dict_df_switches_by_zone )
+
+
             # Metodo filtar DF por switch
             # Filtar por Zona GetUniqueValuesInColunmDataFrameUseCase
             # Armar el Yaml por zona
@@ -34,7 +44,8 @@ class CreateGroupsSwitchUseCase(GenericUseCase):
              
             return "Archivo Creado en la ruta"
         except Exception as exception:
-            raise ErrorHandlingUtils.application_error("Cannot get all dog facts", exception)
+            print(exception)
+            raise ErrorHandlingUtils.application_error("Error al crear el archivo group de switches", exception)
 
     
     def build_dict_group_switch(self, df: pd.DataFrame) -> dict:

@@ -7,12 +7,15 @@ from src.application.utils.error_handling_utils import ErrorHandlingUtils
 
 
 class FolderCreator(GenericUseCase):
-    def __init__(self,folder_path: str) -> None:
-        self.folder_path = folder_path
+    def __init__() -> None:
+        pass
         
-
-    def execute(self):
+    @staticmethod
+    def execute(folder_path):
         try:
-            os.makedirs(self.folder_path, exist_ok=True)
+            isExist = os.path.exists(folder_path)
+            if not isExist:
+                os.makedirs(folder_path)
         except Exception as exception:
+            print(exception)
             raise ErrorHandlingUtils.application_error("Error: No se a podido crear la carpeta", exception)
