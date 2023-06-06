@@ -27,19 +27,6 @@ async def grupos_config_file_facts(file: UploadFile, factory: RepositoriesFactor
         create_groups_switch_usecase: CreateGroupsSwitchUseCase = CreateGroupsSwitchUseCase(dataframe)
         create_groups_switch_usecase.execute()
 
-        """ dog_facts_repository: DogFactsRepositoryAbstract = factory.get_repository(
-            "dog_fact_repository")
-        dog_fact_presenter_mapper: DogFactPresenterMapper = DogFactPresenterMapper()
-
-        get_all_dog_facts_usecase: GetAllDogFactsUseCase = GetAllDogFactsUseCase(
-            dog_facts_repository)
-        dog_facts = get_all_dog_facts_usecase.execute()
-
-        facts: typing.List[DogFactPresenter] = []
-        for data in dog_facts:
-            facts.append(dog_fact_presenter_mapper.to_api(data))
-
-        return facts """
         return {"filename": file.filename}
     except Exception as exception:
         raise ApiErrorHandling.http_error("Unexpected error al crear archivos de configuración", exception)

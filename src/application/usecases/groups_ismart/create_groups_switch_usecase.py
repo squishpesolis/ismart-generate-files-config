@@ -20,7 +20,7 @@ class CreateGroupsSwitchUseCase(GenericUseCase):
             zonas = self.df['zonas'].unique()
 
             name_group = 'Grupo Switch '
-            name_file_yaml = 'group_switch'
+            name_file_yaml = 'group_switch_'
             for zona in zonas:
                
 

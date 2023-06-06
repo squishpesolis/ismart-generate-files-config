@@ -1,3 +1,6 @@
+# Descripción
+
+En este proyecto generaran todos los archivos necesarios de configuración para ISMART
 # Clean architecture: python
 
 https://dev.to/msc29/practical-clean-architecture-in-typescript-rust-python-3a6d
