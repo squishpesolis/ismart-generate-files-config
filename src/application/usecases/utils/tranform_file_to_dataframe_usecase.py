@@ -14,14 +14,15 @@ class TransformFileToDataFrameUseCase(GenericUseCase):
         self.fileUpload = fileUpload
         self.sheet_name = sheet_name
 
-    def execute(self) -> pd.DataFrame:
+    async def execute(self) -> pd.DataFrame:
         try:
 
          
             contents = self.fileUpload.file.read()
             data = BytesIO(contents)
-            df = pd.read_excel(data,self.sheet_name)
+            df = pd.read_excel(data,str(self.sheet_name))
             data.close()
             return df
         except Exception as exception:
+            print(exception)
             raise ErrorHandlingUtils.application_error("No se puede obtener el dataframe del archivo excel cargado", exception)

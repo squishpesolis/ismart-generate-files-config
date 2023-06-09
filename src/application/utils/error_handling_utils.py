@@ -8,4 +8,4 @@ class ErrorHandlingUtils:
         if isinstance(exception, ApiException):
             return ApiException(exception.message)
         else:
-            return ApiException(error_message)
+            return ApiException(error_message + str(exception)) 
