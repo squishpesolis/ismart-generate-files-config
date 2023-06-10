@@ -1,5 +1,6 @@
 
 import yaml
+import os.path
 
 from src.application.utils.error_handling_utils import ErrorHandlingUtils
 
@@ -19,3 +20,6 @@ class YamlUtilUseCase():
         except Exception as exception:
             print(exception)
             raise ErrorHandlingUtils.application_error("Error: no se pudo crear el archivo yaml", exception)
+
+    def check_exist_file(path):
+        os.path.isfile(path)

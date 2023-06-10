@@ -4,7 +4,7 @@ from fastapi_injector import Injected
 
 
 
-from src.application.usecases.views_ismart.create_views_dashboard_usecase   import CreateViewsDashboardUseCase
+from src.application.usecases.views_ismart.create_view_admin_dashboard_usecase   import CreateViewAdminDashboardUseCase
 
 
 
@@ -17,7 +17,7 @@ router = APIRouter()
 
 
 @router.post("/")
-async def generate_config_files_facts(file: UploadFile, factory: RepositoriesFactory = Injected(RepositoriesFactory)):
+async def generate_config_files_facts(file: UploadFile,configurar_con_entidades_demos: bool,factory: RepositoriesFactory = Injected(RepositoriesFactory)):
     try:
         
 
@@ -25,7 +25,7 @@ async def generate_config_files_facts(file: UploadFile, factory: RepositoriesFac
 
 
        
-        create_views_usecase: CreateViewsDashboardUseCase = CreateViewsDashboardUseCase(file)
+        create_views_usecase: CreateViewAdminDashboardUseCase = CreateViewAdminDashboardUseCase(file, configurar_con_entidades_demos)
         await create_views_usecase.execute()
         #create_groups_switch_usecase: CreateGroupsSwitchUseCase = CreateGroupsSwitchUseCase(dataframe)
         #
