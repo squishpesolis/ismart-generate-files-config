@@ -1,20 +1,21 @@
 import typing
 import pandas as pd
 import yaml
-from fastapi import APIRouter,File, UploadFile
+
 
 
 from src.application.usecases.interfaces import GenericUseCase
+from src.application.utils.error_handling_utils import ErrorHandlingUtils
 
 from src.application.usecases.utils.paths_usecase import PathsIsmartUseCase;
 from src.application.usecases.utils.yaml_util_usecase import YamlUtilUseCase
 from src.application.usecases.utils.string_util_usecase import StringUtilUseCase
-from src.application.usecases.utils.tranform_file_to_dataframe_usecase import TransformFileToDataFrameUseCase
+
 
 from src.application.usecases.views_ismart.utils_views_usecase import Utils_Views_Usecase
 from src.application.usecases.views_ismart.create_custom_components_views_usecase import CreateCustomComponentsViewsUsecase
 
-from src.application.utils.error_handling_utils import ErrorHandlingUtils
+
 
 from src.application.usecases.utils.folder_creator_usecase import FolderCreator
 
@@ -26,8 +27,8 @@ from src.domain.api_exception import ApiException
 
 
 class CreateViewAdminDashboardUseCase(GenericUseCase):
-    def __init__(self,file: UploadFile, configurar_con_entidades_demos: bool) -> None:
-        self.file = file
+    def __init__(self,dataframe_areas: pd.DataFrame, configurar_con_entidades_demos: bool) -> None:
+        self.dataframe_areas = dataframe_areas
         self.configurar_con_entidades_demos = configurar_con_entidades_demos
         paths_usecase: PathsIsmartUseCase = PathsIsmartUseCase()
         self.path_ismart_views = paths_usecase.get_root_path_ismar_home_assintant_principal_views()
@@ -38,8 +39,7 @@ class CreateViewAdminDashboardUseCase(GenericUseCase):
         try:
 
             df_views =  pd.DataFrame()
-            tranform_file_to_dataframe_usecase:TransformFileToDataFrameUseCase =  TransformFileToDataFrameUseCase(self.file, SheetsNameExcelConfigISmart.AreasSK.value)
-            dataframe_areas = await tranform_file_to_dataframe_usecase.execute()
+            dataframe_areas = self.dataframe_areas
 
            
             df_views =dataframe_areas[(dataframe_areas[ColumnsNameExcelConfigISmart.Colocar_Area_en_Dashboard_Views.value] == 'SI')] 
