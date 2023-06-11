@@ -9,4 +9,9 @@ class ColumnsNameExcelConfigISmart(Enum):
     Prueba = "Pruebas"
     #Entidades
     final_id = "final_id"
+    zonas = "zonas"
+    domain = "domain"
+    ubicacion = "ubicacion"
+    areas = "areas"
+    name_entity = "name_entity"
 

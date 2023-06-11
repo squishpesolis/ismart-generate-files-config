@@ -40,6 +40,7 @@ class CreateViewAdminDashboardUseCase(GenericUseCase):
             df_views_areas =  pd.DataFrame()
             dataframe_areas = self.dataframe_areas
 
+       
            
             df_views_areas =dataframe_areas[(dataframe_areas[ColumnsNameExcelConfigISmart.Colocar_Area_en_Dashboard_Views.value] == 'SI')] 
             
