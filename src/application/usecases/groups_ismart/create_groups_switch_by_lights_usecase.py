@@ -6,7 +6,8 @@ from src.application.utils.error_handling_utils import ErrorHandlingUtils
 from src.application.usecases.utils.paths_usecase import PathsIsmartUseCase;
 from src.application.usecases.utils.yaml_util_usecase import YamlUtilUseCase
 from src.application.usecases.utils.folder_creator_usecase import FolderCreator
-class CreateGroupsSwitchUseCase(GenericUseCase):
+
+class CreateGroupsSwitchByLightUseCase(GenericUseCase):
     def __init__(self, df: pd.DataFrame) -> None:
         self.df = df
         paths_usecase: PathsIsmartUseCase = PathsIsmartUseCase()

@@ -1,3 +1,5 @@
+import pandas as pd
+
 class CreateCustomComponentsViewsUsecase():
     def __init__(self) -> None:
         pass
@@ -63,15 +65,41 @@ class CreateCustomComponentsViewsUsecase():
         return card_title
 
     @staticmethod
-    def create_card_generic(card_generic_name: str):
+    def create_card_generic( entity: str, card_generic_name: str, card_generic_icon: str):
         card_generic = {
                         'type': 'custom:button-card',
                         'template': 'card_generic',
-                        'entity': 'sensor.uptime',
+                        'entity': entity,
                         'variables': {
-                            'ulm_card_generic_name': 'I-SMART UP',
-                            'ulm_card_generic_icon': 'mdi:home-assistant'
+                            'ulm_card_generic_name': card_generic_name,
+                            'ulm_card_generic_icon': card_generic_icon
                         }
                     }
         
         return card_generic
+
+    @staticmethod
+    def create_card_entities( title: str, show_header_toggle: bool, df: pd.DataFrame):
+        
+        card_entities = {
+                        'type': 'custom:button-card',
+                        'title': title,
+                        'show_header_toggle': show_header_toggle,
+                        'entities': []
+                    }
+        
+        for index, row in df.iterrows():
+            
+
+            new_entity ={
+                        'entity': row['entity'],
+                        'name': row['name'],
+                        'icon': row['icon'],
+                            'tap_action': {
+                                'action': row['tap_action']
+                            }
+                        }
+            card_entities['entities'].append(new_entity)
+
+
+        return card_entities
