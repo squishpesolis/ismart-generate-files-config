@@ -20,17 +20,22 @@ from src.application.usecases.utils.folder_creator_usecase import FolderCreator
 
 from src.application.usecases.enums.names_columns_excel_ismart_configuration_enum import ColumnsNameExcelConfigISmart
 from src.application.usecases.enums.names_sheet_excel_ismart_configuration_enum import SheetsNameExcelConfigISmart;
+from src.application.usecases.enums.name_column_df_group import NameColumnDfGroupEnum
 
 from src.domain.api_exception import ApiException
 
 
 
 class CreateViewAdminDashboardUseCase(GenericUseCase):
-    def __init__(self,dataframe_areas: pd.DataFrame, configurar_con_entidades_demos: bool) -> None:
+    def __init__(self,
+                 dataframe_areas: pd.DataFrame, 
+                 configurar_con_entidades_demos: bool,
+                 df_switches_by_zone_and_light: pd.DataFrame) -> None:
         self.dataframe_areas = dataframe_areas
         self.configurar_con_entidades_demos = configurar_con_entidades_demos
         paths_usecase: PathsIsmartUseCase = PathsIsmartUseCase()
         self.path_ismart_views = paths_usecase.get_root_path_ismar_home_assintant_principal_views()
+        self.df_switches_by_zone_and_light = df_switches_by_zone_and_light
 
        
 
@@ -50,7 +55,7 @@ class CreateViewAdminDashboardUseCase(GenericUseCase):
             df_views_areas = df_views_areas.sort_values(by=[ColumnsNameExcelConfigISmart.Orden_en_DashBoard_Views.value])  
             
 
-            self.build_dashboard_admin("Casa Administrador","mdi:home-account",df_views_areas )          
+            self.build_dashboard_admin("Casa Administrador","mdi:home-account",df_views_areas, self.df_switches_by_zone_and_light )          
             
             
             #3. Crear el Dashboard admin
@@ -70,7 +75,11 @@ class CreateViewAdminDashboardUseCase(GenericUseCase):
 
 
     
-    def build_dashboard_admin(self,title_dashboard, icon, df_areas: pd.DataFrame):
+    def build_dashboard_admin(self,
+                              title_dashboard, 
+                              icon, 
+                              df_areas: pd.DataFrame,
+                              df_switches_by_zone_and_light:pd.DataFrame):
         
         view_admin = [
             {
@@ -83,7 +92,7 @@ class CreateViewAdminDashboardUseCase(GenericUseCase):
 
 
 
-        vertical_stack_left = self.build_vertical_stack_left(df_areas)
+        vertical_stack_left = self.build_vertical_stack_left(df_areas,df_switches_by_zone_and_light)
 
         #vertical_stack_center = Utils_Views_Usecase.create_vertical_stack()
         #vertical_stack_right = Utils_Views_Usecase.create_vertical_stack()
@@ -106,9 +115,12 @@ class CreateViewAdminDashboardUseCase(GenericUseCase):
         #YamlUtilUseCase.save_file_yaml(PathsIsmartUseCase.path_join_any_directores([path_save_yaml, name_file]),dict_df_switches_by_zone )
 
 
-    def build_vertical_stack_left(self, df_areas: pd.date_range) -> dict:
+    def build_vertical_stack_left(self, 
+                                  df_areas: pd.DataFrame, 
+                                  df_switches_by_zone_and_light:pd.DataFrame) -> dict:
+        
         vertical_stack_left_new = {}
-        vertical_stack_left_new = Utils_Views_Usecase.create_vertical_stack()
+        vertical_stack_left_new = CreateCustomComponentsViewsUsecase.create_vertical_stack()
         
        
         entity_2_name = DataFrameUtilUseCase.get_value_dataframe_from_position_row_and_name_colum(0, ColumnsNameExcelConfigISmart.Sub_Zona, df_areas, 'Areas')
@@ -139,45 +151,27 @@ class CreateViewAdminDashboardUseCase(GenericUseCase):
         build_card_title = CreateCustomComponentsViewsUsecase.create_card_title('Sistema')
         build_card_generic_sistema = CreateCustomComponentsViewsUsecase.create_card_generic('sensor.uptime', 'I-SMART UP', 'mdi:home-assistant')
 
+        #df_switches_by_zone_and_light
+        build_card_group_switches_light_by_zone = CreateCustomComponentsViewsUsecase.create_card_entities(
+            df_switches_by_zone_and_light[NameColumnDfGroupEnum.title.value].iloc[0],
+            False,
+            df_switches_by_zone_and_light
+        )
 
         vertical_stack_left_new = Utils_Views_Usecase.add_card_to_verticaL_stack(vertical_stack_left_new, build_welcome_card)
         vertical_stack_left_new = Utils_Views_Usecase.add_card_to_verticaL_stack(vertical_stack_left_new, build_card_title)
         vertical_stack_left_new = Utils_Views_Usecase.add_card_to_verticaL_stack(vertical_stack_left_new, build_card_generic_sistema)
+        vertical_stack_left_new = Utils_Views_Usecase.add_card_to_verticaL_stack(vertical_stack_left_new, build_card_group_switches_light_by_zone)
 
         # Buil group of switchs
+        
 
 
         return vertical_stack_left_new
 
-    def build_dict_card_esh_welcome_with_paths():
-        data = {}
-
-        return data
 
 
     
-    def build_dict_group_switch(self, df: pd.DataFrame, name_group: str) -> dict:
+    
 
-   
-        data = {}
-
-        if df.empty:
-            return data
-
-
-        data = {
-            'switch': [
-                {
-                    'platform': 'group',
-                     'name': name_group,
-                    'entities': []
-                }
-            ]
-        }
-
-        for final_id in df['final_id']:
-            data['switch'][0]['entities'].append(final_id.replace(" ", ""))
-
-
-        return data
 

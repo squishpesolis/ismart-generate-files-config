@@ -11,6 +11,8 @@ from src.application.usecases.utils.folder_creator_usecase import FolderCreator
 from src.application.usecases.enums.names_columns_excel_ismart_configuration_enum import ColumnsNameExcelConfigISmart
 from src.application.usecases.enums.domain_entities_ismart_enum import DomainEntitiesIsmartEnum
 
+from src.application.usecases.groups_ismart.groups_util_usecase import GroupsUtilUseCase
+
 class CreateGroupsSwitchByLightUseCase(GenericUseCase):
     def __init__(self, df: pd.DataFrame) -> None:
         self.df = df
@@ -28,10 +30,13 @@ class CreateGroupsSwitchByLightUseCase(GenericUseCase):
             name_file_yaml = 'group_switch_'
             for zona in zonas:
                
+                datos_demo = False
 
                 # Filter domain switch by Zonas
                 df_switches_by_zone = self.df[(self.df[ColumnsNameExcelConfigISmart.zonas.value] == zona) & (self.df[ColumnsNameExcelConfigISmart.domain.value] == 'switch')] 
-                dict_df_switches_by_zone = self.build_dict_group_switch(df_switches_by_zone, name_group +  zona)
+                unique_id_switches_by_zone = GroupsUtilUseCase.build_unique_id(name_file_yaml + name_group +  zona)
+
+                dict_df_switches_by_zone = GroupsUtilUseCase.build_dict_group_switch(df_switches_by_zone, name_group +  zona, unique_id_switches_by_zone, datos_demo)
                
                 if dict_df_switches_by_zone:
   
@@ -48,7 +53,9 @@ class CreateGroupsSwitchByLightUseCase(GenericUseCase):
                     for ubicacion in ubicaciones:
 
                         df_switches_by_ubicacion_and_zone = self.df[(self.df[ColumnsNameExcelConfigISmart.ubicacion.value] == ubicacion) & (self.df[ColumnsNameExcelConfigISmart.zonas.value] == zona) & (self.df[ColumnsNameExcelConfigISmart.domain.value] == DomainEntitiesIsmartEnum.switch.value) ] 
-                        dict_df_switches_ubicacion_and_zone = self.build_dict_group_switch(df_switches_by_ubicacion_and_zone,  name_group +  ubicacion)
+                        
+                        unique_id_switches_ubicacion_and_zone = GroupsUtilUseCase.build_unique_id(name_file_yaml + name_group +  ubicacion)
+                        dict_df_switches_ubicacion_and_zone = GroupsUtilUseCase.build_dict_group_switch(df_switches_by_ubicacion_and_zone,  name_group +  ubicacion, unique_id_switches_ubicacion_and_zone, datos_demo)
                        
                         if dict_df_switches_ubicacion_and_zone:
                             name_file_ubicacion =  name_file_yaml + ubicacion + '.yaml'
@@ -62,7 +69,8 @@ class CreateGroupsSwitchByLightUseCase(GenericUseCase):
                             for area in areas:
 
                                 df_switches_by_ubicacion_and_zone_and_area = self.df[(self.df[ColumnsNameExcelConfigISmart.ubicacion.value] == ubicacion) & (self.df[ColumnsNameExcelConfigISmart.zonas.value] == zona)  & (self.df[ColumnsNameExcelConfigISmart.areas.value] == area) & (self.df[ColumnsNameExcelConfigISmart.domain.value] == DomainEntitiesIsmartEnum.switch.value) ] 
-                                dict_df_switches_ubicacion_and_zone_and_area = self.build_dict_group_switch(df_switches_by_ubicacion_and_zone_and_area,  name_group +  area)
+                                unique_id_switches_ubicacion_and_zone_and_area = GroupsUtilUseCase.build_unique_id(name_file_yaml + name_group +  area)
+                                dict_df_switches_ubicacion_and_zone_and_area = GroupsUtilUseCase.build_dict_group_switch(df_switches_by_ubicacion_and_zone_and_area,  name_group +  area, unique_id_switches_ubicacion_and_zone_and_area, datos_demo)
                                 if dict_df_switches_ubicacion_and_zone_and_area:
                                     name_file_area = name_file_yaml+ area + '.yaml'
                                     list_path = [self.path_ismart_principal,'Zonas', zona,'Ubicacion', ubicacion, 'Areas',area,'Integraciones' ]
@@ -74,30 +82,7 @@ class CreateGroupsSwitchByLightUseCase(GenericUseCase):
             return "Archivo Creado en la ruta"
         except Exception as exception:
             print(exception)
-            raise ErrorHandlingUtils.application_error("Error al crear el archivo group de switches", exception)
+            raise ErrorHandlingUtils.application_error("Error al crear el archivo group de switches ", exception)
 
     
-    def build_dict_group_switch(self, df: pd.DataFrame, name_group: str) -> dict:
 
-   
-        data = {}
-
-        if df.empty:
-            return data
-
-
-        data = {
-            'switch': [
-                {
-                    'platform': 'group',
-                     'name': name_group,
-                    'entities': []
-                }
-            ]
-        }
-
-        for final_id in df[ColumnsNameExcelConfigISmart.final_id.value]:
-            data['switch'][0]['entities'].append(final_id.replace(" ", ""))
-
-
-        return data

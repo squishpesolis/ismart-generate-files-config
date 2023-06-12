@@ -1,5 +1,7 @@
 import pandas as pd
 
+from src.application.usecases.enums.name_column_df_group import NameColumnDfGroupEnum
+
 class CreateCustomComponentsViewsUsecase():
     def __init__(self) -> None:
         pass
@@ -81,6 +83,9 @@ class CreateCustomComponentsViewsUsecase():
     @staticmethod
     def create_card_entities( title: str, show_header_toggle: bool, df: pd.DataFrame):
         
+        if df.empty:
+            return {}
+        
         card_entities = {
                         'type': 'custom:button-card',
                         'title': title,
@@ -88,18 +93,27 @@ class CreateCustomComponentsViewsUsecase():
                         'entities': []
                     }
         
+        
         for index, row in df.iterrows():
             
 
             new_entity ={
-                        'entity': row['entity'],
-                        'name': row['name'],
-                        'icon': row['icon'],
+                        'entity': row[NameColumnDfGroupEnum.entity.value],
+                        'name': row[NameColumnDfGroupEnum.name_.value],
+                        'icon': row[NameColumnDfGroupEnum.icon.value],
                             'tap_action': {
-                                'action': row['tap_action']
+                                'action': row[NameColumnDfGroupEnum.tap_action.value]
                             }
                         }
             card_entities['entities'].append(new_entity)
 
-
         return card_entities
+    
+
+    @staticmethod
+    def create_vertical_stack():
+        verticaL_stack = {
+                        'type': 'vertical-stack',
+                        'cards': []
+                        }
+        return verticaL_stack
