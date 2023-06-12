@@ -151,7 +151,7 @@ class CreateViewAdminDashboardUseCase(GenericUseCase):
         build_card_title = CreateCustomComponentsViewsUsecase.create_card_title('Sistema')
         build_card_generic_sistema = CreateCustomComponentsViewsUsecase.create_card_generic('sensor.uptime', 'I-SMART UP', 'mdi:home-assistant')
 
-        #df_switches_by_zone_and_light
+        
         build_card_group_switches_light_by_zone = CreateCustomComponentsViewsUsecase.create_card_entities(
             df_switches_by_zone_and_light[NameColumnDfGroupEnum.title.value].iloc[0],
             False,

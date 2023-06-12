@@ -11,6 +11,8 @@ from src.application.usecases.utils.folder_creator_usecase import FolderCreator
 from src.application.usecases.enums.names_columns_excel_ismart_configuration_enum import ColumnsNameExcelConfigISmart
 from src.application.usecases.enums.domain_entities_ismart_enum import DomainEntitiesIsmartEnum
 from src.application.usecases.enums.name_entities_ismart_enum import NameEntitiesIsmartEnum
+from src.application.usecases.enums.entities_ismart_demos_enum import EntitiesIsmartDemosEnum
+from src.application.usecases.enums.name_column_df_group import NameColumnDfGroupEnum
 
 from src.application.usecases.groups_ismart.groups_util_usecase import GroupsUtilUseCase
 
@@ -52,8 +54,18 @@ class CreateGroupsSwitchByZoneAndLightUseCase(GenericUseCase):
                     FolderCreator.execute(path_save_yaml)
                     YamlUtilUseCase.save_file_yaml(PathsIsmartUseCase.path_join_any_directores([path_save_yaml, name_file]),dict_df_switches_by_zone )
 
-                    new_row = {'title':'Luces de Zona', 'entity':'switch.'+unique_id, 'name':name_group_by_zone, 'icon':'mdi:lightbulb-group', 'tap_action':'none'}
-                    df_groups_switch_by_zone_and_light = df_groups_switch_by_zone_and_light.append(new_row, ignore_index=True)
+                    row_df_switches_by_zone_and_light = {
+                                                            NameColumnDfGroupEnum.title.value:'Luces de Zona', 
+                                                            NameColumnDfGroupEnum.entity.value:'switch.'+unique_id,
+                                                            NameColumnDfGroupEnum.name_.value:name_group_by_zone, 
+                                                            NameColumnDfGroupEnum.icon.value:'mdi:lightbulb-group', 
+                                                            NameColumnDfGroupEnum.tap_action.value:'none'
+                                                        }
+                    
+                    if self.configurar_con_entidades_demos:
+                        row_df_switches_by_zone_and_light[NameColumnDfGroupEnum.entity.value] = EntitiesIsmartDemosEnum.switch_group.value
+
+                    df_groups_switch_by_zone_and_light = df_groups_switch_by_zone_and_light.append(row_df_switches_by_zone_and_light, ignore_index=True)
 
             
             return df_groups_switch_by_zone_and_light
