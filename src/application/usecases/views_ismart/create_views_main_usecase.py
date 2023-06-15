@@ -9,7 +9,9 @@ from src.application.utils.error_handling_utils import ErrorHandlingUtils
 
 from src.application.usecases.utils.tranform_file_to_get_many_dataframe_usecase import TransformFileToGetManyDataFrameUseCase
 from src.application.usecases.views_ismart.create_view_admin_dashboard_usecase import CreateViewAdminDashboardUseCase
+
 from src.application.usecases.groups_ismart.create_groups_switch_by_zone_and_lights_usecase import CreateGroupsSwitchByZoneAndLightUseCase
+from src.application.usecases.groups_ismart.create_groups_switch_by_ubication_and_lights_usecase import CreateGroupsSwitchByUbicationAndLightUseCase
 
 from src.application.usecases.enums.names_sheet_excel_ismart_configuration_enum import SheetsNameExcelConfigISmart;
 
@@ -32,8 +34,15 @@ class CreateViewMainUseCase(GenericUseCase):
             groups_by_zones_and_swithes_light: CreateGroupsSwitchByZoneAndLightUseCase = CreateGroupsSwitchByZoneAndLightUseCase(dataframes.get(SheetsNameExcelConfigISmart.Entidades.value),self.configurar_con_entidades_demos)
             df_by_zones_and_swithes_light = await groups_by_zones_and_swithes_light.execute()
 
+            groups_by_ubi_and_swithes_light: CreateGroupsSwitchByUbicationAndLightUseCase = CreateGroupsSwitchByUbicationAndLightUseCase(dataframes.get(SheetsNameExcelConfigISmart.Entidades.value),self.configurar_con_entidades_demos)
+            df_by_ubi_and_swithes_light = await groups_by_ubi_and_swithes_light.execute()
+
             create_view_admin:CreateViewAdminDashboardUseCase = CreateViewAdminDashboardUseCase(dataframes.get(SheetsNameExcelConfigISmart.AreasSK.value),self.configurar_con_entidades_demos,df_by_zones_and_swithes_light) 
             await create_view_admin.execute()
+
+
+
+
             print("")
         except Exception as exception:
             print(traceback.format_exc())

@@ -8,7 +8,7 @@ from src.application.utils.error_handling_utils import ErrorHandlingUtils
 from src.application.usecases.utils.string_util_usecase import StringUtilUseCase
 from src.application.usecases.enums.names_columns_excel_ismart_configuration_enum import ColumnsNameExcelConfigISmart
 from src.application.usecases.enums.name_column_df_group import NameColumnDfGroupEnum
-
+from src.application.usecases.enums.entities_ismart_demos_enum import EntitiesIsmartDemosEnum
 
 class GroupsUtilUseCase():
     def __init__(self) -> None:
@@ -43,7 +43,7 @@ class GroupsUtilUseCase():
 
         for final_id in df[ColumnsNameExcelConfigISmart.final_id.value]:
             if configurar_con_entidades_demos:
-                data['switch'][0]['entities'].append('switch.grupo_demo_switch')
+                data['switch'][0]['entities'].append(EntitiesIsmartDemosEnum.switch_ac.value)
             else:
                 data['switch'][0]['entities'].append(final_id.replace(" ", ""))
 

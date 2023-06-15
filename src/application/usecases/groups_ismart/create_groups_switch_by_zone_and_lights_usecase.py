@@ -13,6 +13,8 @@ from src.application.usecases.enums.domain_entities_ismart_enum import DomainEnt
 from src.application.usecases.enums.name_entities_ismart_enum import NameEntitiesIsmartEnum
 from src.application.usecases.enums.entities_ismart_demos_enum import EntitiesIsmartDemosEnum
 from src.application.usecases.enums.name_column_df_group import NameColumnDfGroupEnum
+from src.application.usecases.enums.names_of_groups_enum import NameOfGroupEnum
+from src.application.usecases.enums.names_files_yamls_enum import NameFilesYamlsEnum
 
 from src.application.usecases.groups_ismart.groups_util_usecase import GroupsUtilUseCase
 
@@ -34,8 +36,8 @@ class CreateGroupsSwitchByZoneAndLightUseCase(GenericUseCase):
                      
             zonas = self.df[ColumnsNameExcelConfigISmart.zonas.value].unique()
 
-            name_group = 'Luces'
-            name_file_yaml = 'group_switch_'
+            name_group = NameOfGroupEnum.lights.value
+            name_file_yaml = NameFilesYamlsEnum.group_switch_.value
             for zona in zonas:
                
 
@@ -45,7 +47,7 @@ class CreateGroupsSwitchByZoneAndLightUseCase(GenericUseCase):
                 name_group_by_zone = name_group +" "+ zona
 
                 unique_id = GroupsUtilUseCase.build_unique_id(name_file_yaml + name_group_by_zone)
-                dict_df_switches_by_zone = GroupsUtilUseCase.build_dict_group_switch(df_switches_by_zone, name_group_by_zone, unique_id, self.configurar_con_entidades_demos)
+                dict_df_switches_by_zone = GroupsUtilUseCase.build_dict_group_switch(df_switches_by_zone, unique_id, unique_id, self.configurar_con_entidades_demos)
 
                 if dict_df_switches_by_zone:
 
