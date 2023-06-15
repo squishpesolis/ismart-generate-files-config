@@ -12,6 +12,8 @@ from src.application.usecases.views_ismart.create_view_admin_dashboard_usecase i
 
 from src.application.usecases.groups_ismart.create_groups_switch_by_zone_and_lights_usecase import CreateGroupsSwitchByZoneAndLightUseCase
 from src.application.usecases.groups_ismart.create_groups_switch_by_ubication_and_lights_usecase import CreateGroupsSwitchByUbicationAndLightUseCase
+from src.application.usecases.groups_ismart.create_groups_switch_by_areas_and_lights_usecase import CreateGroupsSwitchByAreasAndLightUseCase
+
 
 from src.application.usecases.enums.names_sheet_excel_ismart_configuration_enum import SheetsNameExcelConfigISmart;
 
@@ -31,11 +33,21 @@ class CreateViewMainUseCase(GenericUseCase):
             tranform_file_to_dataframe_usecase:TransformFileToGetManyDataFrameUseCase =  TransformFileToGetManyDataFrameUseCase(self.file, [SheetsNameExcelConfigISmart.AreasSK.value, SheetsNameExcelConfigISmart.Entidades.value])
             dataframes = await tranform_file_to_dataframe_usecase.execute()
 
-            groups_by_zones_and_swithes_light: CreateGroupsSwitchByZoneAndLightUseCase = CreateGroupsSwitchByZoneAndLightUseCase(dataframes.get(SheetsNameExcelConfigISmart.Entidades.value),self.configurar_con_entidades_demos)
+            df_entidades = dataframes.get(SheetsNameExcelConfigISmart.Entidades.value)
+
+            groups_by_zones_and_swithes_light: CreateGroupsSwitchByZoneAndLightUseCase = CreateGroupsSwitchByZoneAndLightUseCase(df_entidades,self.configurar_con_entidades_demos)
             df_by_zones_and_swithes_light = await groups_by_zones_and_swithes_light.execute()
 
-            groups_by_ubi_and_swithes_light: CreateGroupsSwitchByUbicationAndLightUseCase = CreateGroupsSwitchByUbicationAndLightUseCase(dataframes.get(SheetsNameExcelConfigISmart.Entidades.value),self.configurar_con_entidades_demos)
+            groups_by_ubi_and_swithes_light: CreateGroupsSwitchByUbicationAndLightUseCase = CreateGroupsSwitchByUbicationAndLightUseCase(df_entidades,self.configurar_con_entidades_demos)
             df_by_ubi_and_swithes_light = await groups_by_ubi_and_swithes_light.execute()
+
+
+            groups_by_area_and_swithes_light: CreateGroupsSwitchByAreasAndLightUseCase = CreateGroupsSwitchByAreasAndLightUseCase(df_entidades,self.configurar_con_entidades_demos)
+            df_by_areas_and_swithes_light = await groups_by_area_and_swithes_light.execute()
+
+
+            print(df_by_areas_and_swithes_light)
+
 
             create_view_admin:CreateViewAdminDashboardUseCase = CreateViewAdminDashboardUseCase(dataframes.get(SheetsNameExcelConfigISmart.AreasSK.value),self.configurar_con_entidades_demos,df_by_zones_and_swithes_light) 
             await create_view_admin.execute()
