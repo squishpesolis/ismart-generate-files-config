@@ -87,7 +87,7 @@ class CreateCustomComponentsViewsUsecase():
             return {}
         
         card_entities = {
-                        'type': 'custom:button-card',
+                        'type': 'entities',
                         'title': title,
                         'show_header_toggle': show_header_toggle,
                         'entities': []

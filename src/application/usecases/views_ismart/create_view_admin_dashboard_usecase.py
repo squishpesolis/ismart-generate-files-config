@@ -30,12 +30,16 @@ class CreateViewAdminDashboardUseCase(GenericUseCase):
     def __init__(self,
                  dataframe_areas: pd.DataFrame, 
                  configurar_con_entidades_demos: bool,
-                 df_switches_by_zone_and_light: pd.DataFrame) -> None:
+                 df_switches_by_zone_and_light: pd.DataFrame,
+                 df_switches_by_ubication_and_light: pd.DataFrame,
+                 df_switches_by_areas_and_light: pd.DataFrame) -> None:
         self.dataframe_areas = dataframe_areas
         self.configurar_con_entidades_demos = configurar_con_entidades_demos
         paths_usecase: PathsIsmartUseCase = PathsIsmartUseCase()
         self.path_ismart_views = paths_usecase.get_root_path_ismar_home_assintant_principal_views()
         self.df_switches_by_zone_and_light = df_switches_by_zone_and_light
+        self.df_switches_by_ubication_and_light = df_switches_by_ubication_and_light
+        self.df_switches_by_areas_and_light = df_switches_by_areas_and_light
 
        
 
@@ -55,7 +59,10 @@ class CreateViewAdminDashboardUseCase(GenericUseCase):
             df_views_areas = df_views_areas.sort_values(by=[ColumnsNameExcelConfigISmart.Orden_en_DashBoard_Views.value])  
             
 
-            self.build_dashboard_admin("Casa Administrador","mdi:home-account",df_views_areas, self.df_switches_by_zone_and_light )          
+            self.build_dashboard_admin("Casa Administrador","mdi:home-account",df_views_areas, 
+                                       self.df_switches_by_zone_and_light,
+                                       self.df_switches_by_ubication_and_light,
+                                       self.df_switches_by_areas_and_light)          
             
             
             #3. Crear el Dashboard admin
@@ -79,7 +86,9 @@ class CreateViewAdminDashboardUseCase(GenericUseCase):
                               title_dashboard, 
                               icon, 
                               df_areas: pd.DataFrame,
-                              df_switches_by_zone_and_light:pd.DataFrame):
+                              df_switches_by_zone_and_light:pd.DataFrame,
+                              df_switches_by_ubication_and_light:pd.DataFrame,
+                              df_switches_by_areas_and_light:pd.DataFrame):
         
         view_admin = [
             {
@@ -92,7 +101,9 @@ class CreateViewAdminDashboardUseCase(GenericUseCase):
 
 
 
-        vertical_stack_left = self.build_vertical_stack_left(df_areas,df_switches_by_zone_and_light)
+        vertical_stack_left = self.build_vertical_stack_left(df_areas,df_switches_by_zone_and_light,
+                                                             df_switches_by_ubication_and_light,
+                                                             df_switches_by_areas_and_light)
 
         #vertical_stack_center = Utils_Views_Usecase.create_vertical_stack()
         #vertical_stack_right = Utils_Views_Usecase.create_vertical_stack()
@@ -117,7 +128,9 @@ class CreateViewAdminDashboardUseCase(GenericUseCase):
 
     def build_vertical_stack_left(self, 
                                   df_areas: pd.DataFrame, 
-                                  df_switches_by_zone_and_light:pd.DataFrame) -> dict:
+                                  df_switches_by_zone_and_light:pd.DataFrame,
+                                  df_switches_by_ubication_and_light:pd.DataFrame,
+                                  df_switches_by_areas_and_light:pd.DataFrame) -> dict:
         
         vertical_stack_left_new = {}
         vertical_stack_left_new = CreateCustomComponentsViewsUsecase.create_vertical_stack()
@@ -158,11 +171,25 @@ class CreateViewAdminDashboardUseCase(GenericUseCase):
             df_switches_by_zone_and_light
         )
 
+        build_card_group_switches_light_by_ubi = CreateCustomComponentsViewsUsecase.create_card_entities(
+            df_switches_by_ubication_and_light[NameColumnDfGroupEnum.title.value].iloc[0],
+            False,
+            df_switches_by_ubication_and_light
+        )
+
+        build_card_group_switches_light_by_area = CreateCustomComponentsViewsUsecase.create_card_entities(
+            df_switches_by_areas_and_light[NameColumnDfGroupEnum.title.value].iloc[0],
+            True,
+            df_switches_by_areas_and_light
+        )
+
+
         vertical_stack_left_new = Utils_Views_Usecase.add_card_to_verticaL_stack(vertical_stack_left_new, build_welcome_card)
         vertical_stack_left_new = Utils_Views_Usecase.add_card_to_verticaL_stack(vertical_stack_left_new, build_card_title)
         vertical_stack_left_new = Utils_Views_Usecase.add_card_to_verticaL_stack(vertical_stack_left_new, build_card_generic_sistema)
         vertical_stack_left_new = Utils_Views_Usecase.add_card_to_verticaL_stack(vertical_stack_left_new, build_card_group_switches_light_by_zone)
-
+        vertical_stack_left_new = Utils_Views_Usecase.add_card_to_verticaL_stack(vertical_stack_left_new, build_card_group_switches_light_by_ubi)
+        vertical_stack_left_new = Utils_Views_Usecase.add_card_to_verticaL_stack(vertical_stack_left_new, build_card_group_switches_light_by_area)
         # Buil group of switchs
         
 

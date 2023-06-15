@@ -49,7 +49,11 @@ class CreateViewMainUseCase(GenericUseCase):
             print(df_by_areas_and_swithes_light)
 
 
-            create_view_admin:CreateViewAdminDashboardUseCase = CreateViewAdminDashboardUseCase(dataframes.get(SheetsNameExcelConfigISmart.AreasSK.value),self.configurar_con_entidades_demos,df_by_zones_and_swithes_light) 
+            create_view_admin:CreateViewAdminDashboardUseCase = CreateViewAdminDashboardUseCase(dataframes.get(SheetsNameExcelConfigISmart.AreasSK.value),
+                                                                                                self.configurar_con_entidades_demos,
+                                                                                                df_by_zones_and_swithes_light,
+                                                                                                df_by_ubi_and_swithes_light,
+                                                                                                df_by_areas_and_swithes_light) 
             await create_view_admin.execute()
 
 

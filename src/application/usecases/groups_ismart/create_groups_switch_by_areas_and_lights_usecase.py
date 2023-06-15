@@ -74,7 +74,8 @@ class CreateGroupsSwitchByAreasAndLightUseCase(GenericUseCase):
                             row_df_switches_by_area_and_light = {
                                                                     NameColumnDfGroupEnum.title.value:'Luces por Area', 
                                                                     NameColumnDfGroupEnum.entity.value:'switch.'+unique_id,
-                                                                    NameColumnDfGroupEnum.name_.value:name_group_by_area, 
+                                                                    #NameColumnDfGroupEnum.name_.value:name_group_by_area, 
+                                                                    NameColumnDfGroupEnum.name_.value:area, 
                                                                     NameColumnDfGroupEnum.icon.value:'mdi:lightbulb-group', 
                                                                     NameColumnDfGroupEnum.tap_action.value:'none'
                                                                 }
