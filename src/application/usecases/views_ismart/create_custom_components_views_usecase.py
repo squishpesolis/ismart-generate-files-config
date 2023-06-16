@@ -1,7 +1,8 @@
 import pandas as pd
 
 from src.application.usecases.enums.name_column_df_group import NameColumnDfGroupEnum
-
+from src.application.usecases.enums.name_column_df_person import NameColumnDfPersonEnum
+from src.application.usecases.utils.string_util_usecase import StringUtilUseCase
 class CreateCustomComponentsViewsUsecase():
     def __init__(self) -> None:
         pass
@@ -117,3 +118,71 @@ class CreateCustomComponentsViewsUsecase():
                         'cards': []
                         }
         return verticaL_stack
+    
+    @staticmethod
+    def create_hotizontal_stack_with_list_persons(df:pd.DataFrame):
+        if df.empty:
+            return {}
+        
+        cards = CreateCustomComponentsViewsUsecase.create_horizontal_stack()
+
+        cards_persons = []
+
+        for index, row in df.iterrows():
+            
+            cards_person = CreateCustomComponentsViewsUsecase.create_card_person(
+                row[NameColumnDfPersonEnum.Persona.value],
+                row[NameColumnDfPersonEnum.MostrarImagen.value],
+                row[NameColumnDfPersonEnum.Icon.value],
+                False)
+            cards_persons.append(cards_person)
+
+        cards['cards']  = cards_persons
+
+        return cards
+
+    @staticmethod
+    def create_card_person(entity: str, ulm_card_person_use_entity_picture: bool,
+                           ulm_card_person_icon: str, tap_action: bool):
+        
+        aux_entity = StringUtilUseCase.replace_string(entity," ","_")
+        aux_entity = StringUtilUseCase.convert_string_lower_case(entity)
+               
+        person_entity = 'person.'+aux_entity
+
+        card_entities = {
+                        'type': 'custom:button-card',
+                        'template': 'card_person',
+                        'entity': person_entity,
+                        'variables': {
+                            'ulm_card_person_entity': person_entity,
+                            'ulm_card_person_use_entity_picture': ulm_card_person_use_entity_picture,
+                            'ulm_card_person_icon': ulm_card_person_icon
+                        },
+                        'tap_action': {
+                            'action': tap_action
+                        }
+                    }
+        
+      
+        return card_entities
+    
+    @staticmethod
+    def create_horizontal_stack():
+        stack = {
+                        'type': 'horizontal-stack',
+                        'cards': []
+                        }
+        return stack
+    
+    @staticmethod
+    def create_card_clock():
+        card = {
+                    'type': 'custom:button-card',
+                    'template': 'custom_card_nik_clock',
+                    'variables': {
+                        'ulm_custom_card_nik_clock_switch': 'input_boolean.menu_tablet',
+                        'ulm_custom_card_nik_clock_switch_enable': 'false',
+                    }
+                }
+        return card

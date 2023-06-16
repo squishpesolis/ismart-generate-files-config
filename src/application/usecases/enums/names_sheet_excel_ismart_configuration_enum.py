@@ -3,7 +3,7 @@ class SheetsNameExcelConfigISmart(Enum):
     AreasSK = "AreasSK"
     Entidades = "Entidades"
     Ubicacion = "Ubicacion"
-    Usuarios = "Usuarios"
+    Personas = "Personas"
     Zona = "AreasSK"
     Domain = "Domain"
     Type = "Type"    

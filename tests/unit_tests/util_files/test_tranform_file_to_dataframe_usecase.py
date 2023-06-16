@@ -16,7 +16,7 @@ class TransformFileToDataFrameUseCaseTest(unittest.TestCase):
     def execute(self) -> String:
         try:
             df = pd.read_csv(self.fileUpload.file,self.sheet_name.file)
-            print(type(df))
+
             return "Archivo Creado en la ruta"
         except Exception as exception:
             raise ErrorHandlingUtils.application_error("No se puede obtener el dataframe del archivo excel cargado", exception)

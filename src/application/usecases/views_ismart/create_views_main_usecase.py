@@ -30,10 +30,14 @@ class CreateViewMainUseCase(GenericUseCase):
             df_views =  pd.DataFrame()
             
 
-            tranform_file_to_dataframe_usecase:TransformFileToGetManyDataFrameUseCase =  TransformFileToGetManyDataFrameUseCase(self.file, [SheetsNameExcelConfigISmart.AreasSK.value, SheetsNameExcelConfigISmart.Entidades.value])
-            dataframes = await tranform_file_to_dataframe_usecase.execute()
+            df_excel:TransformFileToGetManyDataFrameUseCase =  TransformFileToGetManyDataFrameUseCase(self.file,
+                                                                                                    [SheetsNameExcelConfigISmart.AreasSK.value, 
+                                                                                                    SheetsNameExcelConfigISmart.Entidades.value,
+                                                                                                    SheetsNameExcelConfigISmart.Personas.value])
+            dataframes = await df_excel.execute()
 
             df_entidades = dataframes.get(SheetsNameExcelConfigISmart.Entidades.value)
+            df_personas = dataframes.get(SheetsNameExcelConfigISmart.Personas.value)
 
             groups_by_zones_and_swithes_light: CreateGroupsSwitchByZoneAndLightUseCase = CreateGroupsSwitchByZoneAndLightUseCase(df_entidades,self.configurar_con_entidades_demos)
             df_by_zones_and_swithes_light = await groups_by_zones_and_swithes_light.execute()
@@ -53,7 +57,8 @@ class CreateViewMainUseCase(GenericUseCase):
                                                                                                 self.configurar_con_entidades_demos,
                                                                                                 df_by_zones_and_swithes_light,
                                                                                                 df_by_ubi_and_swithes_light,
-                                                                                                df_by_areas_and_swithes_light) 
+                                                                                                df_by_areas_and_swithes_light,
+                                                                                                df_personas) 
             await create_view_admin.execute()
 
 

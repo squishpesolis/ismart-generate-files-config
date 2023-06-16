@@ -24,5 +24,4 @@ class TransformFileToDataFrameUseCase(GenericUseCase):
             data.close()
             return df
         except Exception as exception:
-            print(exception)
             raise ErrorHandlingUtils.application_error("No se puede obtener el dataframe del archivo excel cargado", exception)

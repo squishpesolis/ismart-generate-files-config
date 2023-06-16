@@ -32,7 +32,9 @@ class CreateViewAdminDashboardUseCase(GenericUseCase):
                  configurar_con_entidades_demos: bool,
                  df_switches_by_zone_and_light: pd.DataFrame,
                  df_switches_by_ubication_and_light: pd.DataFrame,
-                 df_switches_by_areas_and_light: pd.DataFrame) -> None:
+                 df_switches_by_areas_and_light: pd.DataFrame,
+                 df_personas: pd.DataFrame) -> None:
+        
         self.dataframe_areas = dataframe_areas
         self.configurar_con_entidades_demos = configurar_con_entidades_demos
         paths_usecase: PathsIsmartUseCase = PathsIsmartUseCase()
@@ -40,6 +42,7 @@ class CreateViewAdminDashboardUseCase(GenericUseCase):
         self.df_switches_by_zone_and_light = df_switches_by_zone_and_light
         self.df_switches_by_ubication_and_light = df_switches_by_ubication_and_light
         self.df_switches_by_areas_and_light = df_switches_by_areas_and_light
+        self.df_personas = df_personas
 
        
 
@@ -62,7 +65,8 @@ class CreateViewAdminDashboardUseCase(GenericUseCase):
             self.build_dashboard_admin("Casa Administrador","mdi:home-account",df_views_areas, 
                                        self.df_switches_by_zone_and_light,
                                        self.df_switches_by_ubication_and_light,
-                                       self.df_switches_by_areas_and_light)          
+                                       self.df_switches_by_areas_and_light,
+                                       self.df_personas)          
             
             
             #3. Crear el Dashboard admin
@@ -74,10 +78,10 @@ class CreateViewAdminDashboardUseCase(GenericUseCase):
             #YamlUtilUseCase.save_file_yaml(PathsIsmartUseCase.path_join_any_directores([path_save_yaml, name_file]),dict_view_admin )
 
 
-            print("------------------2----------------------")
+
             return df_views_areas
         except Exception as exception:
-            print(exception)
+
             raise ErrorHandlingUtils.application_error("Erro al crear las Views, Revisar el excel de configuración: " + SheetsNameExcelConfigISmart.AreasSK.value + " " + str(exception) , exception)
 
 
@@ -88,7 +92,8 @@ class CreateViewAdminDashboardUseCase(GenericUseCase):
                               df_areas: pd.DataFrame,
                               df_switches_by_zone_and_light:pd.DataFrame,
                               df_switches_by_ubication_and_light:pd.DataFrame,
-                              df_switches_by_areas_and_light:pd.DataFrame):
+                              df_switches_by_areas_and_light:pd.DataFrame,
+                              df_personas:pd.DataFrame):
         
         view_admin = [
             {
@@ -105,12 +110,12 @@ class CreateViewAdminDashboardUseCase(GenericUseCase):
                                                              df_switches_by_ubication_and_light,
                                                              df_switches_by_areas_and_light)
 
-        #vertical_stack_center = Utils_Views_Usecase.create_vertical_stack()
+        vertical_stack_center = self.build_vertical_stack_center(df_personas)
         #vertical_stack_right = Utils_Views_Usecase.create_vertical_stack()
 
 
         view_admin[0]['cards'].append(vertical_stack_left)
-        #view_admin['cards'].append(vertical_stack_center)
+        view_admin[0]['cards'].append(vertical_stack_center)
         #view_admin['cards'].append(vertical_stack_right)
 
    
@@ -189,7 +194,7 @@ class CreateViewAdminDashboardUseCase(GenericUseCase):
         vertical_stack_left_new = Utils_Views_Usecase.add_card_to_verticaL_stack(vertical_stack_left_new, build_card_generic_sistema)
         vertical_stack_left_new = Utils_Views_Usecase.add_card_to_verticaL_stack(vertical_stack_left_new, build_card_group_switches_light_by_zone)
         vertical_stack_left_new = Utils_Views_Usecase.add_card_to_verticaL_stack(vertical_stack_left_new, build_card_group_switches_light_by_ubi)
-        vertical_stack_left_new = Utils_Views_Usecase.add_card_to_verticaL_stack(vertical_stack_left_new, build_card_group_switches_light_by_area)
+        #vertical_stack_left_new = Utils_Views_Usecase.add_card_to_verticaL_stack(vertical_stack_left_new, build_card_group_switches_light_by_area)
         # Buil group of switchs
         
 
@@ -197,7 +202,18 @@ class CreateViewAdminDashboardUseCase(GenericUseCase):
         return vertical_stack_left_new
 
 
+    def build_vertical_stack_center(self, df_personas:pd.DataFrame):
+        vertical_stack_center_new = {}
+        vertical_stack_center_new = CreateCustomComponentsViewsUsecase.create_vertical_stack()
 
+        card_clock = CreateCustomComponentsViewsUsecase.create_card_clock()
+
+        card_horizontal_person = CreateCustomComponentsViewsUsecase.create_hotizontal_stack_with_list_persons(df_personas)
+
+        vertical_stack_center_new = Utils_Views_Usecase.add_card_to_verticaL_stack(vertical_stack_center_new, card_clock)
+        vertical_stack_center_new = Utils_Views_Usecase.add_card_to_verticaL_stack(vertical_stack_center_new, card_horizontal_person)
+        return vertical_stack_center_new
+       
     
     
 

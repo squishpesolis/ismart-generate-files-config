@@ -88,7 +88,6 @@ class CreateGroupsSwitchByAreasAndLightUseCase(GenericUseCase):
             return df_groups_by_areas_and_light
         
         except Exception as exception:
-            print(exception)
             raise ErrorHandlingUtils.application_error("Error al crear el archivo group de switches por Areas", exception)
 
 

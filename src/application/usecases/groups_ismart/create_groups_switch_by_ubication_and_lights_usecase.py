@@ -38,7 +38,7 @@ class CreateGroupsSwitchByUbicationAndLightUseCase(GenericUseCase):
             zonas = self.df[ColumnsNameExcelConfigISmart.zonas.value].unique()
 
             for zona in zonas:
-                print("")
+
                 ubication = self.df[ColumnsNameExcelConfigISmart.ubicacion.value].unique()
 
                 name_group = NameOfGroupEnum.lights.value
@@ -78,12 +78,10 @@ class CreateGroupsSwitchByUbicationAndLightUseCase(GenericUseCase):
 
                         df_groups_by_ubication_and_light = df_groups_by_ubication_and_light.append(row_df_switches_by_ubicaction_and_light, ignore_index=True)
 
-            print("--------------------------------")
-            print(df_groups_by_ubication_and_light)
+
             return df_groups_by_ubication_and_light
         
         except Exception as exception:
-            print(exception)
             raise ErrorHandlingUtils.application_error("Error al crear el archivo group de switches por ubicacion", exception)
 
     def get_zone_by_ubication(self, df: pd.DataFrame, ubication:str):

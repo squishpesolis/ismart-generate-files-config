@@ -11,8 +11,6 @@ class TransformDictToJsonUseCase(GenericUseCase):
 
     def execute(self) -> str:
         try:
-            print("PASOOOOOOOOOOOOOO")
             return json.dumps(self.datos) 
         except Exception as exception:
-            print(exception)
             raise ErrorHandlingUtils.application_error("Un erro ocurrio a convertir el Dict en JSON", exception)

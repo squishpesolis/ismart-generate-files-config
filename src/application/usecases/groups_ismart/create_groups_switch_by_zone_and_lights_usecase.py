@@ -73,7 +73,6 @@ class CreateGroupsSwitchByZoneAndLightUseCase(GenericUseCase):
             return df_groups_switch_by_zone_and_light
         
         except Exception as exception:
-            print(exception)
             raise ErrorHandlingUtils.application_error("Error al crear el archivo group de switches", exception)
 
     

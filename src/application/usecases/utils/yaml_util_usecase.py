@@ -18,7 +18,6 @@ class YamlUtilUseCase():
             yaml.dump(datos,file,sort_keys=False)
             file.close()
         except Exception as exception:
-            print(exception)
             raise ErrorHandlingUtils.application_error("Error: no se pudo crear el archivo yaml", exception)
 
     def check_exist_file(path):

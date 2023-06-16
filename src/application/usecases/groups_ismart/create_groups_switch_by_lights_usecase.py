@@ -81,7 +81,6 @@ class CreateGroupsSwitchByLightUseCase(GenericUseCase):
 
             return "Archivo Creado en la ruta"
         except Exception as exception:
-            print(exception)
             raise ErrorHandlingUtils.application_error("Error al crear el archivo group de switches ", exception)
 
     

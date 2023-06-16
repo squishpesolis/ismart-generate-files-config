@@ -17,5 +17,4 @@ class FolderCreator(GenericUseCase):
             if not isExist:
                 os.makedirs(folder_path)
         except Exception as exception:
-            print(exception)
             raise ErrorHandlingUtils.application_error("Error: No se a podido crear la carpeta", exception)
