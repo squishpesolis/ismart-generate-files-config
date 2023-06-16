@@ -66,7 +66,8 @@ class CreateViewAdminDashboardUseCase(GenericUseCase):
                                        self.df_switches_by_zone_and_light,
                                        self.df_switches_by_ubication_and_light,
                                        self.df_switches_by_areas_and_light,
-                                       self.df_personas)          
+                                       self.df_personas,
+                                       self.configurar_con_entidades_demos)          
             
             
             #3. Crear el Dashboard admin
@@ -93,7 +94,8 @@ class CreateViewAdminDashboardUseCase(GenericUseCase):
                               df_switches_by_zone_and_light:pd.DataFrame,
                               df_switches_by_ubication_and_light:pd.DataFrame,
                               df_switches_by_areas_and_light:pd.DataFrame,
-                              df_personas:pd.DataFrame):
+                              df_personas:pd.DataFrame,
+                              configurar_con_entidades_demos: bool):
         
         view_admin = [
             {
@@ -110,7 +112,7 @@ class CreateViewAdminDashboardUseCase(GenericUseCase):
                                                              df_switches_by_ubication_and_light,
                                                              df_switches_by_areas_and_light)
 
-        vertical_stack_center = self.build_vertical_stack_center(df_personas)
+        vertical_stack_center = self.build_vertical_stack_center(df_personas,configurar_con_entidades_demos)
         #vertical_stack_right = Utils_Views_Usecase.create_vertical_stack()
 
 
@@ -202,11 +204,13 @@ class CreateViewAdminDashboardUseCase(GenericUseCase):
         return vertical_stack_left_new
 
 
-    def build_vertical_stack_center(self, df_personas:pd.DataFrame):
+    def build_vertical_stack_center(self, df_personas:pd.DataFrame, configurar_con_entidades_demos: bool):
         vertical_stack_center_new = {}
         vertical_stack_center_new = CreateCustomComponentsViewsUsecase.create_vertical_stack()
 
         card_clock = CreateCustomComponentsViewsUsecase.create_card_clock()
+
+        
 
         card_horizontal_person = CreateCustomComponentsViewsUsecase.create_hotizontal_stack_with_list_persons(df_personas)
 

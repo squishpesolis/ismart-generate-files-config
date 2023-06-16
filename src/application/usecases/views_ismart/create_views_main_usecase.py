@@ -16,8 +16,8 @@ from src.application.usecases.groups_ismart.create_groups_switch_by_areas_and_li
 
 
 from src.application.usecases.enums.names_sheet_excel_ismart_configuration_enum import SheetsNameExcelConfigISmart;
-
-
+from src.application.usecases.enums.names_columns_excel_ismart_configuration_enum import ColumnsNameExcelConfigISmart
+from src.application.usecases.enums.entities_ismart_demos_enum import EntitiesIsmartDemosEnum
 
 class CreateViewMainUseCase(GenericUseCase):
     def __init__(self,file: UploadFile, configurar_con_entidades_demos: bool) -> None:
@@ -37,7 +37,13 @@ class CreateViewMainUseCase(GenericUseCase):
             dataframes = await df_excel.execute()
 
             df_entidades = dataframes.get(SheetsNameExcelConfigISmart.Entidades.value)
+
             df_personas = dataframes.get(SheetsNameExcelConfigISmart.Personas.value)
+            
+            if self.configurar_con_entidades_demos:
+                df_personas = self.change_values_entities_demo(df_personas,ColumnsNameExcelConfigISmart.persona.value, EntitiesIsmartDemosEnum.person.value )
+
+
 
             groups_by_zones_and_swithes_light: CreateGroupsSwitchByZoneAndLightUseCase = CreateGroupsSwitchByZoneAndLightUseCase(df_entidades,self.configurar_con_entidades_demos)
             df_by_zones_and_swithes_light = await groups_by_zones_and_swithes_light.execute()
@@ -50,7 +56,7 @@ class CreateViewMainUseCase(GenericUseCase):
             df_by_areas_and_swithes_light = await groups_by_area_and_swithes_light.execute()
 
 
-            print(df_by_areas_and_swithes_light)
+
 
 
             create_view_admin:CreateViewAdminDashboardUseCase = CreateViewAdminDashboardUseCase(dataframes.get(SheetsNameExcelConfigISmart.AreasSK.value),
@@ -61,10 +67,11 @@ class CreateViewMainUseCase(GenericUseCase):
                                                                                                 df_personas) 
             await create_view_admin.execute()
 
-
-
-
-            print("")
         except Exception as exception:
             print(traceback.format_exc())
             raise ErrorHandlingUtils.application_error("Erro al crear las Views, Revisar el excel de configuración: " + SheetsNameExcelConfigISmart.AreasSK.value + " " + str(exception) , exception)
+
+
+    def change_values_entities_demo(self, df: pd.DataFrame, colunm:str, new_vale:str):
+        df.loc[:, [colunm]] = new_vale
+        return df
