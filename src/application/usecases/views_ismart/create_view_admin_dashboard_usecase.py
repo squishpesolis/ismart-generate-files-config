@@ -216,6 +216,7 @@ class CreateViewAdminDashboardUseCase(GenericUseCase):
 
         vertical_stack_center_new = Utils_Views_Usecase.add_card_to_verticaL_stack(vertical_stack_center_new, card_clock)
         vertical_stack_center_new = Utils_Views_Usecase.add_card_to_verticaL_stack(vertical_stack_center_new, card_horizontal_person)
+        
         return vertical_stack_center_new
        
     

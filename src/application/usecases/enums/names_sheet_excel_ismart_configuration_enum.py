@@ -6,7 +6,9 @@ class SheetsNameExcelConfigISmart(Enum):
     Personas = "Personas"
     Zona = "AreasSK"
     Domain = "Domain"
-    Type = "Type"    
+    Type = "Type" 
+    Scenes = "Scenes"
+    Scenes_config = "Scenes_config"
 
     def __str__(self):
         return str(self.value)

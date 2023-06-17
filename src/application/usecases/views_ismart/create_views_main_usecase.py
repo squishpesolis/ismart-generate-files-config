@@ -18,6 +18,8 @@ from src.application.usecases.groups_ismart.create_groups_switch_by_areas_and_li
 from src.application.usecases.enums.names_sheet_excel_ismart_configuration_enum import SheetsNameExcelConfigISmart;
 from src.application.usecases.enums.names_columns_excel_ismart_configuration_enum import ColumnsNameExcelConfigISmart
 from src.application.usecases.enums.entities_ismart_demos_enum import EntitiesIsmartDemosEnum
+from src.application.usecases.enums.domain_entities_ismart_enum import DomainEntitiesIsmartEnum
+from src.application.usecases.enums.entities_ismart_demos_enum import EntitiesIsmartDemosEnum
 
 class CreateViewMainUseCase(GenericUseCase):
     def __init__(self,file: UploadFile, configurar_con_entidades_demos: bool) -> None:
@@ -39,10 +41,14 @@ class CreateViewMainUseCase(GenericUseCase):
             df_entidades = dataframes.get(SheetsNameExcelConfigISmart.Entidades.value)
 
             df_personas = dataframes.get(SheetsNameExcelConfigISmart.Personas.value)
+
+            df_scenes_config = dataframes.get(SheetsNameExcelConfigISmart.Scenes_config.value)
             
             if self.configurar_con_entidades_demos:
-                df_personas = self.change_values_entities_demo(df_personas,ColumnsNameExcelConfigISmart.persona.value, EntitiesIsmartDemosEnum.person.value )
 
+                df_entidades = self.change_values_of_entities_by_domain_demo_default(df_entidades)
+                df_personas = self.change_values_entities_demo(df_personas,ColumnsNameExcelConfigISmart.persona.value, EntitiesIsmartDemosEnum.person.value )
+                
 
 
             groups_by_zones_and_swithes_light: CreateGroupsSwitchByZoneAndLightUseCase = CreateGroupsSwitchByZoneAndLightUseCase(df_entidades,self.configurar_con_entidades_demos)
@@ -74,4 +80,9 @@ class CreateViewMainUseCase(GenericUseCase):
 
     def change_values_entities_demo(self, df: pd.DataFrame, colunm:str, new_vale:str):
         df.loc[:, [colunm]] = new_vale
+        return df
+    
+    def change_values_of_entities_by_domain_demo_default(self, df: pd.DataFrame):
+    
+        df.loc[df[ColumnsNameExcelConfigISmart.domain.value] == DomainEntitiesIsmartEnum.switch.value, ColumnsNameExcelConfigISmart.final_id.value] = EntitiesIsmartDemosEnum.switch_ac.value
         return df
