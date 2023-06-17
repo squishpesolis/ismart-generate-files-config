@@ -22,7 +22,7 @@ class GroupsUtilUseCase():
         return new_unique_id
     
     @staticmethod
-    def build_dict_group_switch(df: pd.DataFrame, name_group: str, unique_id:str, configurar_con_entidades_demos: bool) -> dict:
+    def build_dict_group_switch(df: pd.DataFrame, name_group: str, unique_id:str) -> dict:
 
         data = {}
 
@@ -42,10 +42,8 @@ class GroupsUtilUseCase():
         }
 
         for final_id in df[ColumnsNameExcelConfigISmart.final_id.value]:
-            if configurar_con_entidades_demos:
-                data['switch'][0]['entities'].append(EntitiesIsmartDemosEnum.switch_ac.value)
-            else:
-                data['switch'][0]['entities'].append(final_id.replace(" ", ""))
+
+            data['switch'][0]['entities'].append(final_id.replace(" ", ""))
 
 
         return data

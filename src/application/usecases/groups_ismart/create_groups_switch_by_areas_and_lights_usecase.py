@@ -60,7 +60,7 @@ class CreateGroupsSwitchByAreasAndLightUseCase(GenericUseCase):
                         name_group_by_area = name_group +" " + zona +" "+ ubi + " " + area
 
                         unique_id = GroupsUtilUseCase.build_unique_id(name_file_yaml +name_group_by_area)
-                        dict_df_switches_by_area = GroupsUtilUseCase.build_dict_group_switch(df_switches_by_area, unique_id, unique_id, self.configurar_con_entidades_demos)
+                        dict_df_switches_by_area = GroupsUtilUseCase.build_dict_group_switch(df_switches_by_area, unique_id, unique_id)
 
                         if dict_df_switches_by_area:
 

@@ -54,7 +54,7 @@ class CreateGroupsSwitchByUbicationAndLightUseCase(GenericUseCase):
                     name_group_by_ubication = name_group +" " + zona +" "+ ubi
 
                     unique_id = GroupsUtilUseCase.build_unique_id(name_file_yaml +name_group_by_ubication)
-                    dict_df_switches_by_ubication = GroupsUtilUseCase.build_dict_group_switch(df_switches_by_ubication, unique_id, unique_id, self.configurar_con_entidades_demos)
+                    dict_df_switches_by_ubication = GroupsUtilUseCase.build_dict_group_switch(df_switches_by_ubication, unique_id, unique_id)
 
                     if dict_df_switches_by_ubication:
 
