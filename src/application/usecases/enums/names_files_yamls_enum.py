@@ -3,5 +3,6 @@ from enum import Enum
 # excel de configuración sheet entidades
 class NameFilesYamlsEnum(Enum):
     group_switch_="group_switch_"
+    scenes="scenes_of_"
 
 

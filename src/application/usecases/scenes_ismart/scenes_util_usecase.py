@@ -6,7 +6,7 @@ import pandas as pd
 from src.application.usecases.utils.string_util_usecase import StringUtilUseCase
 
 from src.application.usecases.enums.names_columns_excel_ismart_configuration_enum import ColumnsNameExcelConfigISmart
-from src.application.usecases.enums.name_column_df_scenes import NameColumnDfSceneEnum
+from src.application.usecases.enums.name_column_df_scene import NameColumnDfSceneEnum
 from src.application.usecases.enums.entities_ismart_demos_enum import EntitiesIsmartDemosEnum
 from src.application.usecases.enums.domain_entities_ismart_enum import DomainEntitiesIsmartEnum
 

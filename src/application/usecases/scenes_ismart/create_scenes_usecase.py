@@ -1,5 +1,6 @@
 import typing
 import pandas as pd
+import numpy as np
 import yaml
 from src.application.usecases.interfaces import GenericUseCase
 from src.application.utils.error_handling_utils import ErrorHandlingUtils
@@ -12,7 +13,7 @@ from src.application.usecases.enums.names_columns_excel_ismart_configuration_enu
 from src.application.usecases.enums.domain_entities_ismart_enum import DomainEntitiesIsmartEnum
 from src.application.usecases.enums.name_entities_ismart_enum import NameEntitiesIsmartEnum
 from src.application.usecases.enums.entities_ismart_demos_enum import EntitiesIsmartDemosEnum
-from src.application.usecases.enums.name_column_df_group import NameColumnDfGroupEnum
+from src.application.usecases.enums.name_column_df_scene import NameColumnDfSceneEnum
 from src.application.usecases.enums.names_of_groups_enum import NameOfGroupEnum
 from src.application.usecases.enums.names_files_yamls_enum import NameFilesYamlsEnum
 
@@ -20,8 +21,15 @@ from src.application.usecases.scenes_ismart.scenes_util_usecase import ScenesUti
 
 
 class CreateScenesUseCase(GenericUseCase):
-    def __init__(self, df: pd.DataFrame, configurar_con_entidades_demos: bool) -> None:
-        self.df = df
+    def __init__(self, 
+                 df_scenes_config: pd.DataFrame, 
+                 dataframe_areas: pd.DataFrame,
+                 dataframe_entites: pd.DataFrame,
+                 configurar_con_entidades_demos: bool) -> None:
+        
+        self.df_scenes_config = df_scenes_config
+        self.dataframe_areas = dataframe_areas
+        self.dataframe_entites = dataframe_entites
         self.configurar_con_entidades_demos = configurar_con_entidades_demos
         paths_usecase: PathsIsmartUseCase = PathsIsmartUseCase()
         self.path_ismart_scenes = paths_usecase.get_root_path_ismar_home_assintant_principal_scenes()
@@ -31,49 +39,81 @@ class CreateScenesUseCase(GenericUseCase):
     async def execute(self) -> pd.DataFrame:
         try:
 
-    
+          
             df_scenes = ScenesUtilUseCase.build_df_empty_to_build_scenes()
+            
                      
-            zonas = self.df[ColumnsNameExcelConfigISmart.zonas.value].unique()
+            scenes_config_unique = self.df_scenes_config
 
-            name_group = NameOfGroupEnum.lights.value
-            name_file_yaml = NameFilesYamlsEnum.group_switch_.value
-            for zona in zonas:
-               
 
-                # Filter domain switch by Zonas
-                df_switches_by_zone = self.df[(self.df[ColumnsNameExcelConfigISmart.zonas.value] == zona) & (self.df[ColumnsNameExcelConfigISmart.domain.value] == DomainEntitiesIsmartEnum.switch.value)] 
-                df_switches_by_zone = df_switches_by_zone[df_switches_by_zone[ColumnsNameExcelConfigISmart.name_entity.value].isin([NameEntitiesIsmartEnum.Luces.value,NameEntitiesIsmartEnum.Luz.value ])]
-                name_group_by_zone = name_group +" "+ zona
+            dataframe_areas = self.dataframe_areas[(self.dataframe_areas[ColumnsNameExcelConfigISmart.Colocar_Area_en_Dashboard_Views.value] == 'SI')] 
 
-                unique_id = GroupsUtilUseCase.build_unique_id(name_file_yaml + name_group_by_zone)
-                dict_df_switches_by_zone = GroupsUtilUseCase.build_dict_group_switch(df_switches_by_zone, unique_id, unique_id, self.configurar_con_entidades_demos)
 
-                if dict_df_switches_by_zone:
+            df_entities  = self.dataframe_entites
+    
 
-                    name_file =  name_file_yaml + zona + '.yaml'
-                    path_save_yaml = PathsIsmartUseCase.path_join_any_directores([self.path_ismart_scenes,'Zonas', zona, 'Integraciones'])
-                    FolderCreator.execute(path_save_yaml)
-                    YamlUtilUseCase.save_file_yaml(PathsIsmartUseCase.path_join_any_directores([path_save_yaml, name_file]),dict_df_switches_by_zone )
 
-                    row_df_switches_by_zone_and_light = {
-                                                            NameColumnDfGroupEnum.title.value:'Luces de Zona', 
-                                                            NameColumnDfGroupEnum.entity.value:'switch.'+unique_id,
-                                                            NameColumnDfGroupEnum.name_.value:name_group_by_zone, 
-                                                            NameColumnDfGroupEnum.icon.value:'mdi:lightbulb-group', 
-                                                            NameColumnDfGroupEnum.tap_action.value:'none'
-                                                        }
-                    
-                    if self.configurar_con_entidades_demos:
-                        row_df_switches_by_zone_and_light[NameColumnDfGroupEnum.entity.value] = EntitiesIsmartDemosEnum.switch_group.value
+            #name_group = NameOfGroupEnum.lights.value
+            name_file_yaml = NameFilesYamlsEnum.scenes.value
+            
 
-                    df_scenes = df_scenes.append(row_df_switches_by_zone_and_light, ignore_index=True)
+            for index, scene_config in scenes_config_unique.iterrows():
 
             
+                icon_scene = scene_config[ColumnsNameExcelConfigISmart.icon_scenes.value]
+
+                for index_aread, area in dataframe_areas.iterrows():
+                    
+                    
+                    area_sub_zona = area[ColumnsNameExcelConfigISmart.Sub_Zona.value]
+
+
+                    name_scene_build = "Escena " + scene_config[ColumnsNameExcelConfigISmart.scenes.value] + " " + area_sub_zona
+
+                    for domain in DomainEntitiesIsmartEnum:
+
+                        df_entities_by_area_and_domain = pd.DataFrame()
+
+                        df_entities_by_area_and_domain = df_entities[(df_entities[ColumnsNameExcelConfigISmart.areas.value] == area[ColumnsNameExcelConfigISmart.Sub_Zona.value] ) 
+                                                                     #& (df_entities[ColumnsNameExcelConfigISmart.domain.value] == domain.value)
+                                                                     ] 
+                        
+                     
+                        filtered_values = np.where((df_entities[ColumnsNameExcelConfigISmart.areas.value]==area[ColumnsNameExcelConfigISmart.Sub_Zona.value]) & 
+                                                   (df_entities[ColumnsNameExcelConfigISmart.domain.value] == domain.value))
+
+                        df_entities_by_area_and_domain = df_entities.loc[filtered_values]
+                        
+                        if not df_entities_by_area_and_domain.empty:
+                         
+                          
+                            
+                            for index_entity, entity in df_entities_by_area_and_domain.iterrows() :
+
+                                final_id = entity[ColumnsNameExcelConfigISmart.final_id.value]
+                                
+
+                                if domain.value in scenes_config_unique.columns:
+                                    value_scene = scene_config[domain.value]
+
+                                    row_df_scenes =  {
+                                                        NameColumnDfSceneEnum.name_.value: name_scene_build, 
+                                                        NameColumnDfSceneEnum.icon.value:icon_scene,
+                                                        NameColumnDfSceneEnum.domain.value: domain.value, 
+                                                        NameColumnDfSceneEnum.entity.value:final_id, 
+                                                        NameColumnDfSceneEnum.value_.value:value_scene
+                                                    }
+                                    
+                                    
+                                    df_scenes = df_scenes.append(row_df_scenes, ignore_index=True)
+
+
+            print("---------------------------Escenes---------------------------------")
+            print(df_scenes)
             return df_scenes
         
         except Exception as exception:
-            raise ErrorHandlingUtils.application_error("Error al crear el archivo group de switches", exception)
+            raise ErrorHandlingUtils.application_error("Error al crear el scenes", exception)
 
     
   

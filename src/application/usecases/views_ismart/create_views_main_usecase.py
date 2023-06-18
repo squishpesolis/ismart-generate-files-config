@@ -14,12 +14,14 @@ from src.application.usecases.groups_ismart.create_groups_switch_by_zone_and_lig
 from src.application.usecases.groups_ismart.create_groups_switch_by_ubication_and_lights_usecase import CreateGroupsSwitchByUbicationAndLightUseCase
 from src.application.usecases.groups_ismart.create_groups_switch_by_areas_and_lights_usecase import CreateGroupsSwitchByAreasAndLightUseCase
 
+from src.application.usecases.scenes_ismart.create_scenes_usecase import CreateScenesUseCase
 
 from src.application.usecases.enums.names_sheet_excel_ismart_configuration_enum import SheetsNameExcelConfigISmart;
 from src.application.usecases.enums.names_columns_excel_ismart_configuration_enum import ColumnsNameExcelConfigISmart
 from src.application.usecases.enums.entities_ismart_demos_enum import EntitiesIsmartDemosEnum
 from src.application.usecases.enums.domain_entities_ismart_enum import DomainEntitiesIsmartEnum
 from src.application.usecases.enums.entities_ismart_demos_enum import EntitiesIsmartDemosEnum
+
 
 class CreateViewMainUseCase(GenericUseCase):
     def __init__(self,file: UploadFile, configurar_con_entidades_demos: bool) -> None:
@@ -35,14 +37,18 @@ class CreateViewMainUseCase(GenericUseCase):
             df_excel:TransformFileToGetManyDataFrameUseCase =  TransformFileToGetManyDataFrameUseCase(self.file,
                                                                                                     [SheetsNameExcelConfigISmart.AreasSK.value, 
                                                                                                     SheetsNameExcelConfigISmart.Entidades.value,
-                                                                                                    SheetsNameExcelConfigISmart.Personas.value])
+                                                                                                    SheetsNameExcelConfigISmart.Personas.value,
+                                                                                                    SheetsNameExcelConfigISmart.Scenes_config.value])
             dataframes = await df_excel.execute()
 
             df_entidades = dataframes.get(SheetsNameExcelConfigISmart.Entidades.value)
 
+            df_areas = dataframes.get(SheetsNameExcelConfigISmart.AreasSK.value)
+
             df_personas = dataframes.get(SheetsNameExcelConfigISmart.Personas.value)
 
             df_scenes_config = dataframes.get(SheetsNameExcelConfigISmart.Scenes_config.value)
+
             
             if self.configurar_con_entidades_demos:
 
@@ -61,11 +67,16 @@ class CreateViewMainUseCase(GenericUseCase):
             groups_by_area_and_swithes_light: CreateGroupsSwitchByAreasAndLightUseCase = CreateGroupsSwitchByAreasAndLightUseCase(df_entidades,self.configurar_con_entidades_demos)
             df_by_areas_and_swithes_light = await groups_by_area_and_swithes_light.execute()
 
+            create_scenes_useCase: CreateScenesUseCase = CreateScenesUseCase(df_scenes_config,
+                                                                             df_areas,
+                                                                             df_entidades,
+                                                                             self.configurar_con_entidades_demos)
+            df_create_scenes = await create_scenes_useCase.execute()
+
+  
 
 
-
-
-            create_view_admin:CreateViewAdminDashboardUseCase = CreateViewAdminDashboardUseCase(dataframes.get(SheetsNameExcelConfigISmart.AreasSK.value),
+            create_view_admin:CreateViewAdminDashboardUseCase = CreateViewAdminDashboardUseCase(df_areas,
                                                                                                 self.configurar_con_entidades_demos,
                                                                                                 df_by_zones_and_swithes_light,
                                                                                                 df_by_ubi_and_swithes_light,

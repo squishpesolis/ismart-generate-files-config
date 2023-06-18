@@ -16,4 +16,10 @@ class ColumnsNameExcelConfigISmart(Enum):
     name_entity = "name_entity"
     #Personas
     persona = "Persona"
+    #Scenes_config
+    scenes = "scenes"
+    icon_scenes = "icon_scenes"
+    switch = "switch"
+
+
 
