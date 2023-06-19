@@ -62,3 +62,12 @@ class ScenesUtilUseCase():
                        NameColumnDfSceneEnum.value_.value]
          
         return pd.DataFrame(columns=columnsName)
+    
+    @staticmethod
+    def build_df_empty_to_build_scenes_view():
+
+        columnsName = [NameColumnDfSceneEnum.id.value,
+                       NameColumnDfSceneEnum.name_.value,
+                       NameColumnDfSceneEnum.icon.value]
+         
+        return pd.DataFrame(columns=columnsName)

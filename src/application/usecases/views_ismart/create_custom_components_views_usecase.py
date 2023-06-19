@@ -2,6 +2,8 @@ import pandas as pd
 
 from src.application.usecases.enums.name_column_df_group import NameColumnDfGroupEnum
 from src.application.usecases.enums.name_column_df_person import NameColumnDfPersonEnum
+from src.application.usecases.enums.name_column_df_scene import NameColumnDfSceneEnum
+
 from src.application.usecases.utils.string_util_usecase import StringUtilUseCase
 class CreateCustomComponentsViewsUsecase():
     def __init__(self) -> None:
@@ -185,4 +187,35 @@ class CreateCustomComponentsViewsUsecase():
                         'ulm_custom_card_nik_clock_switch_enable': 'false',
                     }
                 }
+        return card
+
+    @staticmethod
+    def create_card_scenes_welcome(df:pd.DataFrame):
+
+        colors = ['yellow','purple','blue','red','pink']
+
+        card = {
+                    'type': 'custom:button-card',
+                    'template': 'card_scenes_welcome',
+                    'variables': {}
+                }
+        
+        for index, scene in df.iterrows():
+            if index > 4 :
+                break
+
+            entity_id = 'scene.' + scene[NameColumnDfSceneEnum.id.value]
+            icon = scene[NameColumnDfSceneEnum.icon.value]
+            name = scene[NameColumnDfSceneEnum.name_.value]
+            color = colors[index]
+            build_entitiy = {"entity_"+str(index+1): {
+                                'entity_id': entity_id,
+                                'icon': icon,
+                                'name': name,
+                                'color': color
+                            }}
+            
+            card['variables'].update(build_entitiy)
+        
+
         return card

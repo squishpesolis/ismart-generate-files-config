@@ -40,6 +40,7 @@ class CreateScenesUseCase(GenericUseCase):
             FolderCreator.execute(path_save_yaml)
 
             df_scenes = ScenesUtilUseCase.build_df_empty_to_build_scenes()
+            df_scenes_view = ScenesUtilUseCase.build_df_empty_to_build_scenes_view()
             
                      
             scenes_config_unique = self.df_scenes_config
@@ -115,7 +116,7 @@ class CreateScenesUseCase(GenericUseCase):
             
             list_scenes = []
 
-            list_scenes_admin = self.build_dict_scenes_admin(df_scenes)
+            list_scenes_admin, df_scenes_for_view_admin = self.build_dict_scenes_admin(df_scenes)
 
             list_scenes.extend(list_scenes_admin)
 
@@ -125,14 +126,22 @@ class CreateScenesUseCase(GenericUseCase):
                 name_scene = df_scenes_by_group[NameColumnDfSceneEnum.name_.value].iloc[0]
                 id_scene = df_scenes_by_group[NameColumnDfSceneEnum.name_.value].iloc[0] + " " + df_scenes_by_group[NameColumnDfSceneEnum.area.value].iloc[0]
                 icon = df_scenes_by_group[NameColumnDfSceneEnum.icon.value].iloc[0]
-
-
                 scene_dict =ScenesUtilUseCase.build_scenes_dict(df_scenes_by_group,name_scene,id_scene,icon)
                 list_scenes.append(scene_dict)
+
+                row_scenes_for_view=  {  NameColumnDfSceneEnum.id.value: ScenesUtilUseCase.build_unique_id(id_scene),
+                                            NameColumnDfSceneEnum.name_.value: name_scene,
+                                            NameColumnDfSceneEnum.icon.value:icon}
+                
+                df_scenes_view = df_scenes_view.append(row_scenes_for_view, ignore_index=True)
                 
             YamlUtilUseCase.save_file_yaml(PathsIsmartUseCase.path_join_any_directores([path_save_yaml, name_file_yaml]),list_scenes )
 
-            return df_scenes
+            print("--------------------------------------------------")
+            print(df_scenes_view)
+            print("--------------------------------------------------")
+            print(df_scenes_for_view_admin)
+            return df_scenes_view,df_scenes_for_view_admin
         
         except Exception as exception:
             raise ErrorHandlingUtils.application_error("Error al crear el scenes", exception)
@@ -140,15 +149,25 @@ class CreateScenesUseCase(GenericUseCase):
 
     def build_dict_scenes_admin(self, df_scenes: pd.DataFrame):
         list_scenes = []
+        df_scenes_for_view_admin = ScenesUtilUseCase.build_df_empty_to_build_scenes_view()
+
         df_groups_by_name = df_scenes.groupby(NameColumnDfSceneEnum.name_.value)
         for group_by_name in df_groups_by_name.groups:
             df_scenes_by_name = df_groups_by_name.get_group(group_by_name)
             name_scene = df_scenes_by_name[NameColumnDfSceneEnum.name_.value].iloc[0]
             id_scene = df_scenes_by_name[NameColumnDfSceneEnum.name_.value].iloc[0] + " admin"
             icon = df_scenes_by_name[NameColumnDfSceneEnum.icon.value].iloc[0]
+
+            
+            row_scenes_for_view_admin =  {  NameColumnDfSceneEnum.id.value: ScenesUtilUseCase.build_unique_id(id_scene),
+                                            NameColumnDfSceneEnum.name_.value: name_scene,
+                                            NameColumnDfSceneEnum.icon.value:icon}
+            
+            df_scenes_for_view_admin = df_scenes_for_view_admin.append(row_scenes_for_view_admin, ignore_index=True)
+            
             scene_dict =ScenesUtilUseCase.build_scenes_dict(df_scenes_by_name,name_scene,id_scene,icon)
             list_scenes.append(scene_dict)
         
-        return list_scenes
+        return list_scenes, df_scenes_for_view_admin
         
   
