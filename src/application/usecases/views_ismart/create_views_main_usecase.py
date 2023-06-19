@@ -71,9 +71,8 @@ class CreateViewMainUseCase(GenericUseCase):
                                                                              df_areas,
                                                                              df_entidades,
                                                                              self.configurar_con_entidades_demos)
+            
             df_create_scenes_admin,df_create_scenes  = await create_scenes_useCase.execute()
-
-  
 
 
             create_view_admin:CreateViewAdminDashboardUseCase = CreateViewAdminDashboardUseCase(df_areas,
@@ -81,7 +80,8 @@ class CreateViewMainUseCase(GenericUseCase):
                                                                                                 df_by_zones_and_swithes_light,
                                                                                                 df_by_ubi_and_swithes_light,
                                                                                                 df_by_areas_and_swithes_light,
-                                                                                                df_personas) 
+                                                                                                df_personas,
+                                                                                                df_create_scenes_admin) 
             await create_view_admin.execute()
 
         except Exception as exception:

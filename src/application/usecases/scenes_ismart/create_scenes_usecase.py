@@ -13,6 +13,7 @@ from src.application.usecases.enums.names_columns_excel_ismart_configuration_enu
 from src.application.usecases.enums.domain_entities_ismart_enum import DomainEntitiesIsmartEnum
 from src.application.usecases.enums.name_column_df_scene import NameColumnDfSceneEnum
 from src.application.usecases.enums.names_files_yamls_enum import NameFilesYamlsEnum
+from src.application.usecases.enums.entities_ismart_demos_enum import EntitiesIsmartDemosEnum
 
 from src.application.usecases.scenes_ismart.scenes_util_usecase import ScenesUtilUseCase
 
@@ -72,9 +73,7 @@ class CreateScenesUseCase(GenericUseCase):
 
                         df_entities_by_area_and_domain = pd.DataFrame()
 
-                        df_entities_by_area_and_domain = df_entities[(df_entities[ColumnsNameExcelConfigISmart.areas.value] == area[ColumnsNameExcelConfigISmart.Sub_Zona.value] ) 
-                                                                     
-                                                                     ] 
+                        df_entities_by_area_and_domain = df_entities[(df_entities[ColumnsNameExcelConfigISmart.areas.value] == area[ColumnsNameExcelConfigISmart.Sub_Zona.value] )] 
                         
                      
                         filtered_values = np.where((df_entities[ColumnsNameExcelConfigISmart.areas.value]==area[ColumnsNameExcelConfigISmart.Sub_Zona.value]) & 
@@ -93,6 +92,7 @@ class CreateScenesUseCase(GenericUseCase):
 
                                 if domain.value in scenes_config_unique.columns:
                                     value_scene = scene_config[domain.value]
+                                    order_scene = scene_config[NameColumnDfSceneEnum.orden_view.value]
 
                                     row_df_scenes =  {
                                                         NameColumnDfSceneEnum.name_.value: name_scene_build, 
@@ -100,7 +100,8 @@ class CreateScenesUseCase(GenericUseCase):
                                                         NameColumnDfSceneEnum.icon.value:icon_scene,
                                                         NameColumnDfSceneEnum.domain.value: domain.value, 
                                                         NameColumnDfSceneEnum.entity.value:final_id, 
-                                                        NameColumnDfSceneEnum.value_.value:value_scene
+                                                        NameColumnDfSceneEnum.value_.value:value_scene,
+                                                        NameColumnDfSceneEnum.orden_view.value:order_scene
                                                     }
                                     
                                     
@@ -113,7 +114,7 @@ class CreateScenesUseCase(GenericUseCase):
             
             list_scenes = []
 
-            list_scenes_admin, df_scenes_for_view_admin = self.build_dict_scenes_admin(df_scenes)
+            list_scenes_admin, df_scenes_for_view_admin = self.build_dict_scenes_admin(df_scenes, self.configurar_con_entidades_demos)
 
             list_scenes.extend(list_scenes_admin)
 
@@ -123,25 +124,36 @@ class CreateScenesUseCase(GenericUseCase):
                 name_scene = df_scenes_by_group[NameColumnDfSceneEnum.name_.value].iloc[0]
                 id_scene = df_scenes_by_group[NameColumnDfSceneEnum.name_.value].iloc[0] + " " + df_scenes_by_group[NameColumnDfSceneEnum.area.value].iloc[0]
                 icon = df_scenes_by_group[NameColumnDfSceneEnum.icon.value].iloc[0]
+                order =  df_scenes_by_group[NameColumnDfSceneEnum.orden_view.value].iloc[0]
+                area =  df_scenes_by_group[NameColumnDfSceneEnum.area.value].iloc[0]
+
+                if self.configurar_con_entidades_demos:
+                    id_scene = EntitiesIsmartDemosEnum.scene.value
+
                 scene_dict =ScenesUtilUseCase.build_scenes_dict(df_scenes_by_group,name_scene,id_scene,icon)
                 list_scenes.append(scene_dict)
 
-                row_scenes_for_view=  {  NameColumnDfSceneEnum.id.value: ScenesUtilUseCase.build_unique_id(id_scene),
-                                            NameColumnDfSceneEnum.name_.value: name_scene,
-                                            NameColumnDfSceneEnum.icon.value:icon}
+                row_scenes_for_view=  { NameColumnDfSceneEnum.id.value: ScenesUtilUseCase.build_unique_id(id_scene),
+                                        NameColumnDfSceneEnum.name_.value: name_scene,
+                                        NameColumnDfSceneEnum.icon.value:icon,
+                                        NameColumnDfSceneEnum.orden_view.value:order,
+                                        NameColumnDfSceneEnum.area.value:area}
                 
                 df_scenes_view = df_scenes_view.append(row_scenes_for_view, ignore_index=True)
                 
             YamlUtilUseCase.save_file_yaml(PathsIsmartUseCase.path_join_any_directores([path_save_yaml, name_file_yaml]),list_scenes )
 
+            df_scenes_for_view_admin = df_scenes_for_view_admin.sort_values(by=[NameColumnDfSceneEnum.orden_view.value])
 
+            df_scenes_view = df_scenes_view.sort_values(by=[NameColumnDfSceneEnum.area.value])
+            
             return df_scenes_for_view_admin,df_scenes_view
         
         except Exception as exception:
             raise ErrorHandlingUtils.application_error("Error al crear el scenes", exception)
 
 
-    def build_dict_scenes_admin(self, df_scenes: pd.DataFrame):
+    def build_dict_scenes_admin(self, df_scenes: pd.DataFrame, configurar_con_entidades_demos: bool):
         list_scenes = []
         df_scenes_for_view_admin = ScenesUtilUseCase.build_df_empty_to_build_scenes_view()
 
@@ -151,11 +163,17 @@ class CreateScenesUseCase(GenericUseCase):
             name_scene = df_scenes_by_name[NameColumnDfSceneEnum.name_.value].iloc[0]
             id_scene = df_scenes_by_name[NameColumnDfSceneEnum.name_.value].iloc[0] + " admin"
             icon = df_scenes_by_name[NameColumnDfSceneEnum.icon.value].iloc[0]
+            order =  df_scenes_by_name[NameColumnDfSceneEnum.orden_view.value].iloc[0]
 
+            if configurar_con_entidades_demos:
+                id_scene = EntitiesIsmartDemosEnum.scene.value
+            
             
             row_scenes_for_view_admin =  {  NameColumnDfSceneEnum.id.value: ScenesUtilUseCase.build_unique_id(id_scene),
                                             NameColumnDfSceneEnum.name_.value: name_scene,
-                                            NameColumnDfSceneEnum.icon.value:icon}
+                                            NameColumnDfSceneEnum.icon.value:icon,
+                                            NameColumnDfSceneEnum.orden_view.value:order,
+                                            NameColumnDfSceneEnum.area.value: 'NOT_SET'}
             
             df_scenes_for_view_admin = df_scenes_for_view_admin.append(row_scenes_for_view_admin, ignore_index=True)
             
@@ -163,5 +181,7 @@ class CreateScenesUseCase(GenericUseCase):
             list_scenes.append(scene_dict)
         
         return list_scenes, df_scenes_for_view_admin
+    
+
         
   

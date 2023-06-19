@@ -33,7 +33,8 @@ class CreateViewAdminDashboardUseCase(GenericUseCase):
                  df_switches_by_zone_and_light: pd.DataFrame,
                  df_switches_by_ubication_and_light: pd.DataFrame,
                  df_switches_by_areas_and_light: pd.DataFrame,
-                 df_personas: pd.DataFrame) -> None:
+                 df_personas: pd.DataFrame,
+                 df_scenes: pd.DataFrame) -> None:
         
         self.dataframe_areas = dataframe_areas
         self.configurar_con_entidades_demos = configurar_con_entidades_demos
@@ -43,6 +44,8 @@ class CreateViewAdminDashboardUseCase(GenericUseCase):
         self.df_switches_by_ubication_and_light = df_switches_by_ubication_and_light
         self.df_switches_by_areas_and_light = df_switches_by_areas_and_light
         self.df_personas = df_personas
+        self.df_scenes = df_scenes
+        
 
        
 
@@ -67,7 +70,7 @@ class CreateViewAdminDashboardUseCase(GenericUseCase):
                                        self.df_switches_by_ubication_and_light,
                                        self.df_switches_by_areas_and_light,
                                        self.df_personas,
-                                       self.configurar_con_entidades_demos)          
+                                       self.df_scenes)          
             
             
             #3. Crear el Dashboard admin
@@ -95,7 +98,7 @@ class CreateViewAdminDashboardUseCase(GenericUseCase):
                               df_switches_by_ubication_and_light:pd.DataFrame,
                               df_switches_by_areas_and_light:pd.DataFrame,
                               df_personas:pd.DataFrame,
-                              configurar_con_entidades_demos: bool):
+                              df_scenes:pd.DataFrame):
         
         view_admin = [
             {
@@ -112,7 +115,7 @@ class CreateViewAdminDashboardUseCase(GenericUseCase):
                                                              df_switches_by_ubication_and_light,
                                                              df_switches_by_areas_and_light)
 
-        vertical_stack_center = self.build_vertical_stack_center(df_personas,configurar_con_entidades_demos)
+        vertical_stack_center = self.build_vertical_stack_center(df_personas,df_scenes)
         #vertical_stack_right = Utils_Views_Usecase.create_vertical_stack()
 
 
@@ -204,7 +207,7 @@ class CreateViewAdminDashboardUseCase(GenericUseCase):
         return vertical_stack_left_new
 
 
-    def build_vertical_stack_center(self, df_personas:pd.DataFrame, configurar_con_entidades_demos: bool):
+    def build_vertical_stack_center(self, df_personas:pd.DataFrame, df_scenes:pd.DataFrame):
         vertical_stack_center_new = {}
         vertical_stack_center_new = CreateCustomComponentsViewsUsecase.create_vertical_stack()
 
@@ -214,9 +217,13 @@ class CreateViewAdminDashboardUseCase(GenericUseCase):
 
         card_horizontal_person = CreateCustomComponentsViewsUsecase.create_hotizontal_stack_with_list_persons(df_personas)
 
+        card_scenes = CreateCustomComponentsViewsUsecase.create_card_scenes_welcome(df_scenes)
+
+
         vertical_stack_center_new = Utils_Views_Usecase.add_card_to_verticaL_stack(vertical_stack_center_new, card_clock)
         vertical_stack_center_new = Utils_Views_Usecase.add_card_to_verticaL_stack(vertical_stack_center_new, card_horizontal_person)
-        
+        vertical_stack_center_new = Utils_Views_Usecase.add_card_to_verticaL_stack(vertical_stack_center_new, card_scenes)
+
         return vertical_stack_center_new
        
     

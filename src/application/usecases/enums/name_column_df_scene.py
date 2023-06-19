@@ -9,5 +9,6 @@ class NameColumnDfSceneEnum(Enum):
     domain ="domain"
     entity ="entity"
     value_ ="value"
+    orden_view ="orden_view"
 
 

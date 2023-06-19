@@ -199,16 +199,18 @@ class CreateCustomComponentsViewsUsecase():
                     'template': 'card_scenes_welcome',
                     'variables': {}
                 }
-        
+
+        counter = 1
         for index, scene in df.iterrows():
-            if index > 4 :
+
+            if counter > 4 :
                 break
 
             entity_id = 'scene.' + scene[NameColumnDfSceneEnum.id.value]
             icon = scene[NameColumnDfSceneEnum.icon.value]
             name = scene[NameColumnDfSceneEnum.name_.value]
-            color = colors[index]
-            build_entitiy = {"entity_"+str(index+1): {
+            color = colors[counter - 1]
+            build_entitiy = {"entity_"+str(counter): {
                                 'entity_id': entity_id,
                                 'icon': icon,
                                 'name': name,
@@ -216,6 +218,7 @@ class CreateCustomComponentsViewsUsecase():
                             }}
             
             card['variables'].update(build_entitiy)
+            counter = counter + 1
         
 
         return card

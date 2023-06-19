@@ -59,7 +59,9 @@ class ScenesUtilUseCase():
                        NameColumnDfSceneEnum.icon.value,
                        NameColumnDfSceneEnum.domain.value,
                        NameColumnDfSceneEnum.entity.value,
-                       NameColumnDfSceneEnum.value_.value]
+                       NameColumnDfSceneEnum.value_.value,
+                       NameColumnDfSceneEnum.orden_view.value
+                       ]
          
         return pd.DataFrame(columns=columnsName)
     
@@ -68,6 +70,9 @@ class ScenesUtilUseCase():
 
         columnsName = [NameColumnDfSceneEnum.id.value,
                        NameColumnDfSceneEnum.name_.value,
-                       NameColumnDfSceneEnum.icon.value]
+                       NameColumnDfSceneEnum.icon.value,
+                       NameColumnDfSceneEnum.orden_view.value,
+                       NameColumnDfSceneEnum.area.value
+                       ]
          
         return pd.DataFrame(columns=columnsName)
