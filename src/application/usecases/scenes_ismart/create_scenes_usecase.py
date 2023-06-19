@@ -51,9 +51,6 @@ class CreateScenesUseCase(GenericUseCase):
 
             df_entities  = self.dataframe_entites
     
-
-
-            #name_group = NameOfGroupEnum.lights.value
             name_file_yaml = NameFilesYamlsEnum.scenes.value + "ismart.yaml"
             
 
@@ -68,7 +65,7 @@ class CreateScenesUseCase(GenericUseCase):
                     area_sub_zona = area[ColumnsNameExcelConfigISmart.Sub_Zona.value]
 
 
-                    #name_scene_build = "Escena " + scene_config[ColumnsNameExcelConfigISmart.scenes.value] + " " + area_sub_zona
+                    
                     name_scene_build = scene_config[ColumnsNameExcelConfigISmart.scenes.value]
 
                     for domain in DomainEntitiesIsmartEnum:
@@ -76,7 +73,7 @@ class CreateScenesUseCase(GenericUseCase):
                         df_entities_by_area_and_domain = pd.DataFrame()
 
                         df_entities_by_area_and_domain = df_entities[(df_entities[ColumnsNameExcelConfigISmart.areas.value] == area[ColumnsNameExcelConfigISmart.Sub_Zona.value] ) 
-                                                                     #& (df_entities[ColumnsNameExcelConfigISmart.domain.value] == domain.value)
+                                                                     
                                                                      ] 
                         
                      
@@ -137,11 +134,8 @@ class CreateScenesUseCase(GenericUseCase):
                 
             YamlUtilUseCase.save_file_yaml(PathsIsmartUseCase.path_join_any_directores([path_save_yaml, name_file_yaml]),list_scenes )
 
-            print("--------------------------------------------------")
-            print(df_scenes_view)
-            print("--------------------------------------------------")
-            print(df_scenes_for_view_admin)
-            return df_scenes_view,df_scenes_for_view_admin
+
+            return df_scenes_for_view_admin,df_scenes_view
         
         except Exception as exception:
             raise ErrorHandlingUtils.application_error("Error al crear el scenes", exception)

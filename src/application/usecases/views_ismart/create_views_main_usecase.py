@@ -71,7 +71,7 @@ class CreateViewMainUseCase(GenericUseCase):
                                                                              df_areas,
                                                                              df_entidades,
                                                                              self.configurar_con_entidades_demos)
-            df_create_scenes = await create_scenes_useCase.execute()
+            df_create_scenes_admin,df_create_scenes  = await create_scenes_useCase.execute()
 
   
 
