@@ -5,4 +5,5 @@ class EntitiesIsmartDemosEnum(Enum):
     switch_ac = "switch.ac"
     switch_decorative_lights = "switch.decorative_lights"
     person = "ISMART"
+    sensor = "sensor.uptime"
 

@@ -68,7 +68,8 @@ class CreateScenesUseCase(GenericUseCase):
                     area_sub_zona = area[ColumnsNameExcelConfigISmart.Sub_Zona.value]
 
 
-                    name_scene_build = "Escena " + scene_config[ColumnsNameExcelConfigISmart.scenes.value] + " " + area_sub_zona
+                    #name_scene_build = "Escena " + scene_config[ColumnsNameExcelConfigISmart.scenes.value] + " " + area_sub_zona
+                    name_scene_build = "Escena " + scene_config[ColumnsNameExcelConfigISmart.scenes.value]
 
                     for domain in DomainEntitiesIsmartEnum:
 
@@ -98,6 +99,7 @@ class CreateScenesUseCase(GenericUseCase):
 
                                     row_df_scenes =  {
                                                         NameColumnDfSceneEnum.name_.value: name_scene_build, 
+                                                        NameColumnDfSceneEnum.area.value: area_sub_zona, 
                                                         NameColumnDfSceneEnum.icon.value:icon_scene,
                                                         NameColumnDfSceneEnum.domain.value: domain.value, 
                                                         NameColumnDfSceneEnum.entity.value:final_id, 
@@ -107,9 +109,7 @@ class CreateScenesUseCase(GenericUseCase):
                                     
                                     df_scenes = df_scenes.append(row_df_scenes, ignore_index=True)
 
-
-            print("---------------------------Escenes---------------------------------")
-            print(df_scenes)
+            df_scenes = df_scenes.sort_values(by=[NameColumnDfSceneEnum.name_.value,NameColumnDfSceneEnum.area.value, NameColumnDfSceneEnum.domain.value])
             return df_scenes
         
         except Exception as exception:

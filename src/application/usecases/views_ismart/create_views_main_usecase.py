@@ -96,4 +96,5 @@ class CreateViewMainUseCase(GenericUseCase):
     def change_values_of_entities_by_domain_demo_default(self, df: pd.DataFrame):
     
         df.loc[df[ColumnsNameExcelConfigISmart.domain.value] == DomainEntitiesIsmartEnum.switch.value, ColumnsNameExcelConfigISmart.final_id.value] = EntitiesIsmartDemosEnum.switch_ac.value
+        df.loc[df[ColumnsNameExcelConfigISmart.domain.value] == DomainEntitiesIsmartEnum.sensor.value, ColumnsNameExcelConfigISmart.final_id.value] = EntitiesIsmartDemosEnum.sensor.value
         return df

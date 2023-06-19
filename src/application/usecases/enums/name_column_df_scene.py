@@ -3,6 +3,7 @@ from enum import Enum
 # excel de configuración sheet entidades
 class NameColumnDfSceneEnum(Enum):
     name_="name"
+    area="area"
     id="id"
     icon="icon"
     domain ="domain"

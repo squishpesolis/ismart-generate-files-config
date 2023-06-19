@@ -55,6 +55,7 @@ class ScenesUtilUseCase():
     def build_df_empty_to_build_scenes():
 
         columnsName = [NameColumnDfSceneEnum.name_.value,
+                       NameColumnDfSceneEnum.area.value,
                        NameColumnDfSceneEnum.icon.value,
                        NameColumnDfSceneEnum.domain.value,
                        NameColumnDfSceneEnum.entity.value,
