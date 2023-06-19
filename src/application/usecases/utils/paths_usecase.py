@@ -43,7 +43,7 @@ class PathsIsmartUseCase():
 
     def get_root_path_ismar_home_assintant_principal_scenes(self):
         try:
-         return os.path.join(self.get_root_path(), "yaml_generados","grupos" ,'config', 'ismart', "scenes")
+         return os.path.join(self.get_root_path(), "yaml_generados","scenes" ,'config', 'ismart', "scenes")
         except Exception as exception:
             raise ErrorHandlingUtils.application_error("Error: al obtener el get_root_path_ismar_home_assintant_principal_scenes", exception)
 
