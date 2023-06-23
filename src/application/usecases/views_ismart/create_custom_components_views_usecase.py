@@ -203,7 +203,8 @@ class CreateCustomComponentsViewsUsecase():
         counter = 1
         for index, scene in df.iterrows():
 
-            if counter > 4 :
+            #   counter > 5 ya que estas son las scenas por defecto  
+            if counter > 5 :
                 break
 
             entity_id = 'scene.' + scene[NameColumnDfSceneEnum.id.value]
