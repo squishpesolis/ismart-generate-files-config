@@ -21,6 +21,7 @@ from src.application.usecases.utils.folder_creator_usecase import FolderCreator
 from src.application.usecases.enums.names_columns_excel_ismart_configuration_enum import ColumnsNameExcelConfigISmart
 from src.application.usecases.enums.names_sheet_excel_ismart_configuration_enum import SheetsNameExcelConfigISmart;
 from src.application.usecases.enums.name_column_df_group import NameColumnDfGroupEnum
+from src.application.usecases.enums.name_views_ismart_enum import NameViewsIsmarEnum
 
 from src.domain.api_exception import ApiException
 
@@ -129,7 +130,7 @@ class CreateViewAdminDashboardUseCase(GenericUseCase):
         path_save_yaml = self.path_ismart_views
         FolderCreator.execute(path_save_yaml)
 
-        YamlUtilUseCase.save_file_yaml(PathsIsmartUseCase.path_join_any_directores([path_save_yaml, 'prueba.yaml']),view_admin )
+        YamlUtilUseCase.save_file_yaml(PathsIsmartUseCase.path_join_any_directores([path_save_yaml, NameViewsIsmarEnum.admin_view.value]),view_admin )
 
         #path_save_yaml = PathsIsmartUseCase.path_join_any_directores([self.path_ismart_views,'Zonas', zona, 'Integraciones'])
 
