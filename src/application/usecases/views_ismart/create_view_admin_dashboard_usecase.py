@@ -116,12 +116,12 @@ class CreateViewAdminDashboardUseCase(GenericUseCase):
                                                              df_switches_by_areas_and_light)
 
         vertical_stack_center = self.build_vertical_stack_center(df_personas,df_scenes)
-        #vertical_stack_right = Utils_Views_Usecase.create_vertical_stack()
+        vertical_stack_right = self.build_vertical_stack_right()
 
 
         view_admin[0]['cards'].append(vertical_stack_left)
         view_admin[0]['cards'].append(vertical_stack_center)
-        #view_admin['cards'].append(vertical_stack_right)
+        view_admin[0]['cards'].append(vertical_stack_right)
 
    
 
@@ -227,6 +227,14 @@ class CreateViewAdminDashboardUseCase(GenericUseCase):
         return vertical_stack_center_new
        
     
-    
+    def build_vertical_stack_right(self, ):
+        vertical_stack_new = {}
+        vertical_stack_new = CreateCustomComponentsViewsUsecase.create_vertical_stack()
+
+        card_weater = CreateCustomComponentsViewsUsecase.create_card_weather_openweathermap()
+
+        vertical_stack_new = Utils_Views_Usecase.add_card_to_verticaL_stack(vertical_stack_new, card_weater)
+
+        return vertical_stack_new
 
 

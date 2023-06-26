@@ -223,3 +223,22 @@ class CreateCustomComponentsViewsUsecase():
         
 
         return card
+    
+    @staticmethod
+    def create_card_weather_openweathermap():
+        card = {
+                    'type': 'custom:button-card',
+                    'template': 'card_weather',
+                    'entity': 'weather.openweathermap',
+                    'tap_action': {
+                        'action': 'none'
+                    },
+                    'variables': {
+                        'ulm_card_weather_name': '',
+                        'ulm_card_weather_primary_info': ['wind_speed','precipitation_probability'],
+                        'ulm_card_weather_backdrop': {
+                            'fade': True
+                        },
+                    }
+                }
+        return card
