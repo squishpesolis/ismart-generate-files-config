@@ -1,0 +1,296 @@
+import typing
+import pandas as pd
+import yaml
+
+
+
+from src.application.usecases.interfaces import GenericUseCase
+from src.application.utils.error_handling_utils import ErrorHandlingUtils
+
+from src.application.usecases.utils.paths_usecase import PathsIsmartUseCase
+from src.application.usecases.utils.yaml_util_usecase import YamlUtilUseCase
+from src.application.usecases.utils.dataframe_util_usecase import DataFrameUtilUseCase
+from src.application.usecases.utils.string_util_usecase import StringUtilUseCase
+from src.application.usecases.groups_ismart.groups_util_usecase import GroupsUtilUseCase
+
+from src.application.usecases.views_ismart.utils_views_usecase import Utils_Views_Usecase
+from src.application.usecases.views_ismart.create_custom_components_views_usecase import CreateCustomComponentsViewsUsecase
+
+
+
+from src.application.usecases.utils.folder_creator_usecase import FolderCreator
+
+from src.application.usecases.enums.names_columns_excel_ismart_configuration_enum import ColumnsNameExcelConfigISmart
+from src.application.usecases.enums.names_sheet_excel_ismart_configuration_enum import SheetsNameExcelConfigISmart;
+from src.application.usecases.enums.name_column_df_group import NameColumnDfGroupEnum
+from src.application.usecases.enums.name_views_ismart_enum import NameViewsIsmarEnum
+from src.application.usecases.enums.name_column_df_scene import NameColumnDfSceneEnum
+from src.application.usecases.enums.domain_entities_ismart_enum import DomainEntitiesIsmartEnum
+from src.domain.api_exception import ApiException
+
+
+
+class CreateViewByAreasDashboardUseCase(GenericUseCase):
+    def __init__(self,
+                 dataframe_areas: pd.DataFrame, 
+                 configurar_con_entidades_demos: bool,
+                 df_switches_gropus_by_areas_and_light: pd.DataFrame,
+                 df_personas: pd.DataFrame,
+                 df_scenes: pd.DataFrame,
+                 df_entidades: pd.DataFrame) -> None:
+        
+        self.dataframe_areas = dataframe_areas
+        self.configurar_con_entidades_demos = configurar_con_entidades_demos
+        paths_usecase: PathsIsmartUseCase = PathsIsmartUseCase()
+        self.path_ismart_views = paths_usecase.get_root_path_ismar_home_assintant_principal_views()
+        self.df_switches_gropus_by_areas_and_light = df_switches_gropus_by_areas_and_light
+        self.df_personas = df_personas
+        self.df_scenes = df_scenes
+        self.df_entidades = df_entidades
+        
+
+       
+
+    async def execute(self) -> pd.DataFrame:
+        try:
+
+            df_views_areas =  pd.DataFrame()
+            dataframe_areas = self.dataframe_areas
+
+       
+           
+            df_views_areas =dataframe_areas[(dataframe_areas[ColumnsNameExcelConfigISmart.Colocar_Area_en_Dashboard_Views.value] == 'SI')] 
+            
+            if  df_views_areas.empty:
+                raise Exception("Erro al crear la vista Admin, Revisar el excel de configuración: " + SheetsNameExcelConfigISmart.AreasSK.value + " debe haber valores con valor SI en la columna" + ColumnsNameExcelConfigISmart.Colocar_Area_en_Dashboard_Views.value )
+                
+            df_views_areas = df_views_areas.sort_values(by=[ColumnsNameExcelConfigISmart.Orden_en_DashBoard_Views.value])  
+            
+            count: int = 3
+            for index, area_row in df_views_areas.iterrows():
+
+                title_dashboard = area_row[ColumnsNameExcelConfigISmart.Sub_Zona.value]
+                name_view = self.buil_name_view(count,title_dashboard)
+                icon_view = area_row[ColumnsNameExcelConfigISmart.Icono_en_el_Dashboard_Views.value]
+
+                self.build_dashboard_by_view(title_dashboard,
+                                             icon_view,
+                                             name_view,
+                                             area_row,
+                                             self.df_switches_gropus_by_areas_and_light,
+                                             self.df_personas,
+                                             self.df_scenes,
+                                             self.df_entidades)          
+         
+                count = count +1 
+
+            return df_views_areas
+        except Exception as exception:
+
+            raise ErrorHandlingUtils.application_error("Erro al crear las Views By Areas, Revisar el excel de configuración: " + SheetsNameExcelConfigISmart.AreasSK.value + " " + str(exception) , exception)
+
+
+    
+    def build_dashboard_by_view(self,
+                              title_dashboard, 
+                              icon, 
+                              name_view,
+                              area_row,
+                              df_switches_gropus_by_areas_and_light:pd.DataFrame,
+                              df_personas:pd.DataFrame,
+                              df_scenes:pd.DataFrame,
+                              df_entities:pd.DataFrame):
+        
+
+        view_by_name = [
+            {
+                'title': title_dashboard,
+                'path':  Utils_Views_Usecase.build_path_view(title_dashboard),
+                'icon': icon,
+                'cards': []
+            }
+        ]
+
+
+        name_area = area_row[ColumnsNameExcelConfigISmart.Sub_Zona.value]
+
+        df_scenes_by_area = self.df_scenes[(self.df_scenes[NameColumnDfSceneEnum.area.value] == name_area)] 
+
+
+        df_switch_group_by_area = self.df_switches_gropus_by_areas_and_light[(self.df_switches_gropus_by_areas_and_light[NameColumnDfSceneEnum.name_.value] == name_area)] 
+
+        
+
+        df_switches_by_area = self.get_entities_by_area_and_domain(df_entities, name_area, DomainEntitiesIsmartEnum.switch.value)
+
+  
+
+        df_switch_formater_by_build_card = self.create_switches_entites(df_switches_by_area, name_area)
+
+
+        vertical_stack_center = self.build_vertical_stack_center(df_personas,df_scenes_by_area,df_switch_group_by_area,df_switch_formater_by_build_card )
+        view_by_name[0]['cards'].append(vertical_stack_center)
+        
+        path_save_yaml = self.path_ismart_views
+        FolderCreator.execute(path_save_yaml)
+        YamlUtilUseCase.save_file_yaml(PathsIsmartUseCase.path_join_any_directores([path_save_yaml, name_view + ".yaml"]),view_by_name )
+
+
+        """vertical_stack_left = self.build_vertical_stack_left(area_row,
+                                                             df_switches_gropus_by_areas_and_light)
+
+        
+        vertical_stack_right = self.build_vertical_stack_right()
+
+
+        view_by_name[0]['cards'].append(vertical_stack_left)
+        
+        view_by_name[0]['cards'].append(vertical_stack_right)
+
+   
+
+     
+        
+
+        
+ """
+      
+
+    """ def build_vertical_stack_left(self, 
+                                  df_areas: pd.DataFrame
+                                  df_switches_gropus_by_areas_and_light:pd.DataFrame) -> dict:
+        
+        vertical_stack_left_new = {}
+        vertical_stack_left_new = CreateCustomComponentsViewsUsecase.create_vertical_stack()
+        
+       
+        entity_2_name = DataFrameUtilUseCase.get_value_dataframe_from_position_row_and_name_colum(0, ColumnsNameExcelConfigISmart.Sub_Zona, df_areas, 'Areas')
+        entity_3_name = DataFrameUtilUseCase.get_value_dataframe_from_position_row_and_name_colum(1, ColumnsNameExcelConfigISmart.Sub_Zona, df_areas, 'Areas')
+        entity_4_name = DataFrameUtilUseCase.get_value_dataframe_from_position_row_and_name_colum(2, ColumnsNameExcelConfigISmart.Sub_Zona, df_areas, 'Areas')
+        entity_5_name = DataFrameUtilUseCase.get_value_dataframe_from_position_row_and_name_colum(3, ColumnsNameExcelConfigISmart.Sub_Zona, df_areas, 'Areas')
+
+        entity_2_icon = DataFrameUtilUseCase.get_value_dataframe_from_position_row_and_name_colum(0, ColumnsNameExcelConfigISmart.Icono_en_el_Dashboard_Views, df_areas, 'Areas')
+        entity_3_icon = DataFrameUtilUseCase.get_value_dataframe_from_position_row_and_name_colum(1, ColumnsNameExcelConfigISmart.Icono_en_el_Dashboard_Views, df_areas, 'Areas')
+        entity_4_icon = DataFrameUtilUseCase.get_value_dataframe_from_position_row_and_name_colum(2, ColumnsNameExcelConfigISmart.Icono_en_el_Dashboard_Views, df_areas, 'Areas')
+        entity_5_icon = DataFrameUtilUseCase.get_value_dataframe_from_position_row_and_name_colum(3, ColumnsNameExcelConfigISmart.Icono_en_el_Dashboard_Views, df_areas, 'Areas')
+
+        
+        entity_2_nav = Utils_Views_Usecase.build_path_view(entity_2_name)
+        entity_3_nav = Utils_Views_Usecase.build_path_view(entity_3_name)
+        entity_4_nav = Utils_Views_Usecase.build_path_view(entity_4_name)
+        entity_5_nav = Utils_Views_Usecase.build_path_view(entity_5_name)
+
+        build_welcome_card = CreateCustomComponentsViewsUsecase.create_card_esh_welcome(
+                                'minimalist_dropdown', 'openweathermap',
+                                'plano-tercera-planta', 'mdi:home','Plano',
+                                entity_2_nav, entity_2_icon,entity_2_name,
+                                entity_3_nav, entity_3_icon,entity_3_name,
+                                entity_4_nav, entity_4_icon,entity_4_name,
+                                entity_5_nav, entity_5_icon,entity_5_name
+        )
+
+        build_card_title = CreateCustomComponentsViewsUsecase.create_card_title('Sistema')
+        build_card_generic_sistema = CreateCustomComponentsViewsUsecase.create_card_generic('sensor.uptime', 'I-SMART UP', 'mdi:home-assistant')
+
+        
+        build_card_group_switches_light_by_zone = CreateCustomComponentsViewsUsecase.create_card_entities(
+            df_switches_groups_by_zone_and_light[NameColumnDfGroupEnum.title.value].iloc[0],
+            False,
+            df_switches_groups_by_zone_and_light
+        )
+
+        build_card_group_switches_light_by_ubi = CreateCustomComponentsViewsUsecase.create_card_entities(
+            df_switches_groups_by_ubication_and_light[NameColumnDfGroupEnum.title.value].iloc[0],
+            False,
+            df_switches_groups_by_ubication_and_light
+        )
+
+        build_card_group_switches_light_by_area = CreateCustomComponentsViewsUsecase.create_card_entities(
+            df_switches_gropus_by_areas_and_light[NameColumnDfGroupEnum.title.value].iloc[0],
+            True,
+            df_switches_gropus_by_areas_and_light
+        )
+
+
+        vertical_stack_left_new = Utils_Views_Usecase.add_card_to_verticaL_stack(vertical_stack_left_new, build_welcome_card)
+        vertical_stack_left_new = Utils_Views_Usecase.add_card_to_verticaL_stack(vertical_stack_left_new, build_card_title)
+        vertical_stack_left_new = Utils_Views_Usecase.add_card_to_verticaL_stack(vertical_stack_left_new, build_card_generic_sistema)
+        vertical_stack_left_new = Utils_Views_Usecase.add_card_to_verticaL_stack(vertical_stack_left_new, build_card_group_switches_light_by_zone)
+        vertical_stack_left_new = Utils_Views_Usecase.add_card_to_verticaL_stack(vertical_stack_left_new, build_card_group_switches_light_by_ubi)
+      
+        return vertical_stack_left_new """
+
+
+    def build_vertical_stack_center(self, 
+                                    df_personas:pd.DataFrame, 
+                                    df_scenes:pd.DataFrame,
+                                    df_scenes_by_area:pd.DataFrame,
+                                    df_switch_formater_by_build_card:pd.DataFrame):
+        vertical_stack_center_new = {}
+        vertical_stack_center_new = CreateCustomComponentsViewsUsecase.create_vertical_stack()
+
+        card_clock = CreateCustomComponentsViewsUsecase.create_card_clock()
+
+        
+
+        #card_horizontal_person = CreateCustomComponentsViewsUsecase.create_hotizontal_stack_with_list_persons(df_personas)
+
+        card_scenes = CreateCustomComponentsViewsUsecase.create_card_scenes_welcome(df_scenes)
+
+       
+        card_group_switch_entities = CreateCustomComponentsViewsUsecase.create_card_entities(
+            df_scenes_by_area[NameColumnDfGroupEnum.title.value].iloc[0],
+            True,
+            df_switch_formater_by_build_card
+        )
+
+
+        vertical_stack_center_new = Utils_Views_Usecase.add_card_to_verticaL_stack(vertical_stack_center_new, card_clock)
+        vertical_stack_center_new = Utils_Views_Usecase.add_card_to_verticaL_stack(vertical_stack_center_new, card_scenes)
+        vertical_stack_center_new = Utils_Views_Usecase.add_card_to_verticaL_stack(vertical_stack_center_new, card_group_switch_entities)
+        
+
+        return vertical_stack_center_new
+       
+    
+    def build_vertical_stack_right(self, ):
+        vertical_stack_new = {}
+        vertical_stack_new = CreateCustomComponentsViewsUsecase.create_vertical_stack()
+
+        card_weater = CreateCustomComponentsViewsUsecase.create_card_weather_openweathermap()
+
+        vertical_stack_new = Utils_Views_Usecase.add_card_to_verticaL_stack(vertical_stack_new, card_weater)
+
+        return vertical_stack_new
+
+
+    def buil_name_view(self,secuntial: int, name: str) -> str:
+        num_secuntial  = str(secuntial).zfill(4)
+        name_lower_case = StringUtilUseCase.convert_string_lower_case(name)
+        final_name = num_secuntial + "_" + StringUtilUseCase.replace_string(name_lower_case," ","")
+        return final_name
+    
+    def get_entities_by_area_and_domain(self, df_entities: pd.DataFrame, area:str,domain:str)-> pd.DataFrame:
+        df_entities_result = df_entities[(df_entities[ColumnsNameExcelConfigISmart.areas.value] == area) & (df_entities[ColumnsNameExcelConfigISmart.domain.value] == domain)] 
+        return df_entities_result 
+    
+    def create_switches_entites(self, df_entities:pd.DataFrame, name_area: str):
+        
+        df_switches_by_area_and_light = GroupsUtilUseCase.build_df_empty_to_build_groups()
+
+        part_of_dataframe = df_entities[[ColumnsNameExcelConfigISmart.final_id.value, ColumnsNameExcelConfigISmart.friendly_name.value]].copy()
+        
+        for index, switch in part_of_dataframe.iterrows():
+            name = switch[ColumnsNameExcelConfigISmart.friendly_name.value]
+            final_id = switch[ColumnsNameExcelConfigISmart.final_id.value]
+            row_df_switches = {
+                                        NameColumnDfGroupEnum.title.value: name_area, 
+                                        NameColumnDfGroupEnum.entity.value:final_id,
+                                        NameColumnDfGroupEnum.name_.value:name, 
+                                        NameColumnDfGroupEnum.icon.value:'mdi:lightbulb-group', 
+                                        NameColumnDfGroupEnum.tap_action.value:'none'
+                                                                }
+        
+            df_switches_by_area_and_light = df_switches_by_area_and_light.append(row_df_switches, ignore_index=True)
+
+        return df_switches_by_area_and_light

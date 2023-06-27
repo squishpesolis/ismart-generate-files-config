@@ -9,6 +9,9 @@ from src.application.utils.error_handling_utils import ErrorHandlingUtils
 
 from src.application.usecases.utils.tranform_file_to_get_many_dataframe_usecase import TransformFileToGetManyDataFrameUseCase
 from src.application.usecases.views_ismart.create_view_admin_dashboard_usecase import CreateViewAdminDashboardUseCase
+from src.application.usecases.views_ismart.create_view_by_areas_dashboard_usecase import CreateViewByAreasDashboardUseCase
+
+
 
 from src.application.usecases.groups_ismart.create_groups_switch_by_zone_and_lights_usecase import CreateGroupsSwitchByZoneAndLightUseCase
 from src.application.usecases.groups_ismart.create_groups_switch_by_ubication_and_lights_usecase import CreateGroupsSwitchByUbicationAndLightUseCase
@@ -83,6 +86,17 @@ class CreateViewMainUseCase(GenericUseCase):
                                                                                                 df_personas,
                                                                                                 df_create_scenes_admin) 
             await create_view_admin.execute()
+
+
+
+            create_view_by_areas: CreateViewByAreasDashboardUseCase = CreateViewByAreasDashboardUseCase(df_areas,
+                                                                                                self.configurar_con_entidades_demos,
+                                                                                                df_by_areas_and_swithes_light,
+                                                                                                df_personas,
+                                                                                                df_create_scenes,
+                                                                                                df_entidades)
+            
+            await create_view_by_areas.execute()
 
         except Exception as exception:
             print(traceback.format_exc())

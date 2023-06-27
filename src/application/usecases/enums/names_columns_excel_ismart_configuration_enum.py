@@ -14,6 +14,7 @@ class ColumnsNameExcelConfigISmart(Enum):
     ubicacion = "ubicacion"
     areas = "areas"
     name_entity = "name_entity"
+    friendly_name = "friendly_name"
     #Personas
     persona = "Persona"
     #Scenes_config
