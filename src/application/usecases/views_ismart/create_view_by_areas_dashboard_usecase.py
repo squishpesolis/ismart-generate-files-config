@@ -26,6 +26,8 @@ from src.application.usecases.enums.name_column_df_group import NameColumnDfGrou
 from src.application.usecases.enums.name_views_ismart_enum import NameViewsIsmarEnum
 from src.application.usecases.enums.name_column_df_scene import NameColumnDfSceneEnum
 from src.application.usecases.enums.domain_entities_ismart_enum import DomainEntitiesIsmartEnum
+from src.application.usecases.enums.name_titles_ismart_enum import NameTitlesIsmartEnum
+
 from src.domain.api_exception import ApiException
 
 
@@ -115,10 +117,11 @@ class CreateViewByAreasDashboardUseCase(GenericUseCase):
         name_area = area_row[ColumnsNameExcelConfigISmart.Sub_Zona.value]
 
         df_scenes_by_area = self.df_scenes[(self.df_scenes[NameColumnDfSceneEnum.area.value] == name_area)] 
+        #df_scenes_by_area.loc[df_scenes_by_area[NameColumnDfSceneEnum.] > 1990, 'First Season'] = 1
 
 
         df_switch_group_by_area = self.df_switches_gropus_by_areas_and_light[(self.df_switches_gropus_by_areas_and_light[NameColumnDfSceneEnum.name_.value] == name_area)] 
-
+        #df_switch_group_by_area.loc[df_switch_group_by_area[NameColumnDfSceneEnum.] > 1990, 'First Season'] = 1
         
 
         df_switches_by_area = self.get_entities_by_area_and_domain(df_entities, name_area, DomainEntitiesIsmartEnum.switch.value)
@@ -127,6 +130,8 @@ class CreateViewByAreasDashboardUseCase(GenericUseCase):
 
         df_switch_formater_by_build_card = self.create_switches_entites(df_switches_by_area, name_area)
 
+ 
+        df_switch_group_by_area.loc[df_switch_group_by_area[NameColumnDfGroupEnum.title.value] == NameTitlesIsmartEnum.luces_por_area.value , NameColumnDfGroupEnum.title.value] = NameTitlesIsmartEnum.luces.value + " " + name_area
 
         vertical_stack_center = self.build_vertical_stack_center(df_personas,df_scenes_by_area,df_switch_group_by_area,df_switch_formater_by_build_card )
         view_by_name[0]['cards'].append(vertical_stack_center)
@@ -237,7 +242,7 @@ class CreateViewByAreasDashboardUseCase(GenericUseCase):
 
         card_scenes = CreateCustomComponentsViewsUsecase.create_card_scenes_welcome(df_scenes)
 
-       
+
         card_group_switch_entities = CreateCustomComponentsViewsUsecase.create_card_entities(
             df_scenes_by_area[NameColumnDfGroupEnum.title.value].iloc[0],
             True,

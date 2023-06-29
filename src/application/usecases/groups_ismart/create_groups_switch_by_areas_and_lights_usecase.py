@@ -15,6 +15,7 @@ from src.application.usecases.enums.entities_ismart_demos_enum import EntitiesIs
 from src.application.usecases.enums.name_column_df_group import NameColumnDfGroupEnum
 from src.application.usecases.enums.names_of_groups_enum import NameOfGroupEnum
 from src.application.usecases.enums.names_files_yamls_enum import NameFilesYamlsEnum
+from src.application.usecases.enums.name_titles_ismart_enum import NameTitlesIsmartEnum
 
 from src.application.usecases.groups_ismart.groups_util_usecase import GroupsUtilUseCase
 
@@ -72,7 +73,7 @@ class CreateGroupsSwitchByAreasAndLightUseCase(GenericUseCase):
                             YamlUtilUseCase.save_file_yaml(PathsIsmartUseCase.path_join_any_directores([path_save_yaml, name_file]),dict_df_switches_by_area )
 
                             row_df_switches_by_area_and_light = {
-                                                                    NameColumnDfGroupEnum.title.value:'Luces por Area', 
+                                                                    NameColumnDfGroupEnum.title.value:NameTitlesIsmartEnum.luces_por_area.value, 
                                                                     NameColumnDfGroupEnum.entity.value:'switch.'+unique_id,
                                                                     #NameColumnDfGroupEnum.name_.value:name_group_by_area, 
                                                                     NameColumnDfGroupEnum.name_.value:area, 
