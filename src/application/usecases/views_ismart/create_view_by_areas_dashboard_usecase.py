@@ -188,7 +188,7 @@ class CreateViewByAreasDashboardUseCase(GenericUseCase):
 
         df_cards_orden_in_view = df_cards_orden_in_view.drop_duplicates()
 
-        ######################################################################
+        #############################create_card_clock#########################################
         df_select_config_card_create_card_clock = df_cards_orden_in_view.loc[
             (df_cards_orden_in_view[NameColumnDfCardsOrderInView.name_cards_i_smart.value] == NamesCardsISmartEnum.create_card_clock.value)]
         
@@ -202,7 +202,7 @@ class CreateViewByAreasDashboardUseCase(GenericUseCase):
 
         
 
-        ######################################################################
+        ###########################create_card_scenes_welcome###########################################
         df_select_config_card_scenes = df_cards_orden_in_view.loc[
             (df_cards_orden_in_view[NameColumnDfCardsOrderInView.name_cards_i_smart.value] == NamesCardsISmartEnum.create_card_scenes_welcome.value)]
         
@@ -214,7 +214,7 @@ class CreateViewByAreasDashboardUseCase(GenericUseCase):
 
                 
 
-        ######################################################################
+        ############################card_group_switch_entities##########################################
         df_select_config_card_group_switch_entities = df_cards_orden_in_view.loc[
             (df_cards_orden_in_view[NameColumnDfCardsOrderInView.name_cards_i_smart.value] == NamesCardsISmartEnum.card_group_switch_entities.value)]
         
@@ -230,7 +230,7 @@ class CreateViewByAreasDashboardUseCase(GenericUseCase):
             df_list_cards =df_list_cards.append(list_card_card_group_switch_entities, ignore_index=True)
 
 
-        ######################################################################
+        ##########################create_card_title_welcome_smart############################################
         df_select_config_card_title_welcome_smart = df_cards_orden_in_view.loc[
             (df_cards_orden_in_view[NameColumnDfCardsOrderInView.name_cards_i_smart.value] == NamesCardsISmartEnum.create_card_title_welcome_smart.value)]
         
@@ -240,17 +240,33 @@ class CreateViewByAreasDashboardUseCase(GenericUseCase):
         list_card_card_title_welcome_smart = self.build_list_of_cards(df_select_config_card_title_welcome_smart,card_title_welcome_smart)
         if list_card_card_title_welcome_smart:
             df_list_cards =df_list_cards.append(list_card_card_title_welcome_smart, ignore_index=True)
-        ####################################################################       
 
 
+        #################################create_card_list_of_notes###################################       
 
-        #vertical_stack_center_new = Utils_Views_Usecase.add_card_to_verticaL_stack(vertical_stack_center_new, card_clock)
-        #vertical_stack_center_new = Utils_Views_Usecase.add_card_to_verticaL_stack(vertical_stack_center_new, card_scenes)
-        #vertical_stack_center_new = Utils_Views_Usecase.add_card_to_verticaL_stack(vertical_stack_center_new, card_group_switch_entities)
+       
+        df_select_config_card_list_of_notes = self.get_config_cards_by_name_card_i_smart(df_cards_orden_in_view,NamesCardsISmartEnum.create_card_list_of_notes)
+        
+        card_list_of_notes = CreateCustomComponentsViewsUsecase.create_card_list_of_notes()
+
+        list_card_list_of_notes = self.build_list_of_cards(df_select_config_card_list_of_notes,card_list_of_notes)
+        if list_card_list_of_notes:
+            df_list_cards =df_list_cards.append(list_card_list_of_notes, ignore_index=True)
+        ####################################################################  
+
+        #create_card_list_of_notes
+
+
         vertical_stack_center_new,vertical_stack_left_new, vertical_stack_right_new = self.add_cards_in_position(df_list_cards)
 
         return vertical_stack_center_new,vertical_stack_left_new, vertical_stack_right_new
     
+
+    def get_config_cards_by_name_card_i_smart(self, df_cards_orden_in_view:pd.DataFrame, name_cards_i_smart:NamesCardsISmartEnum):
+
+        return df_cards_orden_in_view.loc[
+            (df_cards_orden_in_view[NameColumnDfCardsOrderInView.name_cards_i_smart.value] == name_cards_i_smart.value)]
+        
 
     def add_cards_in_position(self, df_list_cards: pd.DataFrame ):
         vertical_stack_center_new = CreateCustomComponentsViewsUsecase.create_vertical_stack()

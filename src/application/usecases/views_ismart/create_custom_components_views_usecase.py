@@ -75,6 +75,14 @@ class CreateCustomComponentsViewsUsecase():
         return CreateCustomComponentsViewsUsecase.create_card_title("Bienvenido a","ISMART")
 
     @staticmethod
+    def create_card_list_of_notes(card_title_name: str = "Lista"):
+        card_title = {
+                        'type': 'shopping-list',
+                        'title': card_title_name  
+                    }
+        return card_title
+    
+    @staticmethod
     def create_card_generic( entity: str, card_generic_name: str, card_generic_icon: str):
         card_generic = {
                         'type': 'custom:button-card',
