@@ -1,5 +1,6 @@
 import traceback
 import pandas as pd
+import numpy as np
 from fastapi import APIRouter,File, UploadFile
 
 from src.application.usecases.interfaces import GenericUseCase
@@ -24,7 +25,7 @@ from src.application.usecases.enums.names_columns_excel_ismart_configuration_enu
 from src.application.usecases.enums.entities_ismart_demos_enum import EntitiesIsmartDemosEnum
 from src.application.usecases.enums.domain_entities_ismart_enum import DomainEntitiesIsmartEnum
 from src.application.usecases.enums.entities_ismart_demos_enum import EntitiesIsmartDemosEnum
-
+from src.application.usecases.enums.name_entities_ismart_enum import NameEntitiesIsmartEnum
 
 class CreateViewMainUseCase(GenericUseCase):
     def __init__(self,file: UploadFile, configurar_con_entidades_demos: bool) -> None:
@@ -114,4 +115,7 @@ class CreateViewMainUseCase(GenericUseCase):
     
         df.loc[df[ColumnsNameExcelConfigISmart.domain.value] == DomainEntitiesIsmartEnum.switch.value, ColumnsNameExcelConfigISmart.final_id.value] = EntitiesIsmartDemosEnum.switch_ac.value
         df.loc[df[ColumnsNameExcelConfigISmart.domain.value] == DomainEntitiesIsmartEnum.sensor.value, ColumnsNameExcelConfigISmart.final_id.value] = EntitiesIsmartDemosEnum.sensor.value
+        df[ColumnsNameExcelConfigISmart.final_id.value] = np.where((df[ColumnsNameExcelConfigISmart.domain.value] == DomainEntitiesIsmartEnum.sensor.value) & (df[ColumnsNameExcelConfigISmart.name_entity.value] == NameEntitiesIsmartEnum.Temperatura.value), EntitiesIsmartDemosEnum.sensor_temperature.value, df[ ColumnsNameExcelConfigISmart.final_id.value])
+        df[ColumnsNameExcelConfigISmart.final_id.value] = np.where((df[ColumnsNameExcelConfigISmart.domain.value] == DomainEntitiesIsmartEnum.sensor.value) & (df[ColumnsNameExcelConfigISmart.name_entity.value] == NameEntitiesIsmartEnum.Humedad.value), EntitiesIsmartDemosEnum.sensor_humedad.value, df[ ColumnsNameExcelConfigISmart.final_id.value])
+        df[ColumnsNameExcelConfigISmart.final_id.value] = np.where((df[ColumnsNameExcelConfigISmart.domain.value] == DomainEntitiesIsmartEnum.sensor.value) & (df[ColumnsNameExcelConfigISmart.name_entity.value] == NameEntitiesIsmartEnum.Bateria_Sensor_TH.value), EntitiesIsmartDemosEnum.sensor_humedad.value, df[ ColumnsNameExcelConfigISmart.final_id.value])
         return df

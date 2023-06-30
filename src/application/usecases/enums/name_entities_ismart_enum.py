@@ -4,7 +4,10 @@ from enum import Enum
 class NameEntitiesIsmartEnum(Enum):
     Luz="Luz"
     Luces="Luces"
-    Temperatura_Humedad="Temperatura-Humedad"
+    Temperatura_Humedad="Temperatura_Humedad"
+    Temperatura="Temperatura"
+    Humedad="Humedad"
+    Bateria_Sensor_TH="Bateria_Sensor_TH"
 
 
 
