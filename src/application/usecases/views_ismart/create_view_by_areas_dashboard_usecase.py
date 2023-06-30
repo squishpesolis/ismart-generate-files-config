@@ -30,7 +30,7 @@ from src.application.usecases.enums.name_titles_ismart_enum import NameTitlesIsm
 from src.application.usecases.enums.name_column_df_list_cards import NameColumnDfListCardsInView
 from src.application.usecases.enums.name_column_df_cards_orden_in_view import NameColumnDfCardsOrderInView
 from src.application.usecases.enums.names_cards_ismart_enum import NamesCardsISmartEnum
-
+from src.application.usecases.enums.names_position_cards_ismart_enum import NamesPositionCardsISmartEnum
 
 from src.domain.api_exception import ApiException
 
@@ -75,15 +75,6 @@ class CreateViewByAreasDashboardUseCase(GenericUseCase):
             df_views_areas = df_views_areas.sort_values(by=[ColumnsNameExcelConfigISmart.Orden_en_DashBoard_Views.value])  
             
 
-            df_list_cards_columnsName = [NameColumnDfListCardsInView.dict_cards.value,
-                       NameColumnDfListCardsInView.order.value,
-                       NameColumnDfListCardsInView.position.value,
-                       NameColumnDfListCardsInView.area.value]
-         
-            
-            df_list_cards = pd.DataFrame(columns=df_list_cards_columnsName)
-
-
             count: int = 3
             for index, area_row in df_views_areas.iterrows():
 
@@ -104,11 +95,6 @@ class CreateViewByAreasDashboardUseCase(GenericUseCase):
 
                 count = count +1 
 
-            
-            # Pinto
-
-            print("------------------------------------------")
-            print(df_list_cards)
             return df_views_areas
         except Exception as exception:
 
@@ -202,7 +188,7 @@ class CreateViewByAreasDashboardUseCase(GenericUseCase):
 
         df_cards_orden_in_view = df_cards_orden_in_view.drop_duplicates()
 
-
+        ######################################################################
         df_select_config_card_create_card_clock = df_cards_orden_in_view.loc[
             (df_cards_orden_in_view[NameColumnDfCardsOrderInView.name_cards_i_smart.value] == NamesCardsISmartEnum.create_card_clock.value)]
         
@@ -216,7 +202,7 @@ class CreateViewByAreasDashboardUseCase(GenericUseCase):
 
         
 
-
+        ######################################################################
         df_select_config_card_scenes = df_cards_orden_in_view.loc[
             (df_cards_orden_in_view[NameColumnDfCardsOrderInView.name_cards_i_smart.value] == NamesCardsISmartEnum.create_card_scenes_welcome.value)]
         
@@ -228,7 +214,7 @@ class CreateViewByAreasDashboardUseCase(GenericUseCase):
 
                 
 
-        #
+        ######################################################################
         df_select_config_card_group_switch_entities = df_cards_orden_in_view.loc[
             (df_cards_orden_in_view[NameColumnDfCardsOrderInView.name_cards_i_smart.value] == NamesCardsISmartEnum.card_group_switch_entities.value)]
         
@@ -244,9 +230,18 @@ class CreateViewByAreasDashboardUseCase(GenericUseCase):
             df_list_cards =df_list_cards.append(list_card_card_group_switch_entities, ignore_index=True)
 
 
+        ######################################################################
+        df_select_config_card_title_welcome_smart = df_cards_orden_in_view.loc[
+            (df_cards_orden_in_view[NameColumnDfCardsOrderInView.name_cards_i_smart.value] == NamesCardsISmartEnum.create_card_title_welcome_smart.value)]
         
-        print("------------------------------")
-        print(df_list_cards)
+        
+        card_title_welcome_smart = CreateCustomComponentsViewsUsecase.create_card_title_welcome_smart()
+
+        list_card_card_title_welcome_smart = self.build_list_of_cards(df_select_config_card_title_welcome_smart,card_title_welcome_smart)
+        if list_card_card_title_welcome_smart:
+            df_list_cards =df_list_cards.append(list_card_card_title_welcome_smart, ignore_index=True)
+        ####################################################################       
+
 
 
         #vertical_stack_center_new = Utils_Views_Usecase.add_card_to_verticaL_stack(vertical_stack_center_new, card_clock)
@@ -261,13 +256,24 @@ class CreateViewByAreasDashboardUseCase(GenericUseCase):
         vertical_stack_center_new = CreateCustomComponentsViewsUsecase.create_vertical_stack()
         vertical_stack_left_new  = CreateCustomComponentsViewsUsecase.create_vertical_stack()
         vertical_stack_right_new  = CreateCustomComponentsViewsUsecase.create_vertical_stack()
+        df_list_cards = df_list_cards.sort_values(by=[NameColumnDfListCardsInView.order.value, NameColumnDfListCardsInView.area.value])
 
         for index, card_loop in df_list_cards.iterrows():
 
             position = card_loop[NameColumnDfListCardsInView.position.value]
             card = card_loop[NameColumnDfListCardsInView.dict_cards.value]
-            if position == 'CENTER':
+            hidden = card_loop[NameColumnDfListCardsInView.hidden.value]
+            
+            if hidden:
+                continue
+            
+
+            if position == NamesPositionCardsISmartEnum.center.value:
                 vertical_stack_center_new = Utils_Views_Usecase.add_card_to_verticaL_stack(vertical_stack_center_new, card)
+            if position == NamesPositionCardsISmartEnum.left.value:
+                vertical_stack_left_new = Utils_Views_Usecase.add_card_to_verticaL_stack(vertical_stack_left_new, card)
+            if position == NamesPositionCardsISmartEnum.right.value:
+                vertical_stack_right_new = Utils_Views_Usecase.add_card_to_verticaL_stack(vertical_stack_right_new, card)
 
         return vertical_stack_center_new,vertical_stack_left_new, vertical_stack_right_new
     
@@ -387,7 +393,8 @@ class CreateViewByAreasDashboardUseCase(GenericUseCase):
                 NameColumnDfListCardsInView.dict_cards.value: dict_card,
                 NameColumnDfListCardsInView.order.value: config_card_scenes[NameColumnDfCardsOrderInView.order.value],
                 NameColumnDfListCardsInView.position.value:config_card_scenes[NameColumnDfCardsOrderInView.position.value],
-                NameColumnDfListCardsInView.area.value:config_card_scenes[NameColumnDfCardsOrderInView.area_sk.value]
+                NameColumnDfListCardsInView.area.value:config_card_scenes[NameColumnDfCardsOrderInView.area_sk.value],
+                NameColumnDfListCardsInView.hidden.value:config_card_scenes[NameColumnDfCardsOrderInView.hidden.value]
             }
             list_cards.append(pd.Series(row_df_list_cards))
             

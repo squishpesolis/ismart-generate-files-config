@@ -6,5 +6,7 @@ class NameColumnDfCardsOrderInView(Enum):
     order="order"
     position="position"
     area_sk="area_sk"
+    hidden="hidden"
+    
 
 

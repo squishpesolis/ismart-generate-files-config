@@ -5,5 +5,6 @@ class NameColumnDfListCardsInView(Enum):
     order="order"
     position="position"
     area="area"
+    hidden="hidden"
 
 

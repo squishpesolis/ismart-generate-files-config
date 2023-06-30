@@ -60,14 +60,19 @@ class CreateCustomComponentsViewsUsecase():
         return card_esh_welcome
 
     @staticmethod
-    def create_card_title(card_title_name: str):
+    def create_card_title(card_title_name: str, subtitle:str =""):
         card_title = {
                         'type': 'custom:button-card',
                         'template': 'card_title',
                         'name': card_title_name  
                     }
-        
+        if not subtitle == "":
+            card_title['label'] = subtitle
         return card_title
+    
+    @staticmethod
+    def create_card_title_welcome_smart():
+        return CreateCustomComponentsViewsUsecase.create_card_title("Bienvenido a","ISMART")
 
     @staticmethod
     def create_card_generic( entity: str, card_generic_name: str, card_generic_icon: str):
