@@ -27,6 +27,10 @@ from src.application.usecases.enums.name_views_ismart_enum import NameViewsIsmar
 from src.application.usecases.enums.name_column_df_scene import NameColumnDfSceneEnum
 from src.application.usecases.enums.domain_entities_ismart_enum import DomainEntitiesIsmartEnum
 from src.application.usecases.enums.name_titles_ismart_enum import NameTitlesIsmartEnum
+from src.application.usecases.enums.name_column_df_list_cards import NameColumnDfListCardsInView
+from src.application.usecases.enums.name_column_df_cards_orden_in_view import NameColumnDfCardsOrderInView
+from src.application.usecases.enums.names_cards_ismart_enum import NamesCardsISmartEnum
+
 
 from src.domain.api_exception import ApiException
 
@@ -39,7 +43,8 @@ class CreateViewByAreasDashboardUseCase(GenericUseCase):
                  df_switches_gropus_by_areas_and_light: pd.DataFrame,
                  df_personas: pd.DataFrame,
                  df_scenes: pd.DataFrame,
-                 df_entidades: pd.DataFrame) -> None:
+                 df_entidades: pd.DataFrame,
+                 df_cards_orden_in_view: pd.DataFrame) -> None:
         
         self.dataframe_areas = dataframe_areas
         self.configurar_con_entidades_demos = configurar_con_entidades_demos
@@ -49,6 +54,7 @@ class CreateViewByAreasDashboardUseCase(GenericUseCase):
         self.df_personas = df_personas
         self.df_scenes = df_scenes
         self.df_entidades = df_entidades
+        self.df_cards_orden_in_view = df_cards_orden_in_view
         
 
        
@@ -68,6 +74,16 @@ class CreateViewByAreasDashboardUseCase(GenericUseCase):
                 
             df_views_areas = df_views_areas.sort_values(by=[ColumnsNameExcelConfigISmart.Orden_en_DashBoard_Views.value])  
             
+
+            df_list_cards_columnsName = [NameColumnDfListCardsInView.dict_cards.value,
+                       NameColumnDfListCardsInView.order.value,
+                       NameColumnDfListCardsInView.position.value,
+                       NameColumnDfListCardsInView.area.value]
+         
+            
+            df_list_cards = pd.DataFrame(columns=df_list_cards_columnsName)
+
+
             count: int = 3
             for index, area_row in df_views_areas.iterrows():
 
@@ -82,10 +98,17 @@ class CreateViewByAreasDashboardUseCase(GenericUseCase):
                                              self.df_switches_gropus_by_areas_and_light,
                                              self.df_personas,
                                              self.df_scenes,
-                                             self.df_entidades)          
-         
+                                             self.df_entidades,
+                                             self.df_cards_orden_in_view)   
+
+
                 count = count +1 
 
+            
+            # Pinto
+
+            print("------------------------------------------")
+            print(df_list_cards)
             return df_views_areas
         except Exception as exception:
 
@@ -101,17 +124,13 @@ class CreateViewByAreasDashboardUseCase(GenericUseCase):
                               df_switches_gropus_by_areas_and_light:pd.DataFrame,
                               df_personas:pd.DataFrame,
                               df_scenes:pd.DataFrame,
-                              df_entities:pd.DataFrame):
+                              df_entities:pd.DataFrame,
+                              df_cards_orden_in_view:pd.DataFrame):
         
 
-        view_by_name = [
-            {
-                'title': title_dashboard,
-                'path':  Utils_Views_Usecase.build_path_view(title_dashboard),
-                'icon': icon,
-                'cards': []
-            }
-        ]
+        
+
+
 
 
         name_area = area_row[ColumnsNameExcelConfigISmart.Sub_Zona.value]
@@ -133,130 +152,187 @@ class CreateViewByAreasDashboardUseCase(GenericUseCase):
  
         df_switch_group_by_area.loc[df_switch_group_by_area[NameColumnDfGroupEnum.title.value] == NameTitlesIsmartEnum.luces_por_area.value , NameColumnDfGroupEnum.title.value] = NameTitlesIsmartEnum.luces.value + " " + name_area
 
-        vertical_stack_center = self.build_vertical_stack_center(df_personas,df_scenes_by_area,df_switch_group_by_area,df_switch_formater_by_build_card )
+
+        df_cards_orden_in_view_by_area =  df_cards_orden_in_view.loc[(df_cards_orden_in_view[NameColumnDfCardsOrderInView.area_sk.value] == name_area)]
+        
+        vertical_stack_center,vertical_stack_left, vertical_stack_rigth = self.build_element_for_views(df_personas,
+                                                             df_scenes_by_area,
+                                                             df_switch_group_by_area,
+                                                             df_switch_formater_by_build_card,
+                                                             df_cards_orden_in_view_by_area
+                                                             )
+        
+        
+        view_by_name = [
+            {
+                'title': title_dashboard,
+                'path':  Utils_Views_Usecase.build_path_view(title_dashboard),
+                'icon': icon,
+                'cards': []
+            }
+        ]
+
+        view_by_name[0]['cards'].append(vertical_stack_left)
         view_by_name[0]['cards'].append(vertical_stack_center)
+        view_by_name[0]['cards'].append(vertical_stack_rigth)
         
         path_save_yaml = self.path_ismart_views
         FolderCreator.execute(path_save_yaml)
         YamlUtilUseCase.save_file_yaml(PathsIsmartUseCase.path_join_any_directores([path_save_yaml, name_view + ".yaml"]),view_by_name )
 
 
-        """vertical_stack_left = self.build_vertical_stack_left(area_row,
-                                                             df_switches_gropus_by_areas_and_light)
+    
 
-        
-        vertical_stack_right = self.build_vertical_stack_right()
-
-
-        view_by_name[0]['cards'].append(vertical_stack_left)
-        
-        view_by_name[0]['cards'].append(vertical_stack_right)
-
-   
-
-     
-        
-
-        
- """
-      
-
-    """ def build_vertical_stack_left(self, 
-                                  df_areas: pd.DataFrame
-                                  df_switches_gropus_by_areas_and_light:pd.DataFrame) -> dict:
-        
-        vertical_stack_left_new = {}
-        vertical_stack_left_new = CreateCustomComponentsViewsUsecase.create_vertical_stack()
-        
-       
-        entity_2_name = DataFrameUtilUseCase.get_value_dataframe_from_position_row_and_name_colum(0, ColumnsNameExcelConfigISmart.Sub_Zona, df_areas, 'Areas')
-        entity_3_name = DataFrameUtilUseCase.get_value_dataframe_from_position_row_and_name_colum(1, ColumnsNameExcelConfigISmart.Sub_Zona, df_areas, 'Areas')
-        entity_4_name = DataFrameUtilUseCase.get_value_dataframe_from_position_row_and_name_colum(2, ColumnsNameExcelConfigISmart.Sub_Zona, df_areas, 'Areas')
-        entity_5_name = DataFrameUtilUseCase.get_value_dataframe_from_position_row_and_name_colum(3, ColumnsNameExcelConfigISmart.Sub_Zona, df_areas, 'Areas')
-
-        entity_2_icon = DataFrameUtilUseCase.get_value_dataframe_from_position_row_and_name_colum(0, ColumnsNameExcelConfigISmart.Icono_en_el_Dashboard_Views, df_areas, 'Areas')
-        entity_3_icon = DataFrameUtilUseCase.get_value_dataframe_from_position_row_and_name_colum(1, ColumnsNameExcelConfigISmart.Icono_en_el_Dashboard_Views, df_areas, 'Areas')
-        entity_4_icon = DataFrameUtilUseCase.get_value_dataframe_from_position_row_and_name_colum(2, ColumnsNameExcelConfigISmart.Icono_en_el_Dashboard_Views, df_areas, 'Areas')
-        entity_5_icon = DataFrameUtilUseCase.get_value_dataframe_from_position_row_and_name_colum(3, ColumnsNameExcelConfigISmart.Icono_en_el_Dashboard_Views, df_areas, 'Areas')
-
-        
-        entity_2_nav = Utils_Views_Usecase.build_path_view(entity_2_name)
-        entity_3_nav = Utils_Views_Usecase.build_path_view(entity_3_name)
-        entity_4_nav = Utils_Views_Usecase.build_path_view(entity_4_name)
-        entity_5_nav = Utils_Views_Usecase.build_path_view(entity_5_name)
-
-        build_welcome_card = CreateCustomComponentsViewsUsecase.create_card_esh_welcome(
-                                'minimalist_dropdown', 'openweathermap',
-                                'plano-tercera-planta', 'mdi:home','Plano',
-                                entity_2_nav, entity_2_icon,entity_2_name,
-                                entity_3_nav, entity_3_icon,entity_3_name,
-                                entity_4_nav, entity_4_icon,entity_4_name,
-                                entity_5_nav, entity_5_icon,entity_5_name
-        )
-
-        build_card_title = CreateCustomComponentsViewsUsecase.create_card_title('Sistema')
-        build_card_generic_sistema = CreateCustomComponentsViewsUsecase.create_card_generic('sensor.uptime', 'I-SMART UP', 'mdi:home-assistant')
-
-        
-        build_card_group_switches_light_by_zone = CreateCustomComponentsViewsUsecase.create_card_entities(
-            df_switches_groups_by_zone_and_light[NameColumnDfGroupEnum.title.value].iloc[0],
-            False,
-            df_switches_groups_by_zone_and_light
-        )
-
-        build_card_group_switches_light_by_ubi = CreateCustomComponentsViewsUsecase.create_card_entities(
-            df_switches_groups_by_ubication_and_light[NameColumnDfGroupEnum.title.value].iloc[0],
-            False,
-            df_switches_groups_by_ubication_and_light
-        )
-
-        build_card_group_switches_light_by_area = CreateCustomComponentsViewsUsecase.create_card_entities(
-            df_switches_gropus_by_areas_and_light[NameColumnDfGroupEnum.title.value].iloc[0],
-            True,
-            df_switches_gropus_by_areas_and_light
-        )
-
-
-        vertical_stack_left_new = Utils_Views_Usecase.add_card_to_verticaL_stack(vertical_stack_left_new, build_welcome_card)
-        vertical_stack_left_new = Utils_Views_Usecase.add_card_to_verticaL_stack(vertical_stack_left_new, build_card_title)
-        vertical_stack_left_new = Utils_Views_Usecase.add_card_to_verticaL_stack(vertical_stack_left_new, build_card_generic_sistema)
-        vertical_stack_left_new = Utils_Views_Usecase.add_card_to_verticaL_stack(vertical_stack_left_new, build_card_group_switches_light_by_zone)
-        vertical_stack_left_new = Utils_Views_Usecase.add_card_to_verticaL_stack(vertical_stack_left_new, build_card_group_switches_light_by_ubi)
-      
-        return vertical_stack_left_new """
-
-
-    def build_vertical_stack_center(self, 
+    def build_element_for_views(self, 
                                     df_personas:pd.DataFrame, 
                                     df_scenes:pd.DataFrame,
                                     df_scenes_by_area:pd.DataFrame,
-                                    df_switch_formater_by_build_card:pd.DataFrame):
+                                    df_switch_formater_by_build_card:pd.DataFrame,
+                                    df_cards_orden_in_view:pd.DataFrame):
         vertical_stack_center_new = {}
         vertical_stack_center_new = CreateCustomComponentsViewsUsecase.create_vertical_stack()
 
+        columnsName = [NameColumnDfListCardsInView.dict_cards.value,
+                       NameColumnDfListCardsInView.order.value,
+                       NameColumnDfListCardsInView.position.value,
+                       NameColumnDfListCardsInView.area.value]
+         
+            
+        df_list_cards = pd.DataFrame(columns=columnsName)
+
+        df_cards_orden_in_view = df_cards_orden_in_view.drop_duplicates()
+
+
+        df_select_config_card_create_card_clock = df_cards_orden_in_view.loc[
+            (df_cards_orden_in_view[NameColumnDfCardsOrderInView.name_cards_i_smart.value] == NamesCardsISmartEnum.create_card_clock.value)]
+        
+
+        
         card_clock = CreateCustomComponentsViewsUsecase.create_card_clock()
+
+        list_card_clock = self.build_list_of_cards(df_select_config_card_create_card_clock,card_clock)
+        if list_card_clock:
+            df_list_cards =df_list_cards.append(list_card_clock, ignore_index=True)
 
         
 
-        #card_horizontal_person = CreateCustomComponentsViewsUsecase.create_hotizontal_stack_with_list_persons(df_personas)
 
+        df_select_config_card_scenes = df_cards_orden_in_view.loc[
+            (df_cards_orden_in_view[NameColumnDfCardsOrderInView.name_cards_i_smart.value] == NamesCardsISmartEnum.create_card_scenes_welcome.value)]
+        
         card_scenes = CreateCustomComponentsViewsUsecase.create_card_scenes_welcome(df_scenes)
 
+        list_card_scenes = self.build_list_of_cards(df_select_config_card_scenes,card_scenes)
+        if list_card_scenes:
+            df_list_cards =df_list_cards.append(list_card_scenes, ignore_index=True)
 
+                
+
+        #
+        df_select_config_card_group_switch_entities = df_cards_orden_in_view.loc[
+            (df_cards_orden_in_view[NameColumnDfCardsOrderInView.name_cards_i_smart.value] == NamesCardsISmartEnum.card_group_switch_entities.value)]
+        
+        
         card_group_switch_entities = CreateCustomComponentsViewsUsecase.create_card_entities(
             df_scenes_by_area[NameColumnDfGroupEnum.title.value].iloc[0],
             True,
             df_switch_formater_by_build_card
         )
 
+        list_card_card_group_switch_entities = self.build_list_of_cards(df_select_config_card_group_switch_entities,card_group_switch_entities)
+        if list_card_card_group_switch_entities:
+            df_list_cards =df_list_cards.append(list_card_card_group_switch_entities, ignore_index=True)
 
-        vertical_stack_center_new = Utils_Views_Usecase.add_card_to_verticaL_stack(vertical_stack_center_new, card_clock)
-        vertical_stack_center_new = Utils_Views_Usecase.add_card_to_verticaL_stack(vertical_stack_center_new, card_scenes)
-        vertical_stack_center_new = Utils_Views_Usecase.add_card_to_verticaL_stack(vertical_stack_center_new, card_group_switch_entities)
+
+        
+        print("------------------------------")
+        print(df_list_cards)
+
+
+        #vertical_stack_center_new = Utils_Views_Usecase.add_card_to_verticaL_stack(vertical_stack_center_new, card_clock)
+        #vertical_stack_center_new = Utils_Views_Usecase.add_card_to_verticaL_stack(vertical_stack_center_new, card_scenes)
+        #vertical_stack_center_new = Utils_Views_Usecase.add_card_to_verticaL_stack(vertical_stack_center_new, card_group_switch_entities)
+        vertical_stack_center_new,vertical_stack_left_new, vertical_stack_right_new = self.add_cards_in_position(df_list_cards)
+
+        return vertical_stack_center_new,vertical_stack_left_new, vertical_stack_right_new
+    
+
+    def add_cards_in_position(self, df_list_cards: pd.DataFrame ):
+        vertical_stack_center_new = CreateCustomComponentsViewsUsecase.create_vertical_stack()
+        vertical_stack_left_new  = CreateCustomComponentsViewsUsecase.create_vertical_stack()
+        vertical_stack_right_new  = CreateCustomComponentsViewsUsecase.create_vertical_stack()
+
+        for index, card_loop in df_list_cards.iterrows():
+
+            position = card_loop[NameColumnDfListCardsInView.position.value]
+            card = card_loop[NameColumnDfListCardsInView.dict_cards.value]
+            if position == 'CENTER':
+                vertical_stack_center_new = Utils_Views_Usecase.add_card_to_verticaL_stack(vertical_stack_center_new, card)
+
+        return vertical_stack_center_new,vertical_stack_left_new, vertical_stack_right_new
+    
+
+    def build_list_elements_view_by_area(self, 
+                                    df_personas:pd.DataFrame, 
+                                    df_scenes:pd.DataFrame,
+                                    df_scenes_by_area:pd.DataFrame,
+                                    df_switch_formater_by_build_card:pd.DataFrame,
+                                    df_cards_orden_in_view:pd.DataFrame):
+
+        columnsName = [NameColumnDfListCardsInView.dict_cards.value,
+                       NameColumnDfListCardsInView.order.value,
+                       NameColumnDfListCardsInView.position.value,
+                       NameColumnDfListCardsInView.area.value]
+         
+            
+        df_list_cards = pd.DataFrame(columns=columnsName)
+
+        df_cards_orden_in_view = df_cards_orden_in_view.drop_duplicates()
+
+
+        df_select_config_card_create_card_clock = df_cards_orden_in_view.loc[
+            (df_cards_orden_in_view[NameColumnDfCardsOrderInView.name_cards_i_smart.value] == NamesCardsISmartEnum.create_card_clock.value)]
         
 
-        return vertical_stack_center_new
-       
+        
+        card_clock = CreateCustomComponentsViewsUsecase.create_card_clock()
+
+        list_card_clock = self.build_list_of_cards(df_select_config_card_create_card_clock,card_clock)
+        if list_card_clock:
+            df_list_cards =df_list_cards.append(list_card_clock, ignore_index=True)
+
+        
+
+
+        df_select_config_card_scenes = df_cards_orden_in_view.loc[
+            (df_cards_orden_in_view[NameColumnDfCardsOrderInView.name_cards_i_smart.value] == NamesCardsISmartEnum.create_card_scenes_welcome.value)]
+        
+        card_scenes = CreateCustomComponentsViewsUsecase.create_card_scenes_welcome(df_scenes)
+
+        list_card_scenes = self.build_list_of_cards(df_select_config_card_scenes,card_scenes)
+        if list_card_scenes:
+            df_list_cards =df_list_cards.append(list_card_scenes, ignore_index=True)
+
+                
+
+        #
+        df_select_config_card_group_switch_entities = df_cards_orden_in_view.loc[
+            (df_cards_orden_in_view[NameColumnDfCardsOrderInView.name_cards_i_smart.value] == NamesCardsISmartEnum.card_group_switch_entities.value)]
+        
+        
+        card_group_switch_entities = CreateCustomComponentsViewsUsecase.create_card_entities(
+            df_scenes_by_area[NameColumnDfGroupEnum.title.value].iloc[0],
+            True,
+            df_switch_formater_by_build_card
+        )
+
+        list_card_card_group_switch_entities = self.build_list_of_cards(df_select_config_card_group_switch_entities,card_group_switch_entities)
+        if list_card_card_group_switch_entities:
+            df_list_cards =df_list_cards.append(list_card_card_group_switch_entities, ignore_index=True)
+
+    
+
+        return df_list_cards
     
     def build_vertical_stack_right(self, ):
         vertical_stack_new = {}
@@ -280,6 +356,7 @@ class CreateViewByAreasDashboardUseCase(GenericUseCase):
         return df_entities_result 
     
     def create_switches_entites(self, df_entities:pd.DataFrame, name_area: str):
+
         
         df_switches_by_area_and_light = GroupsUtilUseCase.build_df_empty_to_build_groups()
 
@@ -299,3 +376,19 @@ class CreateViewByAreasDashboardUseCase(GenericUseCase):
             df_switches_by_area_and_light = df_switches_by_area_and_light.append(row_df_switches, ignore_index=True)
 
         return df_switches_by_area_and_light
+    
+
+    def build_list_of_cards(self, df:pd.DataFrame, dict_card: dict):
+        list_cards = []
+        for index, config_card_scenes in df.iterrows():
+            row_df_list_cards = {}
+
+            row_df_list_cards = {
+                NameColumnDfListCardsInView.dict_cards.value: dict_card,
+                NameColumnDfListCardsInView.order.value: config_card_scenes[NameColumnDfCardsOrderInView.order.value],
+                NameColumnDfListCardsInView.position.value:config_card_scenes[NameColumnDfCardsOrderInView.position.value],
+                NameColumnDfListCardsInView.area.value:config_card_scenes[NameColumnDfCardsOrderInView.area_sk.value]
+            }
+            list_cards.append(pd.Series(row_df_list_cards))
+            
+        return  list_cards

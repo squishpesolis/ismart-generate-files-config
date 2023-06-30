@@ -41,7 +41,8 @@ class CreateViewMainUseCase(GenericUseCase):
                                                                                                     [SheetsNameExcelConfigISmart.AreasSK.value, 
                                                                                                     SheetsNameExcelConfigISmart.Entidades.value,
                                                                                                     SheetsNameExcelConfigISmart.Personas.value,
-                                                                                                    SheetsNameExcelConfigISmart.Scenes_config.value])
+                                                                                                    SheetsNameExcelConfigISmart.Scenes_config.value,
+                                                                                                    SheetsNameExcelConfigISmart.Cards_order_in_view.value])
             dataframes = await df_excel.execute()
 
             df_entidades = dataframes.get(SheetsNameExcelConfigISmart.Entidades.value)
@@ -52,7 +53,8 @@ class CreateViewMainUseCase(GenericUseCase):
 
             df_scenes_config = dataframes.get(SheetsNameExcelConfigISmart.Scenes_config.value)
 
-            
+            df_cards_orden_in_view = dataframes.get(SheetsNameExcelConfigISmart.Cards_order_in_view.value)
+
             if self.configurar_con_entidades_demos:
 
                 df_entidades = self.change_values_of_entities_by_domain_demo_default(df_entidades)
@@ -94,7 +96,8 @@ class CreateViewMainUseCase(GenericUseCase):
                                                                                                 df_by_areas_and_swithes_light,
                                                                                                 df_personas,
                                                                                                 df_create_scenes,
-                                                                                                df_entidades)
+                                                                                                df_entidades,
+                                                                                                df_cards_orden_in_view)
             
             await create_view_by_areas.execute()
 
