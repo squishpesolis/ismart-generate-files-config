@@ -158,16 +158,26 @@ class CreateViewByAreasDashboardUseCase(GenericUseCase):
             }
         ]
 
-        view_by_name[0]['cards'].append(vertical_stack_left)
-        view_by_name[0]['cards'].append(vertical_stack_center)
-        view_by_name[0]['cards'].append(vertical_stack_rigth)
+        if self.check_if_vertical_stack_has_cards(vertical_stack_left):
+            view_by_name[0]['cards'].append(vertical_stack_left)
+
+        if self.check_if_vertical_stack_has_cards(vertical_stack_center):
+            view_by_name[0]['cards'].append(vertical_stack_center)
+        
+        if self.check_if_vertical_stack_has_cards(vertical_stack_rigth):
+            view_by_name[0]['cards'].append(vertical_stack_rigth)
         
         path_save_yaml = self.path_ismart_views
         FolderCreator.execute(path_save_yaml)
         YamlUtilUseCase.save_file_yaml(PathsIsmartUseCase.path_join_any_directores([path_save_yaml, name_view + ".yaml"]),view_by_name )
 
 
-    
+    def check_if_vertical_stack_has_cards(self, vertical_stack:dict):
+        has_data = False
+        if len(vertical_stack['cards']) > 0 :
+            has_data = True
+        return has_data
+
 
     def build_element_for_views(self, 
                                     df_personas:pd.DataFrame, 
@@ -189,10 +199,8 @@ class CreateViewByAreasDashboardUseCase(GenericUseCase):
         df_cards_orden_in_view = df_cards_orden_in_view.drop_duplicates()
 
         #############################create_card_clock#########################################
-        df_select_config_card_create_card_clock = df_cards_orden_in_view.loc[
-            (df_cards_orden_in_view[NameColumnDfCardsOrderInView.name_cards_i_smart.value] == NamesCardsISmartEnum.create_card_clock.value)]
-        
 
+        df_select_config_card_create_card_clock = self.get_config_cards_by_name_card_i_smart(df_cards_orden_in_view,NamesCardsISmartEnum.create_card_clock)
         
         card_clock = CreateCustomComponentsViewsUsecase.create_card_clock()
 
@@ -203,8 +211,8 @@ class CreateViewByAreasDashboardUseCase(GenericUseCase):
         
 
         ###########################create_card_scenes_welcome###########################################
-        df_select_config_card_scenes = df_cards_orden_in_view.loc[
-            (df_cards_orden_in_view[NameColumnDfCardsOrderInView.name_cards_i_smart.value] == NamesCardsISmartEnum.create_card_scenes_welcome.value)]
+      
+        df_select_config_card_scenes = self.get_config_cards_by_name_card_i_smart(df_cards_orden_in_view,NamesCardsISmartEnum.create_card_scenes_welcome)
         
         card_scenes = CreateCustomComponentsViewsUsecase.create_card_scenes_welcome(df_scenes)
 
@@ -215,10 +223,10 @@ class CreateViewByAreasDashboardUseCase(GenericUseCase):
                 
 
         ############################card_group_switch_entities##########################################
-        df_select_config_card_group_switch_entities = df_cards_orden_in_view.loc[
-            (df_cards_orden_in_view[NameColumnDfCardsOrderInView.name_cards_i_smart.value] == NamesCardsISmartEnum.card_group_switch_entities.value)]
         
+        df_select_config_card_group_switch_entities = self.get_config_cards_by_name_card_i_smart(df_cards_orden_in_view,NamesCardsISmartEnum.card_group_switch_entities)
         
+
         card_group_switch_entities = CreateCustomComponentsViewsUsecase.create_card_entities(
             df_scenes_by_area[NameColumnDfGroupEnum.title.value].iloc[0],
             True,
@@ -231,8 +239,8 @@ class CreateViewByAreasDashboardUseCase(GenericUseCase):
 
 
         ##########################create_card_title_welcome_smart############################################
-        df_select_config_card_title_welcome_smart = df_cards_orden_in_view.loc[
-            (df_cards_orden_in_view[NameColumnDfCardsOrderInView.name_cards_i_smart.value] == NamesCardsISmartEnum.create_card_title_welcome_smart.value)]
+        
+        df_select_config_card_title_welcome_smart = self.get_config_cards_by_name_card_i_smart(df_cards_orden_in_view,NamesCardsISmartEnum.create_card_title_welcome_smart)
         
         
         card_title_welcome_smart = CreateCustomComponentsViewsUsecase.create_card_title_welcome_smart()
