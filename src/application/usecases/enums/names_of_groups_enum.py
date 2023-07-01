@@ -3,5 +3,7 @@ from enum import Enum
 # excel de configuración sheet entidades
 class NameOfGroupEnum(Enum):
     lights="Luces"
+    sensor_temperatura="Temperatura"
+    sensor_humedad="Humedad"
 
 

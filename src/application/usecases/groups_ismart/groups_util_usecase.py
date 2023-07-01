@@ -49,6 +49,34 @@ class GroupsUtilUseCase():
         return data
 
     @staticmethod
+    def build_dict_group_sensor(df: pd.DataFrame, name_group: str, unique_id:str, type: str) -> dict:
+
+        data = {}
+
+        if df.empty:
+            return data
+
+
+        data = {
+            'sensor': [
+                {
+                    'platform': 'group',
+                    'type': type,
+                    'name': name_group,
+                    'unique_id': unique_id,
+                    'entities': []
+                }
+            ]
+        }
+
+        for final_id in df[ColumnsNameExcelConfigISmart.final_id.value]:
+
+            data['sensor'][0]['entities'].append(final_id.replace(" ", ""))
+
+
+        return data
+    
+    @staticmethod
     def build_df_empty_to_build_groups():
 
         columnsName = [NameColumnDfGroupEnum.title.value,

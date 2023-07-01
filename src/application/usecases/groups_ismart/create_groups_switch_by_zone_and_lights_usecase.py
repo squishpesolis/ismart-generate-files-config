@@ -47,7 +47,7 @@ class CreateGroupsSwitchByZoneAndLightUseCase(GenericUseCase):
                 name_group_by_zone = name_group +" "+ zona
 
                 unique_id = GroupsUtilUseCase.build_unique_id(name_file_yaml + name_group_by_zone)
-                dict_df_switches_by_zone = GroupsUtilUseCase.build_dict_group_switch(df_switches_by_zone, unique_id, unique_id)
+                dict_df_switches_by_zone = GroupsUtilUseCase.build_dict_group_switch(df_switches_by_zone, name_group_by_zone, unique_id)
 
                 if dict_df_switches_by_zone:
 
