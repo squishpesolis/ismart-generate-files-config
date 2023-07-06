@@ -98,8 +98,7 @@ class CreateViewMainUseCase(GenericUseCase):
 
             groups_sensor_temp_by_area: CreateGroupsSensorTemperatureyByArea = CreateGroupsSensorTemperatureyByArea(df_entidades)
             df_groups_sensor_temp_by_area = await groups_sensor_temp_by_area.execute()
-            CreateGroupsSensorTemperatureyByArea
-
+            
             
             groups_sensor_humedad_by_zones: CreateGroupsSensorHumedityByZone = CreateGroupsSensorHumedityByZone(df_entidades)
             df_groups_sensor_humedad_by_zones = await groups_sensor_humedad_by_zones.execute()
@@ -111,10 +110,7 @@ class CreateViewMainUseCase(GenericUseCase):
             df_groups_sensor_humedad_by_area = await groups_sensor_humedad_by_area.execute()
 
 
-            print("----------------------------")
-            print(df_groups_sensor_temp_by_area)
 
-    
 
             
 
@@ -124,7 +120,14 @@ class CreateViewMainUseCase(GenericUseCase):
                                                                                                 df_by_ubi_and_swithes_light,
                                                                                                 df_by_areas_and_swithes_light,
                                                                                                 df_personas,
-                                                                                                df_create_scenes_admin) 
+                                                                                                df_create_scenes_admin,
+                                                                                                df_groups_sensor_temperature_by_zones,
+                                                                                                df_groups_sensor_temp_by_ubi,
+                                                                                                df_groups_sensor_temp_by_area,
+                                                                                                df_groups_sensor_humedad_by_zones,
+                                                                                                df_groups_sensor_humedad_by_ubi,
+                                                                                                df_groups_sensor_humedad_by_area
+                                                                                                ) 
             await create_view_admin.execute()
 
 

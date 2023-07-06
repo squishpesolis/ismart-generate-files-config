@@ -257,29 +257,54 @@ class CreateCustomComponentsViewsUsecase():
         return card
 
     @staticmethod
-    def create_card_temperature_and_humedity_sensor(df:pd.DataFrame):
-        if df.empty:
+    def create_card_temperature_and_humedity_sensor(df_temp:pd.DataFrame, df_hum:pd.DataFrame):
+        if df_temp.empty & df_hum.empty:
             return {}
         
-        data = {
+        data ={
             'type': 'horizontal-stack',
-            'cards': [
-                {
-                    'type': 'custom:button-card',
-                    'template': 'card_generic',
-                    'entity': 'sensor.outside_temperature'
-                },
-                {
-                    'type': 'custom:button-card',
-                    'template': 'card_generic',
-                    'entity': 'sensor.outside_humidity',
-                    'variables': {
-                        'ulm_card_generic_name': 'prueba3',
-                        'ulm_card_generic_icon': 'mdi:water-percent',
-                        'ulm_card_generic_color': 'red'
-                    }
-                }
-            ]
+            'cards': []
         }
+
+        list_vertical_stack = []
+
+        vertical_stack_temp = CreateCustomComponentsViewsUsecase.create_vertical_stack()
+        vertical_stack_humed = CreateCustomComponentsViewsUsecase.create_vertical_stack()
+
+        if not df_temp.empty:
+                        
+            list_cards_temp = []
+
+            for index, temp in df_temp.iterrows():
+
+                cards_temp = CreateCustomComponentsViewsUsecase.create_card_generic(
+                temp[NameColumnDfGroupEnum.entity.value],
+                temp[NameColumnDfGroupEnum.name_.value],
+                temp[NameColumnDfGroupEnum.icon.value])
+
+                list_cards_temp.append(cards_temp)
+            
+            vertical_stack_temp['cards']  = list_cards_temp
+            
+            list_vertical_stack.append(vertical_stack_temp)
+
+        if not df_hum.empty:
+ 
+            list_cards_humed = []
+
+            for index2, humed in df_hum.iterrows():
+
+                cards_humed = CreateCustomComponentsViewsUsecase.create_card_generic(
+                humed[NameColumnDfGroupEnum.entity.value],
+                humed[NameColumnDfGroupEnum.name_.value],
+                humed[NameColumnDfGroupEnum.icon.value])
+
+                list_cards_humed.append(cards_humed)
+            
+            vertical_stack_humed['cards']  = list_cards_humed
+            list_vertical_stack.append(vertical_stack_humed)
+
+        data['cards'] = list_vertical_stack
+
 
         return data
