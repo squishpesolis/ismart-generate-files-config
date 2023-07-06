@@ -8,6 +8,7 @@ class NameTitlesIsmartEnum(Enum):
     humedad_por_ubicacion="Humedad por Ubicación"
     humedad_por_area="Humedad por area"
     humedad_por_zona="Humedad por Ubicación"
+    temperatura_por_area="Temperatura por area"
     temperatura_por_ubicacion="Temperatura por Ubicación"
     temperatura_por_zona="Temperatura por Zona"
 

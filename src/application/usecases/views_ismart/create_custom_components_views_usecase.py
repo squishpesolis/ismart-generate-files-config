@@ -255,3 +255,31 @@ class CreateCustomComponentsViewsUsecase():
                     }
                 }
         return card
+
+    @staticmethod
+    def create_card_temperature_and_humedity_sensor(df:pd.DataFrame):
+        if df.empty:
+            return {}
+        
+        data = {
+            'type': 'horizontal-stack',
+            'cards': [
+                {
+                    'type': 'custom:button-card',
+                    'template': 'card_generic',
+                    'entity': 'sensor.outside_temperature'
+                },
+                {
+                    'type': 'custom:button-card',
+                    'template': 'card_generic',
+                    'entity': 'sensor.outside_humidity',
+                    'variables': {
+                        'ulm_card_generic_name': 'prueba3',
+                        'ulm_card_generic_icon': 'mdi:water-percent',
+                        'ulm_card_generic_color': 'red'
+                    }
+                }
+            ]
+        }
+
+        return data

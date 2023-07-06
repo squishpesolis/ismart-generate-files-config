@@ -20,7 +20,7 @@ from src.application.usecases.groups_ismart.groups_util_usecase import GroupsUti
 from src.application.usecases.utils.string_util_usecase import StringUtilUseCase
 
 
-class CreateGroupsSensorHumedityByArea(GenericUseCase):
+class CreateGroupsSensorTemperatureyByArea(GenericUseCase):
     def __init__(self, df: pd.DataFrame) -> None:
         self.df = df
         paths_usecase: PathsIsmartUseCase = PathsIsmartUseCase()
@@ -32,7 +32,7 @@ class CreateGroupsSensorHumedityByArea(GenericUseCase):
         try:
 
     
-            df_groups_sensor_humedity_by_area = GroupsUtilUseCase.build_df_empty_to_build_groups()
+            df_groups_sensor_temperature_by_area = GroupsUtilUseCase.build_df_empty_to_build_groups()
                      
             zonas = self.df[ColumnsNameExcelConfigISmart.zonas.value].unique()
 
@@ -53,36 +53,36 @@ class CreateGroupsSensorHumedityByArea(GenericUseCase):
                                                     (self.df[ColumnsNameExcelConfigISmart.areas.value] == area) & 
                                                     (self.df[ColumnsNameExcelConfigISmart.domain.value] == DomainEntitiesIsmartEnum.sensor.value)] 
                         
-                        name_group_humedity_by_area = NameOfGroupEnum.sensor_humedad.value +" "+ area
-                        unique_id_humedity = GroupsUtilUseCase.build_unique_id(name_file_yaml + name_group_humedity_by_area)
+                        name_group_temperature_by_area = NameOfGroupEnum.sensor_temperatura.value +" "+ area
+                        unique_id_temperature = GroupsUtilUseCase.build_unique_id(name_file_yaml + name_group_temperature_by_area)
                         
-                        df_sensor_humedity_by_area =  df_sensor_by_area[df_sensor_by_area[ColumnsNameExcelConfigISmart.name_entity.value].isin([NameEntitiesIsmartEnum.Humedad.value])]
-                        dict_df_sensor_humedity_by_area = GroupsUtilUseCase.build_dict_group_sensor(df_sensor_humedity_by_area, name_group_humedity_by_area, unique_id_humedity,"mean")
+                        df_sensor_temperature_by_area =  df_sensor_by_area[df_sensor_by_area[ColumnsNameExcelConfigISmart.name_entity.value].isin([NameEntitiesIsmartEnum.Temperatura.value])]
+                        dict_df_sensor_temperature_by_area = GroupsUtilUseCase.build_dict_group_sensor(df_sensor_temperature_by_area, name_group_temperature_by_area, unique_id_temperature,"mean")
 
 
-                        if dict_df_sensor_humedity_by_area:
+                        if dict_df_sensor_temperature_by_area:
 
-                            name_file =  name_file_yaml + StringUtilUseCase.convert_string_lower_case(NameEntitiesIsmartEnum.Humedad.value)+"_" + StringUtilUseCase.convert_string_lower_case(area) + '.yaml'
+                            name_file =  name_file_yaml + StringUtilUseCase.convert_string_lower_case(NameEntitiesIsmartEnum.Temperatura.value)+"_" + StringUtilUseCase.convert_string_lower_case(area) + '.yaml'
                             path_save_yaml = PathsIsmartUseCase.path_join_any_directores([self.path_ismart_principal,'Zonas', zona,'Ubicacion', ubi,'Areas',area, 'Integraciones'])
                             FolderCreator.execute(path_save_yaml)
-                            YamlUtilUseCase.save_file_yaml(PathsIsmartUseCase.path_join_any_directores([path_save_yaml, name_file]),dict_df_sensor_humedity_by_area )
-                            #name_group_humedity_by_area
-                            row_df_sensor_humedity_by_zone = {
-                                                                    NameColumnDfGroupEnum.title.value:NameTitlesIsmartEnum.humedad_por_area.value, 
-                                                                    NameColumnDfGroupEnum.entity.value:'sensor.'+unique_id_humedity,
+                            YamlUtilUseCase.save_file_yaml(PathsIsmartUseCase.path_join_any_directores([path_save_yaml, name_file]),dict_df_sensor_temperature_by_area )
+
+                            row_df_sensor_temperature_by_zone = {
+                                                                    NameColumnDfGroupEnum.title.value:NameTitlesIsmartEnum.temperatura_por_area.value, 
+                                                                    NameColumnDfGroupEnum.entity.value:'sensor.'+unique_id_temperature,
                                                                     NameColumnDfGroupEnum.name_.value:area, 
                                                                     NameColumnDfGroupEnum.icon.value:'mdi:home-thermometer', 
                                                                     NameColumnDfGroupEnum.tap_action.value:'none'
                                                                 }
                             
                             
-                            df_groups_sensor_humedity_by_area = df_groups_sensor_humedity_by_area.append(row_df_sensor_humedity_by_zone, ignore_index=True)
+                            df_groups_sensor_temperature_by_area = df_groups_sensor_temperature_by_area.append(row_df_sensor_temperature_by_zone, ignore_index=True)
 
             
-            return df_groups_sensor_humedity_by_area
+            return df_groups_sensor_temperature_by_area
         
         except Exception as exception:
-            raise ErrorHandlingUtils.application_error("Error al crear el archivo group de sensores Humedad por area", exception)
+            raise ErrorHandlingUtils.application_error("Error al crear el archivo group de sensores Temperatura por area", exception)
 
     
   

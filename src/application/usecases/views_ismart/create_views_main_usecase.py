@@ -19,6 +19,11 @@ from src.application.usecases.groups_ismart.create_groups_switch_by_ubication_an
 from src.application.usecases.groups_ismart.create_groups_switch_by_areas_and_lights_usecase import CreateGroupsSwitchByAreasAndLightUseCase
 
 from src.application.usecases.groups_ismart.create_groups_sensor_temperature_by_zone import CreateGroupsSensorTemperatureByZone
+from src.application.usecases.groups_ismart.create_groups_sensor_temperature_by_ubication import CreateGroupsSensorTemperatureByUbication
+from src.application.usecases.groups_ismart.create_groups_sensor_temperature_by_area import CreateGroupsSensorTemperatureyByArea
+
+
+
 from src.application.usecases.groups_ismart.create_groups_sensor_humedity_by_zone import CreateGroupsSensorHumedityByZone
 from src.application.usecases.groups_ismart.create_groups_sensor_humedity_by_ubication import CreateGroupsSensorHumedityByUbication
 from src.application.usecases.groups_ismart.create_groups_sensor_humedity_by_area import CreateGroupsSensorHumedityByArea
@@ -88,6 +93,14 @@ class CreateViewMainUseCase(GenericUseCase):
             groups_sensor_temperature_by_zones: CreateGroupsSensorTemperatureByZone = CreateGroupsSensorTemperatureByZone(df_entidades)
             df_groups_sensor_temperature_by_zones = await groups_sensor_temperature_by_zones.execute()
 
+            groups_sensor_temp_by_ubi: CreateGroupsSensorTemperatureByUbication = CreateGroupsSensorTemperatureByUbication(df_entidades)
+            df_groups_sensor_temp_by_ubi = await groups_sensor_temp_by_ubi.execute()
+
+            groups_sensor_temp_by_area: CreateGroupsSensorTemperatureyByArea = CreateGroupsSensorTemperatureyByArea(df_entidades)
+            df_groups_sensor_temp_by_area = await groups_sensor_temp_by_area.execute()
+            CreateGroupsSensorTemperatureyByArea
+
+            
             groups_sensor_humedad_by_zones: CreateGroupsSensorHumedityByZone = CreateGroupsSensorHumedityByZone(df_entidades)
             df_groups_sensor_humedad_by_zones = await groups_sensor_humedad_by_zones.execute()
 
@@ -97,6 +110,9 @@ class CreateViewMainUseCase(GenericUseCase):
             groups_sensor_humedad_by_area: CreateGroupsSensorHumedityByArea = CreateGroupsSensorHumedityByArea(df_entidades)
             df_groups_sensor_humedad_by_area = await groups_sensor_humedad_by_area.execute()
 
+
+            print("----------------------------")
+            print(df_groups_sensor_temp_by_area)
 
     
 
