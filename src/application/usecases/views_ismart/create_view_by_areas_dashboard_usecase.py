@@ -44,7 +44,9 @@ class CreateViewByAreasDashboardUseCase(GenericUseCase):
                  df_personas: pd.DataFrame,
                  df_scenes: pd.DataFrame,
                  df_entidades: pd.DataFrame,
-                 df_cards_orden_in_view: pd.DataFrame) -> None:
+                 df_cards_orden_in_view: pd.DataFrame,
+                 df_groups_sensor_temp_by_area: pd.DataFrame,
+                 df_groups_sensor_humedad_by_area: pd.DataFrame) -> None:
         
         self.dataframe_areas = dataframe_areas
         self.configurar_con_entidades_demos = configurar_con_entidades_demos
@@ -55,6 +57,8 @@ class CreateViewByAreasDashboardUseCase(GenericUseCase):
         self.df_scenes = df_scenes
         self.df_entidades = df_entidades
         self.df_cards_orden_in_view = df_cards_orden_in_view
+        self.df_groups_sensor_temp_by_area = df_groups_sensor_temp_by_area
+        self.df_groups_sensor_humedad_by_area = df_groups_sensor_humedad_by_area
         
 
        
@@ -90,7 +94,9 @@ class CreateViewByAreasDashboardUseCase(GenericUseCase):
                                              self.df_personas,
                                              self.df_scenes,
                                              self.df_entidades,
-                                             self.df_cards_orden_in_view)   
+                                             self.df_cards_orden_in_view,
+                                             self.df_groups_sensor_temp_by_area,
+                                             self.df_groups_sensor_humedad_by_area)   
 
 
                 count = count +1 
@@ -111,7 +117,9 @@ class CreateViewByAreasDashboardUseCase(GenericUseCase):
                               df_personas:pd.DataFrame,
                               df_scenes:pd.DataFrame,
                               df_entities:pd.DataFrame,
-                              df_cards_orden_in_view:pd.DataFrame):
+                              df_cards_orden_in_view:pd.DataFrame,
+                              df_groups_sensor_temp_by_area:pd.DataFrame,
+                              df_groups_sensor_humedad_by_area:pd.DataFrame):
         
 
         
@@ -140,12 +148,24 @@ class CreateViewByAreasDashboardUseCase(GenericUseCase):
 
 
         df_cards_orden_in_view_by_area =  df_cards_orden_in_view.loc[(df_cards_orden_in_view[NameColumnDfCardsOrderInView.area_sk.value] == name_area)]
+
+
         
+        df_group_sensor_temp_by_area = df_groups_sensor_temp_by_area[(df_groups_sensor_temp_by_area[NameColumnDfSceneEnum.name_.value] == name_area)] 
+        df_group_sensor_humedad_by_area = df_groups_sensor_humedad_by_area[(df_groups_sensor_humedad_by_area[NameColumnDfSceneEnum.name_.value] == name_area)] 
+        
+        df_group_sensor_temp_by_area.loc[df_group_sensor_temp_by_area[NameColumnDfGroupEnum.title.value] == NameTitlesIsmartEnum.temperatura_por_area.value , NameColumnDfGroupEnum.name_.value] = NameTitlesIsmartEnum.temperatura.value + " " + name_area
+        df_group_sensor_humedad_by_area.loc[df_group_sensor_humedad_by_area[NameColumnDfGroupEnum.title.value] == NameTitlesIsmartEnum.humedad_por_area.value , NameColumnDfGroupEnum.name_.value] = NameTitlesIsmartEnum.humedad.value + " " + name_area
+
+    
+
         vertical_stack_center,vertical_stack_left, vertical_stack_rigth = self.build_element_for_views(df_personas,
                                                              df_scenes_by_area,
                                                              df_switch_group_by_area,
                                                              df_switch_formater_by_build_card,
-                                                             df_cards_orden_in_view_by_area
+                                                             df_cards_orden_in_view_by_area,
+                                                             df_group_sensor_temp_by_area,
+                                                             df_group_sensor_humedad_by_area
                                                              )
         
         
@@ -184,7 +204,10 @@ class CreateViewByAreasDashboardUseCase(GenericUseCase):
                                     df_scenes:pd.DataFrame,
                                     df_scenes_by_area:pd.DataFrame,
                                     df_switch_formater_by_build_card:pd.DataFrame,
-                                    df_cards_orden_in_view:pd.DataFrame):
+                                    df_cards_orden_in_view:pd.DataFrame,
+                                    df_group_sensor_temp_by_area:pd.DataFrame,
+                                    df_group_sensor_humedad_by_area:pd.DataFrame):
+        
         vertical_stack_center_new = {}
         vertical_stack_center_new = CreateCustomComponentsViewsUsecase.create_vertical_stack()
 
@@ -260,10 +283,18 @@ class CreateViewByAreasDashboardUseCase(GenericUseCase):
         list_card_list_of_notes = self.build_list_of_cards(df_select_config_card_list_of_notes,card_list_of_notes)
         if list_card_list_of_notes:
             df_list_cards =df_list_cards.append(list_card_list_of_notes, ignore_index=True)
-        ####################################################################  
 
-        #create_card_list_of_notes
+        #################################create_card_temperature_and_humedity_sensor###################################      
 
+        df_select_config_card_temperature_and_humedity_sensor = self.get_config_cards_by_name_card_i_smart(df_cards_orden_in_view,NamesCardsISmartEnum.create_card_temperature_and_humedity_sensor)
+        
+        card_temperature_and_humedity_sensor = CreateCustomComponentsViewsUsecase.create_card_temperature_and_humedity_sensor(df_group_sensor_temp_by_area,df_group_sensor_humedad_by_area)
+
+        list_card_temperature_and_humedity_sensor = self.build_list_of_cards(df_select_config_card_temperature_and_humedity_sensor,card_temperature_and_humedity_sensor)
+        if list_card_temperature_and_humedity_sensor:
+            df_list_cards =df_list_cards.append(list_card_temperature_and_humedity_sensor, ignore_index=True)
+
+        ##############################################################################################################      
 
         vertical_stack_center_new,vertical_stack_left_new, vertical_stack_right_new = self.add_cards_in_position(df_list_cards)
 

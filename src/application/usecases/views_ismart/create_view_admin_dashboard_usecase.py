@@ -276,10 +276,11 @@ class CreateViewAdminDashboardUseCase(GenericUseCase):
         card_weater = CreateCustomComponentsViewsUsecase.create_card_weather_openweathermap()
 
         card_temperature_humedity_view_zone = CreateCustomComponentsViewsUsecase.create_card_temperature_and_humedity_sensor(df_groups_sensor_temperature_by_zones,df_groups_sensor_humedad_by_zones)
-
+        card_temperature_humedity_view_ubication = CreateCustomComponentsViewsUsecase.create_card_temperature_and_humedity_sensor(df_groups_sensor_temp_by_ubi,df_groups_sensor_humedad_by_ubi)
 
         vertical_stack_new = Utils_Views_Usecase.add_card_to_verticaL_stack(vertical_stack_new, card_weater)
         vertical_stack_new = Utils_Views_Usecase.add_card_to_verticaL_stack(vertical_stack_new, card_temperature_humedity_view_zone)
+        vertical_stack_new = Utils_Views_Usecase.add_card_to_verticaL_stack(vertical_stack_new, card_temperature_humedity_view_ubication)
 
         return vertical_stack_new
 

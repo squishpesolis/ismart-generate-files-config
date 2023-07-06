@@ -138,7 +138,9 @@ class CreateViewMainUseCase(GenericUseCase):
                                                                                                 df_personas,
                                                                                                 df_create_scenes,
                                                                                                 df_entidades,
-                                                                                                df_cards_orden_in_view)
+                                                                                                df_cards_orden_in_view,
+                                                                                                df_groups_sensor_temp_by_area,
+                                                                                                df_groups_sensor_humedad_by_area)
             
             await create_view_by_areas.execute()
 

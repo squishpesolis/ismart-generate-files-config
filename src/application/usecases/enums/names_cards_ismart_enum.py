@@ -6,6 +6,8 @@ class NamesCardsISmartEnum(Enum):
     card_group_switch_entities = "card_group_switch_entities"
     create_card_title_welcome_smart = "create_card_title_welcome_smart"
     create_card_list_of_notes = "create_card_list_of_notes"
+    create_card_temperature_and_humedity_sensor = "create_card_temperature_and_humedity_sensor"
+
     
 
 
