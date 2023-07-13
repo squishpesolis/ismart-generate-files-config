@@ -18,13 +18,13 @@ from src.application.usecases.groups_ismart.create_groups_switch_by_zone_and_lig
 from src.application.usecases.groups_ismart.create_groups_switch_by_ubication_and_lights_usecase import CreateGroupsSwitchByUbicationAndLightUseCase
 from src.application.usecases.groups_ismart.create_groups_switch_by_areas_and_lights_usecase import CreateGroupsSwitchByAreasAndLightUseCase
 
-from src.application.usecases.groups_ismart.create_groups_sensor_temperature_by_zone import CreateGroupsSensorTemperatureByZone
+
 from src.application.usecases.groups_ismart.create_groups_sensor_temperature_by_ubication import CreateGroupsSensorTemperatureByUbication
 from src.application.usecases.groups_ismart.create_groups_sensor_temperature_by_area import CreateGroupsSensorTemperatureyByArea
 
 
 
-from src.application.usecases.groups_ismart.create_groups_sensor_humedity_by_zone import CreateGroupsSensorHumedityByZone
+
 from src.application.usecases.groups_ismart.create_groups_sensor_humedity_by_ubication import CreateGroupsSensorHumedityByUbication
 from src.application.usecases.groups_ismart.create_groups_sensor_humedity_by_area import CreateGroupsSensorHumedityByArea
 
@@ -94,7 +94,11 @@ class CreateViewMainUseCase(GenericUseCase):
             
             df_create_scenes_admin,df_create_scenes  = await create_scenes_useCase.execute()
 
-            groups_sensor_temperature_by_zones: CreateGroupsSensorTemperatureByZone = CreateGroupsSensorTemperatureByZone(df_entidades)
+            groups_sensor_temperature_by_zones: CreateGroupsGenericByZone = CreateGroupsGenericByZone(df_entidades,
+                                                                                          DomainEntitiesIsmartEnum.sensor,
+                                                                                          "mdi:home-thermometer",
+                                                                                          NameOfGroupEnum.sensor_temperatura,
+                                                                                          NameEntitiesIsmartEnum.Temperatura)
             df_groups_sensor_temperature_by_zones = await groups_sensor_temperature_by_zones.execute()
 
             groups_sensor_temp_by_ubi: CreateGroupsSensorTemperatureByUbication = CreateGroupsSensorTemperatureByUbication(df_entidades)
@@ -104,8 +108,7 @@ class CreateViewMainUseCase(GenericUseCase):
             df_groups_sensor_temp_by_area = await groups_sensor_temp_by_area.execute()
             
             
-            #groups_sensor_humedad_by_zones: CreateGroupsSensorHumedityByZone = CreateGroupsSensorHumedityByZone(df_entidades)
-
+            
             groups_sensor_humedad_by_zones: CreateGroupsGenericByZone = CreateGroupsGenericByZone(df_entidades,
                                                                                           DomainEntitiesIsmartEnum.sensor,
                                                                                           "mdi:home-thermometer",
