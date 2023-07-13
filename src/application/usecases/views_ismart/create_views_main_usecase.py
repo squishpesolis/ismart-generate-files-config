@@ -30,6 +30,7 @@ from src.application.usecases.groups_ismart.create_groups_sensor_humedity_by_are
 
 
 from src.application.usecases.groups_ismart.create_groups_generic_by_zone import CreateGroupsGenericByZone
+from src.application.usecases.groups_ismart.create_groups_generic_by_ubication import CreateGroupsGenericByUbication
 
 from src.application.usecases.scenes_ismart.create_scenes_usecase import CreateScenesUseCase
 
@@ -40,6 +41,7 @@ from src.application.usecases.enums.domain_entities_ismart_enum import DomainEnt
 from src.application.usecases.enums.entities_ismart_demos_enum import EntitiesIsmartDemosEnum
 from src.application.usecases.enums.name_entities_ismart_enum import NameEntitiesIsmartEnum
 from src.application.usecases.enums.names_of_groups_enum import NameOfGroupEnum
+from src.application.usecases.enums.name_titles_ismart_enum import NameTitlesIsmartEnum
 
 class CreateViewMainUseCase(GenericUseCase):
     def __init__(self,file: UploadFile, configurar_con_entidades_demos: bool) -> None:
@@ -98,7 +100,9 @@ class CreateViewMainUseCase(GenericUseCase):
                                                                                           DomainEntitiesIsmartEnum.sensor,
                                                                                           "mdi:home-thermometer",
                                                                                           NameOfGroupEnum.sensor_temperatura,
-                                                                                          NameEntitiesIsmartEnum.Temperatura)
+                                                                                          NameEntitiesIsmartEnum.Temperatura,
+                                                                                          NameTitlesIsmartEnum.temperatura_por_zona)
+            
             df_groups_sensor_temperature_by_zones = await groups_sensor_temperature_by_zones.execute()
 
             groups_sensor_temp_by_ubi: CreateGroupsSensorTemperatureByUbication = CreateGroupsSensorTemperatureByUbication(df_entidades)
@@ -113,7 +117,8 @@ class CreateViewMainUseCase(GenericUseCase):
                                                                                           DomainEntitiesIsmartEnum.sensor,
                                                                                           "mdi:home-thermometer",
                                                                                           NameOfGroupEnum.sensor_humedad,
-                                                                                          NameEntitiesIsmartEnum.Humedad)
+                                                                                          NameEntitiesIsmartEnum.Humedad,
+                                                                                          NameTitlesIsmartEnum.humedad_por_zona)
             df_groups_sensor_humedad_by_zones = await groups_sensor_humedad_by_zones.execute()
 
             groups_sensor_humedad_by_ubi: CreateGroupsSensorHumedityByUbication = CreateGroupsSensorHumedityByUbication(df_entidades)
@@ -127,9 +132,22 @@ class CreateViewMainUseCase(GenericUseCase):
                                                                                           DomainEntitiesIsmartEnum.cover,
                                                                                           "mdi:curtains-closed",
                                                                                           NameOfGroupEnum.cover,
-                                                                                          NameEntitiesIsmartEnum.M_Cortina)
+                                                                                          NameEntitiesIsmartEnum.M_Cortina,
+                                                                                          NameTitlesIsmartEnum.cortinas_por_zona)
+            
+            
+            
             df_groups_covers_by_zones = await groups_cover_by_zones.execute()
 
+            groups_cover_by_ubication: CreateGroupsGenericByUbication = CreateGroupsGenericByUbication(df_entidades,
+                                                                                          DomainEntitiesIsmartEnum.cover,
+                                                                                          "mdi:curtains-closed",
+                                                                                          NameOfGroupEnum.cover,
+                                                                                          NameEntitiesIsmartEnum.M_Cortina,
+                                                                                          NameTitlesIsmartEnum.cortinas_por_ubicacion)
+            
+            
+            df_groups_covers_by_ubication = await groups_cover_by_ubication.execute()
 
 
 

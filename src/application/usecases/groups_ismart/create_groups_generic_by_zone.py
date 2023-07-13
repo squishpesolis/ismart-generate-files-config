@@ -11,7 +11,6 @@ from src.application.usecases.utils.folder_creator_usecase import FolderCreator
 from src.application.usecases.enums.names_columns_excel_ismart_configuration_enum import ColumnsNameExcelConfigISmart
 from src.application.usecases.enums.domain_entities_ismart_enum import DomainEntitiesIsmartEnum
 from src.application.usecases.enums.name_entities_ismart_enum import NameEntitiesIsmartEnum
-from src.application.usecases.enums.entities_ismart_demos_enum import EntitiesIsmartDemosEnum
 from src.application.usecases.enums.name_column_df_group import NameColumnDfGroupEnum
 from src.application.usecases.enums.names_of_groups_enum import NameOfGroupEnum
 from src.application.usecases.enums.names_files_yamls_enum import NameFilesYamlsEnum
@@ -28,7 +27,8 @@ class CreateGroupsGenericByZone(GenericUseCase):
                  domain: DomainEntitiesIsmartEnum,
                  icon_domain: str, 
                  name_of_group: NameOfGroupEnum, 
-                 name_entity_ismart:NameEntitiesIsmartEnum) -> None:
+                 name_entity_ismart:NameEntitiesIsmartEnum,
+                 name_title_ismart: NameTitlesIsmartEnum) -> None:
         self.df = df
         paths_usecase: PathsIsmartUseCase = PathsIsmartUseCase()
         self.path_ismart_principal = paths_usecase.get_root_path_ismar_home_assintant_principal_grupos()
@@ -37,6 +37,7 @@ class CreateGroupsGenericByZone(GenericUseCase):
         self.name_of_group = name_of_group
         self.name_entity_ismart = name_entity_ismart
         self.icon_domain = icon_domain
+        self.name_title_ismart = name_title_ismart
 
        
 
@@ -46,6 +47,7 @@ class CreateGroupsGenericByZone(GenericUseCase):
             name_domain = self.domain.value
             name_entity_ismart = self.name_entity_ismart.value
             icon_domain = self.icon_domain
+            name_title_ismart = self.name_title_ismart
 
             df_groups_generic_by_zone = GroupsUtilUseCase.build_df_empty_to_build_groups()
                      
@@ -82,7 +84,7 @@ class CreateGroupsGenericByZone(GenericUseCase):
                     YamlUtilUseCase.save_file_yaml(PathsIsmartUseCase.path_join_any_directores([path_save_yaml, name_file]),dict_df_generic_by_zone )
 
                     row_df_generic_group_by_zone = {
-                                                            NameColumnDfGroupEnum.title.value:NameTitlesIsmartEnum.temperatura_por_zona.value, 
+                                                            NameColumnDfGroupEnum.title.value:name_title_ismart.value, 
                                                             NameColumnDfGroupEnum.entity.value: name_domain +'.'+unique_id_generic,
                                                             NameColumnDfGroupEnum.name_.value:name_group_generic_by_zone, 
                                                             NameColumnDfGroupEnum.icon.value: icon_domain, 
@@ -96,7 +98,7 @@ class CreateGroupsGenericByZone(GenericUseCase):
             return df_groups_generic_by_zone
         
         except Exception as exception:
-            raise ErrorHandlingUtils.application_error("Error al crear el archivo group " +  name_domain, exception)
+            raise ErrorHandlingUtils.application_error("Error al crear el archivo group " +  name_domain + "Por zona", exception)
 
     
   
