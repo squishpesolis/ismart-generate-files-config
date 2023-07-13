@@ -15,5 +15,6 @@ class NameTitlesIsmartEnum(Enum):
     temperatura_por_zona="Temperatura por Zona"
     cortinas_por_zona ="Cortinas por Zona"
     cortinas_por_ubicacion ="Cortinas por Ubicación"
+    cortinas_por_area ="Cortinas por area"
 
 

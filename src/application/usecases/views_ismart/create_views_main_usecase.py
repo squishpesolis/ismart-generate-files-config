@@ -31,6 +31,7 @@ from src.application.usecases.groups_ismart.create_groups_sensor_humedity_by_are
 
 from src.application.usecases.groups_ismart.create_groups_generic_by_zone import CreateGroupsGenericByZone
 from src.application.usecases.groups_ismart.create_groups_generic_by_ubication import CreateGroupsGenericByUbication
+from src.application.usecases.groups_ismart.create_groups_generic_by_area import CreateGroupsGenericByArea
 
 from src.application.usecases.scenes_ismart.create_scenes_usecase import CreateScenesUseCase
 
@@ -161,6 +162,19 @@ class CreateViewMainUseCase(GenericUseCase):
             
             
             df_groups_covers_by_ubication = await groups_cover_by_ubication.execute()
+
+
+            groups_cover_by_area: CreateGroupsGenericByArea = CreateGroupsGenericByArea(df_entidades,
+                                                                                          DomainEntitiesIsmartEnum.cover,
+                                                                                          "mdi:curtains-closed",
+                                                                                          NameOfGroupEnum.cover,
+                                                                                          NameEntitiesIsmartEnum.M_Cortina,
+                                                                                          NameTitlesIsmartEnum.cortinas_por_area)
+            
+            
+            df_groups_cover_by_area = await groups_cover_by_area.execute()
+
+            CreateGroupsGenericByArea
 
 
 
