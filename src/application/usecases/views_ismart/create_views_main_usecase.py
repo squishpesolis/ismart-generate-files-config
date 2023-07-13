@@ -19,13 +19,13 @@ from src.application.usecases.groups_ismart.create_groups_switch_by_ubication_an
 from src.application.usecases.groups_ismart.create_groups_switch_by_areas_and_lights_usecase import CreateGroupsSwitchByAreasAndLightUseCase
 
 
-from src.application.usecases.groups_ismart.create_groups_sensor_temperature_by_ubication import CreateGroupsSensorTemperatureByUbication
+
 from src.application.usecases.groups_ismart.create_groups_sensor_temperature_by_area import CreateGroupsSensorTemperatureyByArea
 
 
 
 
-from src.application.usecases.groups_ismart.create_groups_sensor_humedity_by_ubication import CreateGroupsSensorHumedityByUbication
+
 from src.application.usecases.groups_ismart.create_groups_sensor_humedity_by_area import CreateGroupsSensorHumedityByArea
 
 
