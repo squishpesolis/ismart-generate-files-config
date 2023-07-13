@@ -114,7 +114,12 @@ class CreateViewMainUseCase(GenericUseCase):
                                                                                           NameTitlesIsmartEnum.temperatura_por_ubicacion)
             df_groups_sensor_temp_by_ubi = await groups_sensor_temp_by_ubi.execute()
 
-            groups_sensor_temp_by_area: CreateGroupsSensorTemperatureyByArea = CreateGroupsSensorTemperatureyByArea(df_entidades)
+            groups_sensor_temp_by_area: CreateGroupsGenericByArea = CreateGroupsGenericByArea(df_entidades,
+                                                                                          DomainEntitiesIsmartEnum.sensor,
+                                                                                          "mdi:home-thermometer",
+                                                                                          NameOfGroupEnum.sensor_temperatura,
+                                                                                          NameEntitiesIsmartEnum.Temperatura,
+                                                                                          NameTitlesIsmartEnum.temperatura_por_area)
             df_groups_sensor_temp_by_area = await groups_sensor_temp_by_area.execute()
             
             
@@ -138,7 +143,12 @@ class CreateViewMainUseCase(GenericUseCase):
                                                                                           NameTitlesIsmartEnum.humedad_por_ubicacion)
             df_groups_sensor_humedad_by_ubi = await groups_sensor_humedad_by_ubi.execute()
 
-            groups_sensor_humedad_by_area: CreateGroupsSensorHumedityByArea = CreateGroupsSensorHumedityByArea(df_entidades)
+            groups_sensor_humedad_by_area: CreateGroupsGenericByArea = CreateGroupsGenericByArea(df_entidades,
+                                                                                          DomainEntitiesIsmartEnum.sensor,
+                                                                                          "mdi:home-thermometer",
+                                                                                          NameOfGroupEnum.sensor_humedad,
+                                                                                          NameEntitiesIsmartEnum.Humedad,
+                                                                                          NameTitlesIsmartEnum.humedad_por_area)
             df_groups_sensor_humedad_by_area = await groups_sensor_humedad_by_area.execute()
 
 
@@ -174,7 +184,7 @@ class CreateViewMainUseCase(GenericUseCase):
             
             df_groups_cover_by_area = await groups_cover_by_area.execute()
 
-            CreateGroupsGenericByArea
+            
 
 
 

@@ -7,6 +7,7 @@ class NamesCardsISmartEnum(Enum):
     create_card_title_welcome_smart = "create_card_title_welcome_smart"
     create_card_list_of_notes = "create_card_list_of_notes"
     create_card_temperature_and_humedity_sensor = "create_card_temperature_and_humedity_sensor"
+    create_card_cover = "create_card_cover"
 
     
 
