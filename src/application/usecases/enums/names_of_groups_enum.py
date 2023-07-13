@@ -5,6 +5,6 @@ class NameOfGroupEnum(Enum):
     lights="Luces"
     sensor_temperatura="Temperatura"
     sensor_humedad="Humedad"
-    cover = "Cortina"
+    cover = "Cortinas"
 
 

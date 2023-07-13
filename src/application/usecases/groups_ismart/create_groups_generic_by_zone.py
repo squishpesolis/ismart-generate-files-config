@@ -25,7 +25,6 @@ from src.application.usecases.utils.string_util_usecase import StringUtilUseCase
 class CreateGroupsGenericByZone(GenericUseCase):
     def __init__(self, 
                  df: pd.DataFrame, 
-                 name_group: str, 
                  domain: DomainEntitiesIsmartEnum,
                  icon_domain: str, 
                  name_of_group: NameOfGroupEnum, 
@@ -33,7 +32,7 @@ class CreateGroupsGenericByZone(GenericUseCase):
         self.df = df
         paths_usecase: PathsIsmartUseCase = PathsIsmartUseCase()
         self.path_ismart_principal = paths_usecase.get_root_path_ismar_home_assintant_principal_grupos()
-        self.name_group = name_group
+        self.name_group = domain.value
         self.domain = domain
         self.name_of_group = name_of_group
         self.name_entity_ismart = name_entity_ismart
@@ -61,7 +60,7 @@ class CreateGroupsGenericByZone(GenericUseCase):
                 df_generic_by_zone = self.df[(self.df[ColumnsNameExcelConfigISmart.zonas.value] == zona) & (self.df[ColumnsNameExcelConfigISmart.domain.value] == name_domain)] 
                 
                 name_group_generic_by_zone = self.name_of_group.value +" "+ zona
-                unique_id_generic = GroupsUtilUseCase.build_unique_id(name_file_yaml + name_group_generic_by_zone)
+                unique_id_generic = GroupsUtilUseCase.build_unique_id(name_file_yaml + "_"+name_group_generic_by_zone)
                 
                 df_generic_group_by_zone =  df_generic_by_zone[df_generic_by_zone[ColumnsNameExcelConfigISmart.name_entity.value].isin([name_entity_ismart])]
 

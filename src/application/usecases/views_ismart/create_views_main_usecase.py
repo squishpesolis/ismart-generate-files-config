@@ -104,7 +104,13 @@ class CreateViewMainUseCase(GenericUseCase):
             df_groups_sensor_temp_by_area = await groups_sensor_temp_by_area.execute()
             
             
-            groups_sensor_humedad_by_zones: CreateGroupsSensorHumedityByZone = CreateGroupsSensorHumedityByZone(df_entidades)
+            #groups_sensor_humedad_by_zones: CreateGroupsSensorHumedityByZone = CreateGroupsSensorHumedityByZone(df_entidades)
+
+            groups_sensor_humedad_by_zones: CreateGroupsGenericByZone = CreateGroupsGenericByZone(df_entidades,
+                                                                                          DomainEntitiesIsmartEnum.sensor,
+                                                                                          "mdi:home-thermometer",
+                                                                                          NameOfGroupEnum.sensor_humedad,
+                                                                                          NameEntitiesIsmartEnum.Humedad)
             df_groups_sensor_humedad_by_zones = await groups_sensor_humedad_by_zones.execute()
 
             groups_sensor_humedad_by_ubi: CreateGroupsSensorHumedityByUbication = CreateGroupsSensorHumedityByUbication(df_entidades)
@@ -115,15 +121,13 @@ class CreateViewMainUseCase(GenericUseCase):
 
 
             groups_cover_by_zones: CreateGroupsGenericByZone = CreateGroupsGenericByZone(df_entidades,
-                                                                                          "covers",
                                                                                           DomainEntitiesIsmartEnum.cover,
                                                                                           "mdi:curtains-closed",
                                                                                           NameOfGroupEnum.cover,
                                                                                           NameEntitiesIsmartEnum.M_Cortina)
             df_groups_covers_by_zones = await groups_cover_by_zones.execute()
 
-            print("---------------------------------------")
-            print(df_groups_covers_by_zones)
+
 
 
             
