@@ -76,6 +76,34 @@ class GroupsUtilUseCase():
 
         return data
     
+
+    @staticmethod
+    def build_dict_group_cover(df: pd.DataFrame, name_group: str, unique_id:str) -> dict:
+
+        data = {}
+
+        if df.empty:
+            return data
+
+
+        data = {
+            'cover': [
+                {
+                    'platform': 'group',
+                    'name': name_group,
+                    'unique_id': unique_id,
+                    'entities': []
+                }
+            ]
+        }
+
+        for final_id in df[ColumnsNameExcelConfigISmart.final_id.value]:
+
+            data['cover'][0]['entities'].append(final_id.replace(" ", ""))
+
+
+        return data
+    
     @staticmethod
     def build_df_empty_to_build_groups():
 

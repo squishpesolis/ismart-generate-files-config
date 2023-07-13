@@ -28,6 +28,9 @@ from src.application.usecases.groups_ismart.create_groups_sensor_humedity_by_zon
 from src.application.usecases.groups_ismart.create_groups_sensor_humedity_by_ubication import CreateGroupsSensorHumedityByUbication
 from src.application.usecases.groups_ismart.create_groups_sensor_humedity_by_area import CreateGroupsSensorHumedityByArea
 
+
+from src.application.usecases.groups_ismart.create_groups_generic_by_zone import CreateGroupsGenericByZone
+
 from src.application.usecases.scenes_ismart.create_scenes_usecase import CreateScenesUseCase
 
 from src.application.usecases.enums.names_sheet_excel_ismart_configuration_enum import SheetsNameExcelConfigISmart;
@@ -36,6 +39,7 @@ from src.application.usecases.enums.entities_ismart_demos_enum import EntitiesIs
 from src.application.usecases.enums.domain_entities_ismart_enum import DomainEntitiesIsmartEnum
 from src.application.usecases.enums.entities_ismart_demos_enum import EntitiesIsmartDemosEnum
 from src.application.usecases.enums.name_entities_ismart_enum import NameEntitiesIsmartEnum
+from src.application.usecases.enums.names_of_groups_enum import NameOfGroupEnum
 
 class CreateViewMainUseCase(GenericUseCase):
     def __init__(self,file: UploadFile, configurar_con_entidades_demos: bool) -> None:
@@ -110,6 +114,16 @@ class CreateViewMainUseCase(GenericUseCase):
             df_groups_sensor_humedad_by_area = await groups_sensor_humedad_by_area.execute()
 
 
+            groups_cover_by_zones: CreateGroupsGenericByZone = CreateGroupsGenericByZone(df_entidades,
+                                                                                          "covers",
+                                                                                          DomainEntitiesIsmartEnum.cover,
+                                                                                          "mdi:curtains-closed",
+                                                                                          NameOfGroupEnum.cover,
+                                                                                          NameEntitiesIsmartEnum.M_Cortina)
+            df_groups_covers_by_zones = await groups_cover_by_zones.execute()
+
+            print("---------------------------------------")
+            print(df_groups_covers_by_zones)
 
 
             
@@ -157,7 +171,10 @@ class CreateViewMainUseCase(GenericUseCase):
     
         df.loc[df[ColumnsNameExcelConfigISmart.domain.value] == DomainEntitiesIsmartEnum.switch.value, ColumnsNameExcelConfigISmart.final_id.value] = EntitiesIsmartDemosEnum.switch_ac.value
         df.loc[df[ColumnsNameExcelConfigISmart.domain.value] == DomainEntitiesIsmartEnum.sensor.value, ColumnsNameExcelConfigISmart.final_id.value] = EntitiesIsmartDemosEnum.sensor.value
+        
         df[ColumnsNameExcelConfigISmart.final_id.value] = np.where((df[ColumnsNameExcelConfigISmart.domain.value] == DomainEntitiesIsmartEnum.sensor.value) & (df[ColumnsNameExcelConfigISmart.name_entity.value] == NameEntitiesIsmartEnum.Temperatura.value), EntitiesIsmartDemosEnum.sensor_temperature.value, df[ ColumnsNameExcelConfigISmart.final_id.value])
         df[ColumnsNameExcelConfigISmart.final_id.value] = np.where((df[ColumnsNameExcelConfigISmart.domain.value] == DomainEntitiesIsmartEnum.sensor.value) & (df[ColumnsNameExcelConfigISmart.name_entity.value] == NameEntitiesIsmartEnum.Humedad.value), EntitiesIsmartDemosEnum.sensor_humedad.value, df[ ColumnsNameExcelConfigISmart.final_id.value])
         df[ColumnsNameExcelConfigISmart.final_id.value] = np.where((df[ColumnsNameExcelConfigISmart.domain.value] == DomainEntitiesIsmartEnum.sensor.value) & (df[ColumnsNameExcelConfigISmart.name_entity.value] == NameEntitiesIsmartEnum.Bateria_Sensor_TH.value), EntitiesIsmartDemosEnum.sensor_humedad.value, df[ ColumnsNameExcelConfigISmart.final_id.value])
+       
+        df[ColumnsNameExcelConfigISmart.final_id.value] = np.where((df[ColumnsNameExcelConfigISmart.domain.value] == DomainEntitiesIsmartEnum.cover.value) & (df[ColumnsNameExcelConfigISmart.name_entity.value] == NameEntitiesIsmartEnum.M_Cortina.value), EntitiesIsmartDemosEnum.cover.value, df[ ColumnsNameExcelConfigISmart.final_id.value])
         return df

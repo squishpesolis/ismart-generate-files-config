@@ -9,4 +9,6 @@ class EntitiesIsmartDemosEnum(Enum):
     sensor_temperature = "sensor.outside_temperature"
     sensor_humedad = "sensor.outside_humidity"
     scene = "scene_demo_buenos_dias"
+    cover = "cover.kitchen_window"
+    
 

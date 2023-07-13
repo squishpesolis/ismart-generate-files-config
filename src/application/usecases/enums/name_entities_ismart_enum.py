@@ -8,6 +8,7 @@ class NameEntitiesIsmartEnum(Enum):
     Temperatura="Temperatura"
     Humedad="Humedad"
     Bateria_Sensor_TH="Bateria_Sensor_TH"
+    M_Cortina="M_Cortina"
 
 
 
