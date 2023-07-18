@@ -163,6 +163,10 @@ class CreateViewMainUseCase(GenericUseCase):
             
             df_groups_covers_by_zones = await groups_cover_by_zones.execute()
 
+            print("AAAAAAAAAAAAAAAAAAAAAAA")
+            print(df_groups_covers_by_zones)
+
+            
             groups_cover_by_ubication: CreateGroupsGenericByUbication = CreateGroupsGenericByUbication(df_entidades,
                                                                                           DomainEntitiesIsmartEnum.cover,
                                                                                           "mdi:curtains-closed",
@@ -183,7 +187,8 @@ class CreateViewMainUseCase(GenericUseCase):
             
             
             df_groups_cover_by_area = await groups_cover_by_area.execute()
-
+            #print("---------------------------------------")
+            #print(df_groups_cover_by_area)
             
 
 
@@ -202,7 +207,10 @@ class CreateViewMainUseCase(GenericUseCase):
                                                                                                 df_groups_sensor_temp_by_area,
                                                                                                 df_groups_sensor_humedad_by_zones,
                                                                                                 df_groups_sensor_humedad_by_ubi,
-                                                                                                df_groups_sensor_humedad_by_area
+                                                                                                df_groups_sensor_humedad_by_area,
+                                                                                                df_groups_covers_by_zones,
+                                                                                                df_groups_covers_by_ubication,
+                                                                                                df_groups_cover_by_area
                                                                                                 ) 
             await create_view_admin.execute()
 

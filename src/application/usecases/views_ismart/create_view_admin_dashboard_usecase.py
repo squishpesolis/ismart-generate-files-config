@@ -41,7 +41,10 @@ class CreateViewAdminDashboardUseCase(GenericUseCase):
                 df_groups_sensor_temp_by_area: pd.DataFrame,
                 df_groups_sensor_humedad_by_zones: pd.DataFrame,
                 df_groups_sensor_humedad_by_ubi: pd.DataFrame,
-                df_groups_sensor_humedad_by_area: pd.DataFrame) -> None:
+                df_groups_sensor_humedad_by_area: pd.DataFrame,
+                df_groups_covers_by_zones: pd.DataFrame,
+                df_groups_covers_by_ubication: pd.DataFrame,
+                df_groups_cover_by_area: pd.DataFrame) -> None:
         
         self.dataframe_areas = dataframe_areas
         self.configurar_con_entidades_demos = configurar_con_entidades_demos
@@ -62,6 +65,9 @@ class CreateViewAdminDashboardUseCase(GenericUseCase):
         self.df_groups_sensor_humedad_by_area = df_groups_sensor_humedad_by_area
         
 
+        self.df_groups_covers_by_zones = df_groups_covers_by_zones
+        self.df_groups_covers_by_ubication = df_groups_covers_by_ubication
+        self.df_groups_cover_by_area = df_groups_cover_by_area
        
 
     async def execute(self) -> pd.DataFrame:
@@ -91,7 +97,10 @@ class CreateViewAdminDashboardUseCase(GenericUseCase):
                                        self.df_groups_sensor_temp_by_area,
                                        self.df_groups_sensor_humedad_by_zones,
                                        self.df_groups_sensor_humedad_by_ubi,
-                                       self.df_groups_sensor_humedad_by_area)          
+                                       self.df_groups_sensor_humedad_by_area,
+                                       self.df_groups_covers_by_zones,
+                                       self.df_groups_covers_by_ubication,
+                                       self.df_groups_cover_by_area)          
             
             
             #3. Crear el Dashboard admin
@@ -125,7 +134,10 @@ class CreateViewAdminDashboardUseCase(GenericUseCase):
                               df_groups_sensor_temp_by_area:pd.DataFrame,
                               df_groups_sensor_humedad_by_zones:pd.DataFrame,
                               df_groups_sensor_humedad_by_ubi:pd.DataFrame,
-                              df_groups_sensor_humedad_by_area:pd.DataFrame
+                              df_groups_sensor_humedad_by_area:pd.DataFrame,
+                              df_groups_covers_by_zones:pd.DataFrame,
+                              df_groups_covers_by_ubication:pd.DataFrame,
+                              df_groups_cover_by_area:pd.DataFrame
                               ):
         
         view_admin = [
@@ -149,7 +161,10 @@ class CreateViewAdminDashboardUseCase(GenericUseCase):
                                                                df_groups_sensor_temp_by_area,
                                                                df_groups_sensor_humedad_by_zones,
                                                                df_groups_sensor_humedad_by_ubi,
-                                                               df_groups_sensor_humedad_by_area)
+                                                               df_groups_sensor_humedad_by_area,
+                                                               df_groups_covers_by_zones,
+                                                               df_groups_covers_by_ubication,
+                                                               df_groups_cover_by_area)
 
 
         view_admin[0]['cards'].append(vertical_stack_left)
@@ -269,7 +284,11 @@ class CreateViewAdminDashboardUseCase(GenericUseCase):
                                     df_groups_sensor_temp_by_area:pd.DataFrame,
                                     df_groups_sensor_humedad_by_zones:pd.DataFrame,
                                     df_groups_sensor_humedad_by_ubi:pd.DataFrame,
-                                    df_groups_sensor_humedad_by_area:pd.DataFrame):
+                                    df_groups_sensor_humedad_by_area:pd.DataFrame,
+                                    df_groups_covers_by_zones:pd.DataFrame,
+                                    df_groups_covers_by_ubication:pd.DataFrame,
+                                    df_groups_cover_by_area:pd.DataFrame
+                                    ):
         vertical_stack_new = {}
         vertical_stack_new = CreateCustomComponentsViewsUsecase.create_vertical_stack()
 
@@ -278,10 +297,22 @@ class CreateViewAdminDashboardUseCase(GenericUseCase):
         card_temperature_humedity_view_zone = CreateCustomComponentsViewsUsecase.create_card_temperature_and_humedity_sensor(df_groups_sensor_temperature_by_zones,df_groups_sensor_humedad_by_zones)
         card_temperature_humedity_view_ubication = CreateCustomComponentsViewsUsecase.create_card_temperature_and_humedity_sensor(df_groups_sensor_temp_by_ubi,df_groups_sensor_humedad_by_ubi)
 
+        
+
+
+        build_card_group_covers_by_zone = CreateCustomComponentsViewsUsecase.create_card_entities(
+            df_groups_covers_by_zones[NameColumnDfGroupEnum.title.value].iloc[0],
+            False,
+            df_groups_covers_by_zones
+        )
+
+        
+
+
         vertical_stack_new = Utils_Views_Usecase.add_card_to_verticaL_stack(vertical_stack_new, card_weater)
         vertical_stack_new = Utils_Views_Usecase.add_card_to_verticaL_stack(vertical_stack_new, card_temperature_humedity_view_zone)
         vertical_stack_new = Utils_Views_Usecase.add_card_to_verticaL_stack(vertical_stack_new, card_temperature_humedity_view_ubication)
-
+        vertical_stack_new = Utils_Views_Usecase.add_card_to_verticaL_stack(vertical_stack_new, build_card_group_covers_by_zone)
         return vertical_stack_new
 
 
