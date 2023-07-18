@@ -16,6 +16,11 @@ class StringUtilUseCase():
     def replace_string(text: str, old_caracter: str, new_caracter: str):
         return text.replace(old_caracter, new_caracter)
     
+    @staticmethod
+    def tranform_string_to_slug(text: str):
+        text = text.replace(" ", "_")
+        return text.lower()
+    
 
 
     

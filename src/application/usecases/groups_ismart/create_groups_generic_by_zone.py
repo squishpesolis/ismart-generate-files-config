@@ -85,7 +85,8 @@ class CreateGroupsGenericByZone(GenericUseCase):
 
                     row_df_generic_group_by_zone = {
                                                             NameColumnDfGroupEnum.title.value:name_title_ismart.value, 
-                                                            NameColumnDfGroupEnum.entity.value: name_domain +'.'+unique_id_generic,
+                                                            #NameColumnDfGroupEnum.entity.value: name_domain +'.'+unique_id_generic,
+                                                            NameColumnDfGroupEnum.entity.value: name_domain +'.'+StringUtilUseCase.tranform_string_to_slug(name_group_generic_by_zone),
                                                             NameColumnDfGroupEnum.name_.value:name_group_generic_by_zone, 
                                                             NameColumnDfGroupEnum.icon.value: icon_domain, 
                                                             NameColumnDfGroupEnum.tap_action.value:'none'
