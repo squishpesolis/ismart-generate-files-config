@@ -8,6 +8,7 @@ from src.application.usecases.interfaces import GenericUseCase
 from src.application.utils.error_handling_utils import ErrorHandlingUtils
 
 
+
 from src.application.usecases.utils.tranform_file_to_get_many_dataframe_usecase import TransformFileToGetManyDataFrameUseCase
 from src.application.usecases.views_ismart.create_view_admin_dashboard_usecase import CreateViewAdminDashboardUseCase
 from src.application.usecases.views_ismart.create_view_by_areas_dashboard_usecase import CreateViewByAreasDashboardUseCase
@@ -163,8 +164,8 @@ class CreateViewMainUseCase(GenericUseCase):
             
             df_groups_covers_by_zones = await groups_cover_by_zones.execute()
 
-            print("AAAAAAAAAAAAAAAAAAAAAAA")
-            print(df_groups_covers_by_zones)
+            #print("AAAAAAAAAAAAAAAAAAAAAAA")
+            #print(df_groups_covers_by_zones)
 
             
             groups_cover_by_ubication: CreateGroupsGenericByUbication = CreateGroupsGenericByUbication(df_entidades,
@@ -174,9 +175,12 @@ class CreateViewMainUseCase(GenericUseCase):
                                                                                           NameEntitiesIsmartEnum.M_Cortina,
                                                                                           NameTitlesIsmartEnum.cortinas_por_ubicacion)
             
-            
-            df_groups_covers_by_ubication = await groups_cover_by_ubication.execute()
 
+
+            df_groups_covers_by_ubication = await groups_cover_by_ubication.execute()
+            
+            print("UBICACION")
+            print(df_groups_covers_by_ubication)
 
             groups_cover_by_area: CreateGroupsGenericByArea = CreateGroupsGenericByArea(df_entidades,
                                                                                           DomainEntitiesIsmartEnum.cover,
@@ -187,8 +191,8 @@ class CreateViewMainUseCase(GenericUseCase):
             
             
             df_groups_cover_by_area = await groups_cover_by_area.execute()
-            #print("---------------------------------------")
-            #print(df_groups_cover_by_area)
+            print("AREA")
+            print(df_groups_cover_by_area)
             
 
 

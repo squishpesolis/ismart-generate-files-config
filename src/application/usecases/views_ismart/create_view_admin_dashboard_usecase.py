@@ -1,6 +1,7 @@
 import typing
 import pandas as pd
 import yaml
+import numpy as np
 
 
 
@@ -264,15 +265,27 @@ class CreateViewAdminDashboardUseCase(GenericUseCase):
 
         card_clock = CreateCustomComponentsViewsUsecase.create_card_clock()
 
+
+
+
         
 
-        card_horizontal_person = CreateCustomComponentsViewsUsecase.create_hotizontal_stack_with_list_persons(df_personas)
+
+
 
         card_scenes = CreateCustomComponentsViewsUsecase.create_card_scenes_welcome(df_scenes)
 
 
         vertical_stack_center_new = Utils_Views_Usecase.add_card_to_verticaL_stack(vertical_stack_center_new, card_clock)
-        vertical_stack_center_new = Utils_Views_Usecase.add_card_to_verticaL_stack(vertical_stack_center_new, card_horizontal_person)
+
+        df_splits_person = DataFrameUtilUseCase.split_data_frame_by_numbers_rows(df_personas,2)
+        
+        for df_person in df_splits_person:
+            card_horizontal_person = {}
+            card_horizontal_person = CreateCustomComponentsViewsUsecase.create_hotizontal_stack_with_list_persons(df_person)
+            vertical_stack_center_new = Utils_Views_Usecase.add_card_to_verticaL_stack(vertical_stack_center_new, card_horizontal_person)
+
+
         vertical_stack_center_new = Utils_Views_Usecase.add_card_to_verticaL_stack(vertical_stack_center_new, card_scenes)
 
         return vertical_stack_center_new
