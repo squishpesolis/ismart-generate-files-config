@@ -35,7 +35,7 @@ class GroupsUtilUseCase():
                 {
                     'platform': 'group',
                     'name': name_group,
-                    'unique_id': unique_id,
+                    #'unique_id': unique_id,
                     'entities': []
                 }
             ]
@@ -91,7 +91,7 @@ class GroupsUtilUseCase():
                 {
                     'platform': 'group',
                     'name': name_group,
-                    'unique_id': unique_id,
+                    #'unique_id': unique_id,
                     'entities': []
                 }
             ]
