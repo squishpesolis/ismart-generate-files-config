@@ -21,13 +21,13 @@ from src.application.usecases.groups_ismart.create_groups_switch_by_areas_and_li
 
 
 
-from src.application.usecases.groups_ismart.create_groups_sensor_temperature_by_area import CreateGroupsSensorTemperatureyByArea
 
 
 
 
 
-from src.application.usecases.groups_ismart.create_groups_sensor_humedity_by_area import CreateGroupsSensorHumedityByArea
+
+
 
 
 from src.application.usecases.groups_ismart.create_groups_generic_by_zone import CreateGroupsGenericByZone
