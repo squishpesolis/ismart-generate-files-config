@@ -79,7 +79,7 @@ class CreateGroupsGenericByZone(GenericUseCase):
                 if dict_df_generic_by_zone:
 
                     name_file =  name_file_yaml +"_" + StringUtilUseCase.convert_string_lower_case(name_entity_ismart)+"_" + StringUtilUseCase.convert_string_lower_case(zona) + '.yaml'
-                    path_save_yaml = PathsIsmartUseCase.path_join_any_directores([self.path_ismart_principal,'Zonas', zona, 'Integraciones','grupos'])
+                    path_save_yaml = PathsIsmartUseCase.path_join_any_directores([self.path_ismart_principal,'Zonas', zona, 'Integraciones','grupos',self.name_of_group.value])
                     FolderCreator.execute(path_save_yaml)
                     YamlUtilUseCase.save_file_yaml(PathsIsmartUseCase.path_join_any_directores([path_save_yaml, name_file]),dict_df_generic_by_zone )
 

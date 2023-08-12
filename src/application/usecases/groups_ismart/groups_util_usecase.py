@@ -51,14 +51,14 @@ class GroupsUtilUseCase():
     @staticmethod
     def build_dict_group_sensor(df: pd.DataFrame, name_group: str, unique_id:str, type: str) -> dict:
 
-        data = {}
+        #data = {}
+        data = []
 
         if df.empty:
             return data
 
 
-        data = {
-            'sensor': [
+        data = [
                 {
                     'platform': 'group',
                     'type': type,
@@ -66,13 +66,15 @@ class GroupsUtilUseCase():
                     'unique_id': unique_id,
                     'entities': []
                 }
-            ]
-        }
+        ]
+        
+
+
 
         for final_id in df[ColumnsNameExcelConfigISmart.final_id.value]:
 
-            data['sensor'][0]['entities'].append(final_id.replace(" ", ""))
-
+            #data['sensor'][0]['entities'].append(final_id.replace(" ", ""))
+            data[0]['entities'].append(final_id.replace(" ", ""))
 
         return data
     
@@ -80,26 +82,36 @@ class GroupsUtilUseCase():
     @staticmethod
     def build_dict_group_cover(df: pd.DataFrame, name_group: str, unique_id:str) -> dict:
 
-        data = {}
-
+        #data = {}
+        data = []
         if df.empty:
             return data
 
 
-        data = {
+        """ data = {
             'cover': [
                 {
                     'platform': 'group',
                     'name': name_group,
-                    #'unique_id': unique_id,
+                    'unique_id': unique_id,
                     'entities': []
                 }
             ]
-        }
+        } """
+
+        data = [
+            {
+                'platform': 'group',
+                'name': name_group,
+                'unique_id': unique_id,
+                'entities': []
+            }
+        ]
 
         for final_id in df[ColumnsNameExcelConfigISmart.final_id.value]:
 
-            data['cover'][0]['entities'].append(final_id.replace(" ", ""))
+            #data['cover'][0]['entities'].append(final_id.replace(" ", ""))
+            data[0]['entities'].append(final_id.replace(" ", ""))
 
 
         return data

@@ -41,7 +41,7 @@ class CreateGroupsSwitchByLightUseCase(GenericUseCase):
                 if dict_df_switches_by_zone:
   
                     name_file =  name_file_yaml + zona + '.yaml'
-                    path_save_yaml = PathsIsmartUseCase.path_join_any_directores([self.path_ismart_principal,'Zonas', zona, 'Integraciones','grupos'])
+                    path_save_yaml = PathsIsmartUseCase.path_join_any_directores([self.path_ismart_principal,'Zonas', zona, 'Integraciones','grupos','switch'])
                     
                     FolderCreator.execute(path_save_yaml)
                     
@@ -60,7 +60,7 @@ class CreateGroupsSwitchByLightUseCase(GenericUseCase):
                         if dict_df_switches_ubicacion_and_zone:
                             name_file_ubicacion =  name_file_yaml + ubicacion + '.yaml'
     
-                            path_save_yaml_ubicacion = PathsIsmartUseCase.path_join_any_directores([self.path_ismart_principal,'Zonas', zona,'Ubicacion', ubicacion, 'Integraciones'])
+                            path_save_yaml_ubicacion = PathsIsmartUseCase.path_join_any_directores([self.path_ismart_principal,'Zonas', zona,'Ubicacion', ubicacion, 'Integraciones','switch'])
                             FolderCreator.execute(path_save_yaml_ubicacion)
                             YamlUtilUseCase.save_file_yaml(PathsIsmartUseCase.path_join_any_directores([path_save_yaml_ubicacion, name_file_ubicacion]),dict_df_switches_ubicacion_and_zone )
 
