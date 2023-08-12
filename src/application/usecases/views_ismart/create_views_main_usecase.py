@@ -98,6 +98,19 @@ class CreateViewMainUseCase(GenericUseCase):
             
             df_create_scenes_admin,df_create_scenes  = await create_scenes_useCase.execute()
 
+
+            
+             ######## ######## ##     ## ########  ######## ########     ###    ######## ##     ## ########     ###    
+                ##    ##       ###   ### ##     ## ##       ##     ##   ## ##      ##    ##     ## ##     ##   ## ##   
+                ##    ##       #### #### ##     ## ##       ##     ##  ##   ##     ##    ##     ## ##     ##  ##   ##  
+                ##    ######   ## ### ## ########  ######   ########  ##     ##    ##    ##     ## ########  ##     ## 
+                ##    ##       ##     ## ##        ##       ##   ##   #########    ##    ##     ## ##   ##   ######### 
+                ##    ##       ##     ## ##        ##       ##    ##  ##     ##    ##    ##     ## ##    ##  ##     ## 
+                ##    ######## ##     ## ##        ######## ##     ## ##     ##    ##     #######  ##     ## ##     ## 
+
+ 
+
+
             groups_sensor_temperature_by_zones: CreateGroupsGenericByZone = CreateGroupsGenericByZone(df_entidades,
                                                                                           DomainEntitiesIsmartEnum.sensor,
                                                                                           "mdi:home-thermometer",
@@ -123,7 +136,15 @@ class CreateViewMainUseCase(GenericUseCase):
                                                                                           NameTitlesIsmartEnum.temperatura_por_area)
             df_groups_sensor_temp_by_area = await groups_sensor_temp_by_area.execute()
             
-            
+    
+            ##     ## ##     ## ##     ## ######## ########     ###    ########  
+            ##     ## ##     ## ###   ### ##       ##     ##   ## ##   ##     ## 
+            ##     ## ##     ## #### #### ##       ##     ##  ##   ##  ##     ## 
+            ######### ##     ## ## ### ## ######   ##     ## ##     ## ##     ## 
+            ##     ## ##     ## ##     ## ##       ##     ## ######### ##     ## 
+            ##     ## ##     ## ##     ## ##       ##     ## ##     ## ##     ## 
+            ##     ##  #######  ##     ## ######## ########  ##     ## ########  
+
             
             groups_sensor_humedad_by_zones: CreateGroupsGenericByZone = CreateGroupsGenericByZone(df_entidades,
                                                                                           DomainEntitiesIsmartEnum.sensor,
@@ -153,6 +174,14 @@ class CreateViewMainUseCase(GenericUseCase):
             df_groups_sensor_humedad_by_area = await groups_sensor_humedad_by_area.execute()
 
 
+            ######   #######  ##     ## ######## ########  
+            ##    ## ##     ## ##     ## ##       ##     ## 
+            ##       ##     ## ##     ## ##       ##     ## 
+            ##       ##     ## ##     ## ######   ########  
+            ##       ##     ##  ##   ##  ##       ##   ##   
+            ##    ## ##     ##   ## ##   ##       ##    ##  
+            ######   #######     ###    ######## ##     ## 
+
             groups_cover_by_zones: CreateGroupsGenericByZone = CreateGroupsGenericByZone(df_entidades,
                                                                                           DomainEntitiesIsmartEnum.cover,
                                                                                           "mdi:curtains-closed",
@@ -164,8 +193,7 @@ class CreateViewMainUseCase(GenericUseCase):
             
             df_groups_covers_by_zones = await groups_cover_by_zones.execute()
 
-            #print("AAAAAAAAAAAAAAAAAAAAAAA")
-            #print(df_groups_covers_by_zones)
+           
 
             
             groups_cover_by_ubication: CreateGroupsGenericByUbication = CreateGroupsGenericByUbication(df_entidades,
@@ -179,8 +207,7 @@ class CreateViewMainUseCase(GenericUseCase):
 
             df_groups_covers_by_ubication = await groups_cover_by_ubication.execute()
             
-            print("UBICACION")
-            print(df_groups_covers_by_ubication)
+            
 
             groups_cover_by_area: CreateGroupsGenericByArea = CreateGroupsGenericByArea(df_entidades,
                                                                                           DomainEntitiesIsmartEnum.cover,
@@ -191,9 +218,12 @@ class CreateViewMainUseCase(GenericUseCase):
             
             
             df_groups_cover_by_area = await groups_cover_by_area.execute()
-            print("AREA")
-            print(df_groups_cover_by_area)
+
             
+
+
+             
+
 
 
 
