@@ -126,11 +126,11 @@ class CreateScenesUseCase(GenericUseCase):
                 icon = df_scenes_by_group[NameColumnDfSceneEnum.icon.value].iloc[0]
                 order =  df_scenes_by_group[NameColumnDfSceneEnum.orden_view.value].iloc[0]
                 area =  df_scenes_by_group[NameColumnDfSceneEnum.area.value].iloc[0]
-
+                name_scene_with_area = name_scene + " " + area
                 #if self.configurar_con_entidades_demos:
                 #    id_scene = EntitiesIsmartDemosEnum.scene.value +"_"+area
 
-                scene_dict =ScenesUtilUseCase.build_scenes_dict(df_scenes_by_group,name_scene,id_scene,icon)
+                scene_dict =ScenesUtilUseCase.build_scenes_dict(df_scenes_by_group,name_scene,name_scene_with_area,id_scene,icon)
                 list_scenes.append(scene_dict)
 
                 row_scenes_for_view=  { NameColumnDfSceneEnum.id.value: ScenesUtilUseCase.build_unique_id(id_scene),
@@ -160,7 +160,8 @@ class CreateScenesUseCase(GenericUseCase):
         df_groups_by_name = df_scenes.groupby(NameColumnDfSceneEnum.name_.value)
         for group_by_name in df_groups_by_name.groups:
             df_scenes_by_name = df_groups_by_name.get_group(group_by_name)
-            name_scene = df_scenes_by_name[NameColumnDfSceneEnum.name_.value].iloc[0]
+            name_scene = df_scenes_by_name[NameColumnDfSceneEnum.name_.value].iloc[0] 
+            name_scene_with_area = name_scene + " admin"
             id_scene = df_scenes_by_name[NameColumnDfSceneEnum.name_.value].iloc[0] + " admin"
             icon = df_scenes_by_name[NameColumnDfSceneEnum.icon.value].iloc[0]
             order =  df_scenes_by_name[NameColumnDfSceneEnum.orden_view.value].iloc[0]
@@ -173,11 +174,12 @@ class CreateScenesUseCase(GenericUseCase):
                                             NameColumnDfSceneEnum.name_.value: name_scene,
                                             NameColumnDfSceneEnum.icon.value:icon,
                                             NameColumnDfSceneEnum.orden_view.value:order,
-                                            NameColumnDfSceneEnum.area.value: 'NOT_SET'}
+                                            NameColumnDfSceneEnum.area.value: 'NOT_SET',
+                                            NameColumnDfSceneEnum.name_with_area.value: name_scene_with_area}
             
             df_scenes_for_view_admin = df_scenes_for_view_admin.append(row_scenes_for_view_admin, ignore_index=True)
             
-            scene_dict =ScenesUtilUseCase.build_scenes_dict(df_scenes_by_name,name_scene,id_scene,icon)
+            scene_dict =ScenesUtilUseCase.build_scenes_dict(df_scenes_by_name,name_scene,name_scene_with_area,id_scene,icon)
             list_scenes.append(scene_dict)
         
         return list_scenes, df_scenes_for_view_admin

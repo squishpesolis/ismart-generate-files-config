@@ -17,7 +17,7 @@ class ScenesUtilUseCase():
         
 
     @staticmethod
-    def build_scenes_dict(df_scenes: pd.DataFrame, name_scene:str, id_scene:str, icon:str) -> dict:
+    def build_scenes_dict(df_scenes: pd.DataFrame, name_scene:str,name_scene_with_area:str, id_scene:str, icon:str) -> dict:
 
         scene_object = {}
 
@@ -26,7 +26,7 @@ class ScenesUtilUseCase():
         
 
         scene_object = {
-                'name': name_scene,
+                'name': name_scene_with_area,
                 'id': ScenesUtilUseCase.build_unique_id(id_scene),
                 'icon': icon,
                 'entities': {}

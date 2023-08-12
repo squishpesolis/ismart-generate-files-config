@@ -10,5 +10,6 @@ class NameColumnDfSceneEnum(Enum):
     entity ="entity"
     value_ ="value"
     orden_view ="orden_view"
+    name_with_area="name_with_area"
 
 
