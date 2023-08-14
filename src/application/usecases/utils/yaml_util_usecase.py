@@ -19,6 +19,14 @@ class YamlUtilUseCase():
             file.close()
         except Exception as exception:
             raise ErrorHandlingUtils.application_error("Error: no se pudo crear el archivo yaml", exception)
+        
+    @staticmethod
+    def save_file_yaml_string(path, datos: str):
+        try:
+            with open(path, 'w') as file:
+                file.write(datos)
+        except Exception as exception:
+            raise ErrorHandlingUtils.application_error("Error: no se pudo crear el archivo yaml", exception)
 
     def check_exist_file(path):
         os.path.isfile(path)

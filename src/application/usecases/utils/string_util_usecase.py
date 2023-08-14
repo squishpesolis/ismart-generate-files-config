@@ -19,6 +19,7 @@ class StringUtilUseCase():
     @staticmethod
     def tranform_string_to_slug(text: str):
         text = text.replace(" ", "_")
+        text = text.replace("-", "_")
         return text.lower()
     
     @staticmethod

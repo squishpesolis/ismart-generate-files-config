@@ -129,7 +129,7 @@ class GroupsUtilUseCase():
         return pd.DataFrame(columns=columnsName)
     
     @staticmethod
-    def build_df_empty_to_build_paths_files_yaml_groups():
+    def build_df_empty_to_build_paths_files_yaml_groups() -> pd.DataFrame:
 
         columnsName = [NameColumnDfGroupPathFulesEnum.name_.value,NameColumnDfGroupPathFulesEnum.path_.value]
          

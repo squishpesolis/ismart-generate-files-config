@@ -18,7 +18,7 @@ from src.application.usecases.enums.names_files_yamls_enum import NameFilesYamls
 from src.application.usecases.enums.name_titles_ismart_enum import NameTitlesIsmartEnum
 
 from src.application.usecases.groups_ismart.groups_util_usecase import GroupsUtilUseCase
-
+from src.application.usecases.enums.name_column_df_group_path_files_yaml import NameColumnDfGroupPathFulesEnum
 
 class CreateGroupsSwitchByAreasAndLightUseCase(GenericUseCase):
     def __init__(self, df: pd.DataFrame, configurar_con_entidades_demos: bool) -> None:
@@ -34,7 +34,7 @@ class CreateGroupsSwitchByAreasAndLightUseCase(GenericUseCase):
 
     
             df_groups_by_areas_and_light = GroupsUtilUseCase.build_df_empty_to_build_groups()
-                     
+            df_yamls_paths = GroupsUtilUseCase.build_df_empty_to_build_paths_files_yaml_groups()                                                               
 
             zonas = self.df[ColumnsNameExcelConfigISmart.zonas.value].unique()
 
@@ -86,7 +86,14 @@ class CreateGroupsSwitchByAreasAndLightUseCase(GenericUseCase):
 
                             df_groups_by_areas_and_light = df_groups_by_areas_and_light.append(row_df_switches_by_area_and_light, ignore_index=True)
 
-            return df_groups_by_areas_and_light
+                            row_df_path_yamls= {
+                                NameColumnDfGroupPathFulesEnum.name_.value:name_group_by_area, 
+                                NameColumnDfGroupPathFulesEnum.path_.value:path_save_yaml
+                            }
+                                
+                            df_yamls_paths = df_yamls_paths.append(row_df_path_yamls, ignore_index=True)
+
+            return df_groups_by_areas_and_light, df_yamls_paths
         
         except Exception as exception:
             raise ErrorHandlingUtils.application_error("Error al crear el archivo group de switches por Areas", exception)

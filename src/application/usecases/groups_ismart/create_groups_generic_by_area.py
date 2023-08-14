@@ -15,6 +15,7 @@ from src.application.usecases.enums.name_column_df_group import NameColumnDfGrou
 from src.application.usecases.enums.names_of_groups_enum import NameOfGroupEnum
 from src.application.usecases.enums.names_files_yamls_enum import NameFilesYamlsEnum
 from src.application.usecases.enums.name_titles_ismart_enum import NameTitlesIsmartEnum
+from src.application.usecases.enums.name_column_df_group_path_files_yaml import NameColumnDfGroupPathFulesEnum
 
 from src.application.usecases.groups_ismart.groups_util_usecase import GroupsUtilUseCase
 from src.application.usecases.utils.string_util_usecase import StringUtilUseCase
@@ -46,6 +47,7 @@ class CreateGroupsGenericByArea(GenericUseCase):
             icon_domain = self.icon_domain
 
             df_groups_generic_by_area = GroupsUtilUseCase.build_df_empty_to_build_groups()
+            df_yamls_paths_created_groups_generic_by_area = GroupsUtilUseCase.build_df_empty_to_build_paths_files_yaml_groups()
                      
             zonas = self.df[ColumnsNameExcelConfigISmart.zonas.value].unique()
 
@@ -99,7 +101,15 @@ class CreateGroupsGenericByArea(GenericUseCase):
                             df_groups_generic_by_area = df_groups_generic_by_area.append(row_df_generic_by_area, ignore_index=True)
 
             
-            return df_groups_generic_by_area
+                            row_df_path_yamls= {
+                                                                    NameColumnDfGroupPathFulesEnum.name_.value:name_group_generic_by_area, 
+                                                                    NameColumnDfGroupPathFulesEnum.path_.value:path_save_yaml
+                                                }
+                            
+                            df_yamls_paths_created_groups_generic_by_area = df_yamls_paths_created_groups_generic_by_area.append(row_df_path_yamls, ignore_index=True)
+
+
+            return df_groups_generic_by_area, df_yamls_paths_created_groups_generic_by_area
         
         except Exception as exception:
             raise ErrorHandlingUtils.application_error("Error al crear el archivo group " + name_domain + " Por area", exception)

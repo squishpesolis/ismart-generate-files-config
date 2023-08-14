@@ -33,6 +33,7 @@ class CreateGroupsGenericByZone(GenericUseCase):
         self.df = df
         paths_usecase: PathsIsmartUseCase = PathsIsmartUseCase()
         self.path_ismart_principal = paths_usecase.get_root_path_ismar_home_assintant_principal_grupos()
+        self.path_ismar_home_assintant_config = paths_usecase.get_root_path_ismar_home_assintant_config()
         self.name_group = domain.value
         self.domain = domain
         self.name_of_group = name_of_group
@@ -96,13 +97,20 @@ class CreateGroupsGenericByZone(GenericUseCase):
                                                             NameColumnDfGroupEnum.tap_action.value:'none'
                                                         }
                     
-                    row_df_path_yamls= {
+
+                    """ row_df_path_yamls= {
                                                             NameColumnDfGroupPathFulesEnum.name_.value:StringUtilUseCase.tranform_string_to_slug("gr "+name_group_generic_by_zone), 
-                                                            NameColumnDfGroupPathFulesEnum.path_.value:path_save_yaml
-                                                        }
+                                                            NameColumnDfGroupPathFulesEnum.path_.value:path_save_yaml.replace(self.path_ismar_home_assintant_config+"\\", '')
+                                                        } """
                     
+
                     
                     df_groups_generic_by_zone = df_groups_generic_by_zone.append(row_df_generic_group_by_zone, ignore_index=True)
+                    
+                    row_df_path_yamls= {
+                                                            NameColumnDfGroupPathFulesEnum.name_.value:name_group_generic_by_zone, 
+                                                            NameColumnDfGroupPathFulesEnum.path_.value:path_save_yaml
+                                        }
                     df_yamls_paths_created_groups_generic_by_zone = df_yamls_paths_created_groups_generic_by_zone.append(row_df_path_yamls, ignore_index=True)
             
             return df_groups_generic_by_zone, df_yamls_paths_created_groups_generic_by_zone

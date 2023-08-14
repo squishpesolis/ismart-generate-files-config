@@ -21,17 +21,12 @@ from src.application.usecases.config_ismart.config_file_util_usecase import Conf
 
 class CreateConfigFileUseCase(GenericUseCase):
     def __init__(self, 
-                 df_scenes_config: pd.DataFrame, 
-                 dataframe_areas: pd.DataFrame,
-                 dataframe_entites: pd.DataFrame,
                  dataframe_config_file: pd.DataFrame,
+                 dataframe_yamls_paths_created_groups: pd.DataFrame,
                  configurar_con_entidades_demos: bool) -> None:
         
-        self.df_scenes_config = df_scenes_config
-        self.dataframe_areas = dataframe_areas
-        self.dataframe_entites = dataframe_entites
         self.dataframe_config_file = dataframe_config_file
-
+        self.dataframe_yamls_paths_created_groups = dataframe_yamls_paths_created_groups
         self.configurar_con_entidades_demos = configurar_con_entidades_demos
         paths_usecase: PathsIsmartUseCase = PathsIsmartUseCase()
         self.path_config_file = paths_usecase.get_root_path_ismar_home_assintant_config()
@@ -41,17 +36,11 @@ class CreateConfigFileUseCase(GenericUseCase):
     async def execute(self):
         try:
 
+            dataframe_yamls_paths_created_groups = self.dataframe_yamls_paths_created_groups
             path_save_yaml = PathsIsmartUseCase.path_join_any_directores([self.path_config_file])
             FolderCreator.execute(path_save_yaml)
 
-            """ filtered_values = np.where((df_entities[NameColumnDfConfigurationFileEnum.areas.value]==area[NameColumnDfConfigurationFileEnum.Sub_Zona.value]) & 
-                                                   (df_entities[NameColumnDfConfigurationFileEnum.domain.value] == domain.value))
-
-            df_entities_by_area_and_domain = df_entities.loc[filtered_values] 
-            
-            scconfiguration_dic =ConfigFileUtilUseCase.build_config_dict(df_scenes_by_group,name_scene,name_scene_with_area,id_scene,icon)
-            YamlUtilUseCase.save_file_yaml(PathsIsmartUseCase.path_join_any_directores([path_save_yaml, name_file_yaml]),scconfiguration_dic )
-            """
+          
             config_df = self.dataframe_config_file
 
             name_house_filter = np.where((config_df[NameColumnDfConfigurationFileEnum.configuration_.value]==NameColumnDfConfigurationFileEnum.nombre_casa.value))
@@ -137,9 +126,15 @@ class CreateConfigFileUseCase(GenericUseCase):
                         'metric',
                         time_zone_value,
                         server_port_value,
-                        dns_value)
+                        dns_value,
+                        dataframe_yamls_paths_created_groups)
 
-            YamlUtilUseCase.save_file_yaml(PathsIsmartUseCase.path_join_any_directores([path_save_yaml, name_file_yaml]),scconfiguration_dic )
+            yaml_content = self.recursive_dict_format(scconfiguration_dic)
+
+            
+            #yaml_str =str(scconfiguration_dic).replace("'", '')
+
+            YamlUtilUseCase.save_file_yaml_string(PathsIsmartUseCase.path_join_any_directores([path_save_yaml, name_file_yaml]),yaml_content )
            
    
             
@@ -153,7 +148,17 @@ class CreateConfigFileUseCase(GenericUseCase):
 
 
 
-    
+    def recursive_dict_format(self, d, level=0):
+        indentation = " " * (level * 2)
+        output = ""
+        for key, value in d.items():
+            if isinstance(value, dict):
+                output += f"{indentation}{key}:\n{self.recursive_dict_format(value, level + 1)}"
+            elif isinstance(value, str) and value.startswith('!'):
+                output += f"{indentation}{key}: {value}\n"
+            else:
+                output += f"{indentation}{key}: {value}\n"
+        return output
 
         
   

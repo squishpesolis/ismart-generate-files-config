@@ -6,7 +6,7 @@ from fastapi import APIRouter,File, UploadFile
 from src.application.usecases.interfaces import GenericUseCase
 
 from src.application.utils.error_handling_utils import ErrorHandlingUtils
-
+from src.application.usecases.utils.string_util_usecase import StringUtilUseCase
 
 
 from src.application.usecases.utils.tranform_file_to_get_many_dataframe_usecase import TransformFileToGetManyDataFrameUseCase
@@ -18,16 +18,6 @@ from src.application.usecases.views_ismart.create_view_by_areas_dashboard_usecas
 from src.application.usecases.groups_ismart.create_groups_switch_by_zone_and_lights_usecase import CreateGroupsSwitchByZoneAndLightUseCase
 from src.application.usecases.groups_ismart.create_groups_switch_by_ubication_and_lights_usecase import CreateGroupsSwitchByUbicationAndLightUseCase
 from src.application.usecases.groups_ismart.create_groups_switch_by_areas_and_lights_usecase import CreateGroupsSwitchByAreasAndLightUseCase
-
-
-
-
-
-
-
-
-
-
 
 
 from src.application.usecases.groups_ismart.create_groups_generic_by_zone import CreateGroupsGenericByZone
@@ -45,18 +35,23 @@ from src.application.usecases.enums.entities_ismart_demos_enum import EntitiesIs
 from src.application.usecases.enums.name_entities_ismart_enum import NameEntitiesIsmartEnum
 from src.application.usecases.enums.names_of_groups_enum import NameOfGroupEnum
 from src.application.usecases.enums.name_titles_ismart_enum import NameTitlesIsmartEnum
-
+from src.application.usecases.enums.name_column_df_group_path_files_yaml import NameColumnDfGroupPathFulesEnum
+from src.application.usecases.groups_ismart.groups_util_usecase import GroupsUtilUseCase
+from src.application.usecases.utils.paths_usecase import PathsIsmartUseCase;
 
 
 class CreateViewMainUseCase(GenericUseCase):
     def __init__(self,file: UploadFile, configurar_con_entidades_demos: bool) -> None:
         self.file = file
         self.configurar_con_entidades_demos = configurar_con_entidades_demos
+        paths_usecase: PathsIsmartUseCase = PathsIsmartUseCase()
+        self.path_ismar_home_assintant_config = paths_usecase.get_root_path_ismar_home_assintant_config()
 
 
     async def execute(self):
         try:
             df_views =  pd.DataFrame()
+            path_ismar_home_assintant_config = self.path_ismar_home_assintant_config
             
 
             df_excel:TransformFileToGetManyDataFrameUseCase =  TransformFileToGetManyDataFrameUseCase(self.file,
@@ -86,16 +81,41 @@ class CreateViewMainUseCase(GenericUseCase):
                 df_personas = self.change_values_entities_demo(df_personas,ColumnsNameExcelConfigISmart.persona.value, EntitiesIsmartDemosEnum.person.value )
                 
 
+            df_yamls_paths_created_groups = GroupsUtilUseCase.build_df_empty_to_build_paths_files_yaml_groups()
+
+
+
+             ######  ##      ## #### ########  ######  ##     ## ########  ######  
+            ##    ## ##  ##  ##  ##     ##    ##    ## ##     ## ##       ##    ## 
+            ##       ##  ##  ##  ##     ##    ##       ##     ## ##       ##       
+             ######  ##  ##  ##  ##     ##    ##       ######### ######    ######  
+                  ## ##  ##  ##  ##     ##    ##       ##     ## ##             ## 
+            ##    ## ##  ##  ##  ##     ##    ##    ## ##     ## ##       ##    ## 
+             ######   ###  ###  ####    ##     ######  ##     ## ########  ######  
+
 
             groups_by_zones_and_swithes_light: CreateGroupsSwitchByZoneAndLightUseCase = CreateGroupsSwitchByZoneAndLightUseCase(df_entidades,self.configurar_con_entidades_demos)
-            df_by_zones_and_swithes_light = await groups_by_zones_and_swithes_light.execute()
+            df_by_zones_and_swithes_light, df_paths_yamls_by_zones_and_swithes_light = await groups_by_zones_and_swithes_light.execute()
+
+            df_yamls_paths_created_groups = df_yamls_paths_created_groups.append(df_paths_yamls_by_zones_and_swithes_light)
 
             groups_by_ubi_and_swithes_light: CreateGroupsSwitchByUbicationAndLightUseCase = CreateGroupsSwitchByUbicationAndLightUseCase(df_entidades,self.configurar_con_entidades_demos)
-            df_by_ubi_and_swithes_light = await groups_by_ubi_and_swithes_light.execute()
+            df_by_ubi_and_swithes_light, df_path_yaml_by_ubi_and_swithes_light = await groups_by_ubi_and_swithes_light.execute()
 
+            df_yamls_paths_created_groups = df_yamls_paths_created_groups.append(df_path_yaml_by_ubi_and_swithes_light)
 
             groups_by_area_and_swithes_light: CreateGroupsSwitchByAreasAndLightUseCase = CreateGroupsSwitchByAreasAndLightUseCase(df_entidades,self.configurar_con_entidades_demos)
-            df_by_areas_and_swithes_light = await groups_by_area_and_swithes_light.execute()
+            df_by_areas_and_swithes_light,df_paths_yaml_by_areas_and_swithes_light = await groups_by_area_and_swithes_light.execute()
+
+            df_yamls_paths_created_groups = df_yamls_paths_created_groups.append(df_paths_yaml_by_areas_and_swithes_light)
+
+             ######   ######  ######## ##    ## ########  ######  
+            ##    ## ##    ## ##       ###   ## ##       ##    ## 
+            ##       ##       ##       ####  ## ##       ##       
+             ######  ##       ######   ## ## ## ######    ######  
+                  ## ##       ##       ##  #### ##             ## 
+            ##    ## ##    ## ##       ##   ### ##       ##    ## 
+             ######   ######  ######## ##    ## ########  ######  
 
             create_scenes_useCase: CreateScenesUseCase = CreateScenesUseCase(df_scenes_config,
                                                                              df_areas,
@@ -106,23 +126,6 @@ class CreateViewMainUseCase(GenericUseCase):
 
 
 
-             ######   #######  ##    ## ######## ####  ######   ##     ## ########     ###    ######## ####  #######  ##    ## 
-            ##    ## ##     ## ###   ## ##        ##  ##    ##  ##     ## ##     ##   ## ##      ##     ##  ##     ## ###   ## 
-            ##       ##     ## ####  ## ##        ##  ##        ##     ## ##     ##  ##   ##     ##     ##  ##     ## ####  ## 
-            ##       ##     ## ## ## ## ######    ##  ##   #### ##     ## ########  ##     ##    ##     ##  ##     ## ## ## ## 
-            ##       ##     ## ##  #### ##        ##  ##    ##  ##     ## ##   ##   #########    ##     ##  ##     ## ##  #### 
-            ##    ## ##     ## ##   ### ##        ##  ##    ##  ##     ## ##    ##  ##     ##    ##     ##  ##     ## ##   ### 
-             ######   #######  ##    ## ##       ####  ######    #######  ##     ## ##     ##    ##    ####  #######  ##    ## 
-
-
-           
-            create_config_file_use_case: CreateConfigFileUseCase = CreateConfigFileUseCase(df_scenes_config,
-                                                                             df_areas,
-                                                                             df_entidades,
-                                                                             df_config_file,
-                                                                             self.configurar_con_entidades_demos)
-            
-            await create_config_file_use_case.execute()
             
              ######## ######## ##     ## ########  ######## ########     ###    ######## ##     ## ########     ###    
                 ##    ##       ###   ### ##     ## ##       ##     ##   ## ##      ##    ##     ## ##     ##   ## ##   
@@ -144,26 +147,30 @@ class CreateViewMainUseCase(GenericUseCase):
             
             df_groups_sensor_temperature_by_zones,df_paths_yamls_groups_sensor_temperature_by_zones  = await groups_sensor_temperature_by_zones.execute()
 
+            df_yamls_paths_created_groups = df_yamls_paths_created_groups.append(df_paths_yamls_groups_sensor_temperature_by_zones)
 
-            print("XXXXXXXXXXXXXXXXXXXXXXXXXXX")
-            print(df_paths_yamls_groups_sensor_temperature_by_zones)
+            
             groups_sensor_temp_by_ubi: CreateGroupsGenericByUbication = CreateGroupsGenericByUbication(df_entidades,
                                                                                           DomainEntitiesIsmartEnum.sensor,
                                                                                           "mdi:home-thermometer",
                                                                                           NameOfGroupEnum.sensor_temperatura,
                                                                                           NameEntitiesIsmartEnum.Temperatura,
                                                                                           NameTitlesIsmartEnum.temperatura_por_ubicacion)
-            df_groups_sensor_temp_by_ubi = await groups_sensor_temp_by_ubi.execute()
+            df_groups_sensor_temp_by_ubi,df_paths_yamls_groups_sensor_temp_by_ubi = await groups_sensor_temp_by_ubi.execute()
 
+            df_yamls_paths_created_groups = df_yamls_paths_created_groups.append(df_paths_yamls_groups_sensor_temp_by_ubi)
+
+
+            
             groups_sensor_temp_by_area: CreateGroupsGenericByArea = CreateGroupsGenericByArea(df_entidades,
                                                                                           DomainEntitiesIsmartEnum.sensor,
                                                                                           "mdi:home-thermometer",
                                                                                           NameOfGroupEnum.sensor_temperatura,
                                                                                           NameEntitiesIsmartEnum.Temperatura,
                                                                                           NameTitlesIsmartEnum.temperatura_por_area)
-            df_groups_sensor_temp_by_area = await groups_sensor_temp_by_area.execute()
+            df_groups_sensor_temp_by_area, df_paths_yamls_groups_sensor_temp_by_area = await groups_sensor_temp_by_area.execute()
             
-    
+            df_yamls_paths_created_groups = df_yamls_paths_created_groups.append(df_paths_yamls_groups_sensor_temp_by_area)
             ##     ## ##     ## ##     ## ######## ########     ###    ########  
             ##     ## ##     ## ###   ### ##       ##     ##   ## ##   ##     ## 
             ##     ## ##     ## #### #### ##       ##     ##  ##   ##  ##     ## 
@@ -181,7 +188,7 @@ class CreateViewMainUseCase(GenericUseCase):
                                                                                           NameTitlesIsmartEnum.humedad_por_zona)
             df_groups_sensor_humedad_by_zones,df_paths_yamls_groups_sensor_humedad_by_zones  = await groups_sensor_humedad_by_zones.execute()
 
-
+            df_yamls_paths_created_groups = df_yamls_paths_created_groups.append(df_paths_yamls_groups_sensor_humedad_by_zones)
             
 
             groups_sensor_humedad_by_ubi: CreateGroupsGenericByUbication = CreateGroupsGenericByUbication(df_entidades,
@@ -190,7 +197,9 @@ class CreateViewMainUseCase(GenericUseCase):
                                                                                           NameOfGroupEnum.sensor_humedad,
                                                                                           NameEntitiesIsmartEnum.Humedad,
                                                                                           NameTitlesIsmartEnum.humedad_por_ubicacion)
-            df_groups_sensor_humedad_by_ubi = await groups_sensor_humedad_by_ubi.execute()
+            df_groups_sensor_humedad_by_ubi, df_paths_yamls_groups_sensor_humedad_by_ubi = await groups_sensor_humedad_by_ubi.execute()
+
+            df_yamls_paths_created_groups = df_yamls_paths_created_groups.append(df_paths_yamls_groups_sensor_humedad_by_ubi)
 
             groups_sensor_humedad_by_area: CreateGroupsGenericByArea = CreateGroupsGenericByArea(df_entidades,
                                                                                           DomainEntitiesIsmartEnum.sensor,
@@ -198,8 +207,9 @@ class CreateViewMainUseCase(GenericUseCase):
                                                                                           NameOfGroupEnum.sensor_humedad,
                                                                                           NameEntitiesIsmartEnum.Humedad,
                                                                                           NameTitlesIsmartEnum.humedad_por_area)
-            df_groups_sensor_humedad_by_area = await groups_sensor_humedad_by_area.execute()
+            df_groups_sensor_humedad_by_area,df_paths_yamls_groups_sensor_humedad_by_area  = await groups_sensor_humedad_by_area.execute()
 
+            df_yamls_paths_created_groups = df_yamls_paths_created_groups.append(df_paths_yamls_groups_sensor_humedad_by_area)
 
             ######   #######  ##     ## ######## ########  
             ##    ## ##     ## ##     ## ##       ##     ## 
@@ -220,7 +230,7 @@ class CreateViewMainUseCase(GenericUseCase):
             
             df_groups_covers_by_zones,df_paths_yamls_groups_covers_by_zones  = await groups_cover_by_zones.execute()
 
-           
+            df_yamls_paths_created_groups = df_yamls_paths_created_groups.append(df_paths_yamls_groups_covers_by_zones)
 
             
             groups_cover_by_ubication: CreateGroupsGenericByUbication = CreateGroupsGenericByUbication(df_entidades,
@@ -232,9 +242,9 @@ class CreateViewMainUseCase(GenericUseCase):
             
 
 
-            df_groups_covers_by_ubication = await groups_cover_by_ubication.execute()
+            df_groups_covers_by_ubication,df_paths_yamls_groups_covers_by_ubication = await groups_cover_by_ubication.execute()
             
-            
+            df_yamls_paths_created_groups = df_yamls_paths_created_groups.append(df_paths_yamls_groups_covers_by_ubication)
 
             groups_cover_by_area: CreateGroupsGenericByArea = CreateGroupsGenericByArea(df_entidades,
                                                                                           DomainEntitiesIsmartEnum.cover,
@@ -244,15 +254,36 @@ class CreateViewMainUseCase(GenericUseCase):
                                                                                           NameTitlesIsmartEnum.cortinas_por_area)
             
             
-            df_groups_cover_by_area = await groups_cover_by_area.execute()
+            df_groups_cover_by_area,df_paths_groups_cover_by_area = await groups_cover_by_area.execute()
 
+            df_yamls_paths_created_groups = df_yamls_paths_created_groups.append(df_paths_groups_cover_by_area)
+
+
+
+
+
+             ######   #######  ##    ## ######## ####  ######   ##     ## ########     ###    ######## ####  #######  ##    ## 
+            ##    ## ##     ## ###   ## ##        ##  ##    ##  ##     ## ##     ##   ## ##      ##     ##  ##     ## ###   ## 
+            ##       ##     ## ####  ## ##        ##  ##        ##     ## ##     ##  ##   ##     ##     ##  ##     ## ####  ## 
+            ##       ##     ## ## ## ## ######    ##  ##   #### ##     ## ########  ##     ##    ##     ##  ##     ## ## ## ## 
+            ##       ##     ## ##  #### ##        ##  ##    ##  ##     ## ##   ##   #########    ##     ##  ##     ## ##  #### 
+            ##    ## ##     ## ##   ### ##        ##  ##    ##  ##     ## ##    ##  ##     ##    ##     ##  ##     ## ##   ### 
+             ######   #######  ##    ## ##       ####  ######    #######  ##     ## ##     ##    ##    ####  #######  ##    ## 
+
+            #df_yamls_paths_created_groups[NameColumnDfGroupPathFulesEnum.path_.value] = df_yamls_paths_created_groups[NameColumnDfGroupPathFulesEnum.path_.value].str.replace(str(path_ismar_home_assintant_config),'')
             
+            for index, row in df_yamls_paths_created_groups.iterrows():
+ 
+                row[NameColumnDfGroupPathFulesEnum.path_.value]= row[NameColumnDfGroupPathFulesEnum.path_.value].replace(path_ismar_home_assintant_config+'\\', '')
+                row[NameColumnDfGroupPathFulesEnum.name_.value] = StringUtilUseCase.tranform_string_to_slug(row[NameColumnDfGroupPathFulesEnum.name_.value])
 
 
-             
-
-
-
+            create_config_file_use_case: CreateConfigFileUseCase = CreateConfigFileUseCase(
+                                                                             df_config_file,
+                                                                             df_yamls_paths_created_groups,
+                                                                             self.configurar_con_entidades_demos)
+            
+            await create_config_file_use_case.execute()
 
             
 

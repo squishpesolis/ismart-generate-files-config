@@ -9,6 +9,7 @@ from src.application.usecases.utils.yaml_util_usecase import YamlUtilUseCase
 from src.application.usecases.utils.folder_creator_usecase import FolderCreator
 
 from src.application.usecases.enums.names_columns_excel_ismart_configuration_enum import ColumnsNameExcelConfigISmart
+from src.application.usecases.enums.name_column_df_group_path_files_yaml import NameColumnDfGroupPathFulesEnum
 from src.application.usecases.enums.domain_entities_ismart_enum import DomainEntitiesIsmartEnum
 from src.application.usecases.enums.name_entities_ismart_enum import NameEntitiesIsmartEnum
 from src.application.usecases.enums.name_column_df_group import NameColumnDfGroupEnum
@@ -49,6 +50,7 @@ class CreateGroupsGenericByUbication(GenericUseCase):
             icon_domain = self.icon_domain
 
             df_groups_generic_by_ubi = GroupsUtilUseCase.build_df_empty_to_build_groups()
+            df_yamls_paths_created_groups_generic_by_ubi = GroupsUtilUseCase.build_df_empty_to_build_paths_files_yaml_groups()
                      
             zonas = self.df[ColumnsNameExcelConfigISmart.zonas.value].unique()
 
@@ -97,8 +99,15 @@ class CreateGroupsGenericByUbication(GenericUseCase):
                         
                         df_groups_generic_by_ubi = df_groups_generic_by_ubi.append(row_df_generic_by_ubi, ignore_index=True)
 
-            
-            return df_groups_generic_by_ubi
+                        row_df_path_yamls= {
+                                                                NameColumnDfGroupPathFulesEnum.name_.value:name_group_generic_by_ubication, 
+                                                                NameColumnDfGroupPathFulesEnum.path_.value:path_save_yaml
+                                            }
+                        
+                        df_yamls_paths_created_groups_generic_by_ubi = df_yamls_paths_created_groups_generic_by_ubi.append(row_df_path_yamls, ignore_index=True)
+                        
+                
+            return df_groups_generic_by_ubi, df_yamls_paths_created_groups_generic_by_ubi
         
         except Exception as exception:
             raise ErrorHandlingUtils.application_error("Error al crear el archivo group " +  name_domain + "Por ubicacion", exception)
