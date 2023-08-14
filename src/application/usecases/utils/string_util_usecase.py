@@ -1,7 +1,7 @@
 
 
 from src.application.utils.error_handling_utils import ErrorHandlingUtils
-
+import pyfiglet
 
 class StringUtilUseCase():
     def __init__(self) -> None:
@@ -20,6 +20,11 @@ class StringUtilUseCase():
     def tranform_string_to_slug(text: str):
         text = text.replace(" ", "_")
         return text.lower()
+    
+    @staticmethod
+    def generate_string_pyfiglet(text: str, fuente: str):
+        result = pyfiglet.figlet_format(text, font = fuente )
+        return result
     
 
 

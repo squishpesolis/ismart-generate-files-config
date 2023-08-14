@@ -8,6 +8,7 @@ from src.application.utils.error_handling_utils import ErrorHandlingUtils
 from src.application.usecases.utils.string_util_usecase import StringUtilUseCase
 from src.application.usecases.enums.names_columns_excel_ismart_configuration_enum import ColumnsNameExcelConfigISmart
 from src.application.usecases.enums.name_column_df_group import NameColumnDfGroupEnum
+from src.application.usecases.enums.name_column_df_group_path_files_yaml import NameColumnDfGroupPathFulesEnum
 from src.application.usecases.enums.entities_ismart_demos_enum import EntitiesIsmartDemosEnum
 
 class GroupsUtilUseCase():
@@ -124,5 +125,12 @@ class GroupsUtilUseCase():
                        NameColumnDfGroupEnum.name_.value,
                        NameColumnDfGroupEnum.icon.value,
                        NameColumnDfGroupEnum.tap_action.value]
+         
+        return pd.DataFrame(columns=columnsName)
+    
+    @staticmethod
+    def build_df_empty_to_build_paths_files_yaml_groups():
+
+        columnsName = [NameColumnDfGroupPathFulesEnum.name_.value,NameColumnDfGroupPathFulesEnum.path_.value]
          
         return pd.DataFrame(columns=columnsName)

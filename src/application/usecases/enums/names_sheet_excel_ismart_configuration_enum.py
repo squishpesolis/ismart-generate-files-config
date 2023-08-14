@@ -10,6 +10,7 @@ class SheetsNameExcelConfigISmart(Enum):
     Scenes = "Scenes"
     Scenes_config = "Scenes_config"
     Cards_order_in_view = "Cards_order_in_view"
+    Configuracion = "Configuracion"
 
     def __str__(self):
         return str(self.value)

@@ -37,23 +37,30 @@ class PathsIsmartUseCase():
 
     def get_root_path_ismar_home_assintant_principal_grupos(self):
         try:
-         return os.path.join(self.get_root_path(), "yaml_generados","grupos" ,'config', 'ismart', "principal")
+         return os.path.join(self.get_root_path(), "yaml_generados",'config', 'ismart', "principal")
         except Exception as exception:
             raise ErrorHandlingUtils.application_error("Error: al obtener el get_root_path_ismar_home_assintant_principal_grupos", exception)
 
     def get_root_path_ismar_home_assintant_principal_scenes(self):
         try:
-         return os.path.join(self.get_root_path(), "yaml_generados","scenes" ,'config', 'ismart', "scenes")
+         return os.path.join(self.get_root_path(), "yaml_generados",'config', 'ismart', "scenes")
         except Exception as exception:
             raise ErrorHandlingUtils.application_error("Error: al obtener el get_root_path_ismar_home_assintant_principal_scenes", exception)
 
 
     def get_root_path_ismar_home_assintant_principal_views(self):
         try:
-         return os.path.join(self.get_root_path(), "yaml_generados","view" ,'config', 'www','ismart','dashboards', "views")
+         return os.path.join(self.get_root_path(), "yaml_generados",'config', 'www','ismart','dashboards', "views")
         except Exception as exception:
             raise ErrorHandlingUtils.application_error("Error: al obtener el get_root_path_ismar_home_assintant_principal_views", exception)
+    
+    def get_root_path_ismar_home_assintant_config(self):
+        try:
+            return os.path.join(self.get_root_path(), "yaml_generados",'config')
+        except Exception as exception:
+            raise ErrorHandlingUtils.application_error("Error: al obtener el get_root_path_ismar_home_assintant_config", exception)
         
+
     def path_join_two_directores(dir1,dir2):
         return os.path.join(dir1,dir2)
 

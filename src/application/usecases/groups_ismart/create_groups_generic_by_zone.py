@@ -12,6 +12,7 @@ from src.application.usecases.enums.names_columns_excel_ismart_configuration_enu
 from src.application.usecases.enums.domain_entities_ismart_enum import DomainEntitiesIsmartEnum
 from src.application.usecases.enums.name_entities_ismart_enum import NameEntitiesIsmartEnum
 from src.application.usecases.enums.name_column_df_group import NameColumnDfGroupEnum
+from src.application.usecases.enums.name_column_df_group_path_files_yaml import NameColumnDfGroupPathFulesEnum
 from src.application.usecases.enums.names_of_groups_enum import NameOfGroupEnum
 from src.application.usecases.enums.names_files_yamls_enum import NameFilesYamlsEnum
 from src.application.usecases.enums.name_titles_ismart_enum import NameTitlesIsmartEnum
@@ -50,6 +51,7 @@ class CreateGroupsGenericByZone(GenericUseCase):
             name_title_ismart = self.name_title_ismart
 
             df_groups_generic_by_zone = GroupsUtilUseCase.build_df_empty_to_build_groups()
+            df_yamls_paths_created_groups_generic_by_zone = GroupsUtilUseCase.build_df_empty_to_build_paths_files_yaml_groups()
                      
             zonas = self.df[ColumnsNameExcelConfigISmart.zonas.value].unique()
 
@@ -79,6 +81,8 @@ class CreateGroupsGenericByZone(GenericUseCase):
                 if dict_df_generic_by_zone:
 
                     name_file =  name_file_yaml +"_" + StringUtilUseCase.convert_string_lower_case(name_entity_ismart)+"_" + StringUtilUseCase.convert_string_lower_case(zona) + '.yaml'
+
+                    
                     path_save_yaml = PathsIsmartUseCase.path_join_any_directores([self.path_ismart_principal,'Zonas', zona, 'Integraciones','grupos',self.name_of_group.value])
                     FolderCreator.execute(path_save_yaml)
                     YamlUtilUseCase.save_file_yaml(PathsIsmartUseCase.path_join_any_directores([path_save_yaml, name_file]),dict_df_generic_by_zone )
@@ -92,11 +96,16 @@ class CreateGroupsGenericByZone(GenericUseCase):
                                                             NameColumnDfGroupEnum.tap_action.value:'none'
                                                         }
                     
+                    row_df_path_yamls= {
+                                                            NameColumnDfGroupPathFulesEnum.name_.value:StringUtilUseCase.tranform_string_to_slug("gr "+name_group_generic_by_zone), 
+                                                            NameColumnDfGroupPathFulesEnum.path_.value:path_save_yaml
+                                                        }
+                    
                     
                     df_groups_generic_by_zone = df_groups_generic_by_zone.append(row_df_generic_group_by_zone, ignore_index=True)
-
+                    df_yamls_paths_created_groups_generic_by_zone = df_yamls_paths_created_groups_generic_by_zone.append(row_df_path_yamls, ignore_index=True)
             
-            return df_groups_generic_by_zone
+            return df_groups_generic_by_zone, df_yamls_paths_created_groups_generic_by_zone
         
         except Exception as exception:
             raise ErrorHandlingUtils.application_error("Error al crear el archivo group " +  name_domain + "Por zona", exception)

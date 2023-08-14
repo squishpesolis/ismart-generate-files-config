@@ -35,6 +35,7 @@ from src.application.usecases.groups_ismart.create_groups_generic_by_ubication i
 from src.application.usecases.groups_ismart.create_groups_generic_by_area import CreateGroupsGenericByArea
 
 from src.application.usecases.scenes_ismart.create_scenes_usecase import CreateScenesUseCase
+from src.application.usecases.config_ismart.create_config_file_usecase import  CreateConfigFileUseCase
 
 from src.application.usecases.enums.names_sheet_excel_ismart_configuration_enum import SheetsNameExcelConfigISmart;
 from src.application.usecases.enums.names_columns_excel_ismart_configuration_enum import ColumnsNameExcelConfigISmart
@@ -44,6 +45,8 @@ from src.application.usecases.enums.entities_ismart_demos_enum import EntitiesIs
 from src.application.usecases.enums.name_entities_ismart_enum import NameEntitiesIsmartEnum
 from src.application.usecases.enums.names_of_groups_enum import NameOfGroupEnum
 from src.application.usecases.enums.name_titles_ismart_enum import NameTitlesIsmartEnum
+
+
 
 class CreateViewMainUseCase(GenericUseCase):
     def __init__(self,file: UploadFile, configurar_con_entidades_demos: bool) -> None:
@@ -61,7 +64,8 @@ class CreateViewMainUseCase(GenericUseCase):
                                                                                                     SheetsNameExcelConfigISmart.Entidades.value,
                                                                                                     SheetsNameExcelConfigISmart.Personas.value,
                                                                                                     SheetsNameExcelConfigISmart.Scenes_config.value,
-                                                                                                    SheetsNameExcelConfigISmart.Cards_order_in_view.value])
+                                                                                                    SheetsNameExcelConfigISmart.Cards_order_in_view.value,
+                                                                                                    SheetsNameExcelConfigISmart.Configuracion.value])
             dataframes = await df_excel.execute()
 
             df_entidades = dataframes.get(SheetsNameExcelConfigISmart.Entidades.value)
@@ -71,6 +75,8 @@ class CreateViewMainUseCase(GenericUseCase):
             df_personas = dataframes.get(SheetsNameExcelConfigISmart.Personas.value)
 
             df_scenes_config = dataframes.get(SheetsNameExcelConfigISmart.Scenes_config.value)
+
+            df_config_file = dataframes.get(SheetsNameExcelConfigISmart.Configuracion.value)
 
             df_cards_orden_in_view = dataframes.get(SheetsNameExcelConfigISmart.Cards_order_in_view.value)
 
@@ -99,6 +105,24 @@ class CreateViewMainUseCase(GenericUseCase):
             df_create_scenes_admin,df_create_scenes  = await create_scenes_useCase.execute()
 
 
+
+             ######   #######  ##    ## ######## ####  ######   ##     ## ########     ###    ######## ####  #######  ##    ## 
+            ##    ## ##     ## ###   ## ##        ##  ##    ##  ##     ## ##     ##   ## ##      ##     ##  ##     ## ###   ## 
+            ##       ##     ## ####  ## ##        ##  ##        ##     ## ##     ##  ##   ##     ##     ##  ##     ## ####  ## 
+            ##       ##     ## ## ## ## ######    ##  ##   #### ##     ## ########  ##     ##    ##     ##  ##     ## ## ## ## 
+            ##       ##     ## ##  #### ##        ##  ##    ##  ##     ## ##   ##   #########    ##     ##  ##     ## ##  #### 
+            ##    ## ##     ## ##   ### ##        ##  ##    ##  ##     ## ##    ##  ##     ##    ##     ##  ##     ## ##   ### 
+             ######   #######  ##    ## ##       ####  ######    #######  ##     ## ##     ##    ##    ####  #######  ##    ## 
+
+
+           
+            create_config_file_use_case: CreateConfigFileUseCase = CreateConfigFileUseCase(df_scenes_config,
+                                                                             df_areas,
+                                                                             df_entidades,
+                                                                             df_config_file,
+                                                                             self.configurar_con_entidades_demos)
+            
+            await create_config_file_use_case.execute()
             
              ######## ######## ##     ## ########  ######## ########     ###    ######## ##     ## ########     ###    
                 ##    ##       ###   ### ##     ## ##       ##     ##   ## ##      ##    ##     ## ##     ##   ## ##   
@@ -118,8 +142,11 @@ class CreateViewMainUseCase(GenericUseCase):
                                                                                           NameEntitiesIsmartEnum.Temperatura,
                                                                                           NameTitlesIsmartEnum.temperatura_por_zona)
             
-            df_groups_sensor_temperature_by_zones = await groups_sensor_temperature_by_zones.execute()
+            df_groups_sensor_temperature_by_zones,df_paths_yamls_groups_sensor_temperature_by_zones  = await groups_sensor_temperature_by_zones.execute()
 
+
+            print("XXXXXXXXXXXXXXXXXXXXXXXXXXX")
+            print(df_paths_yamls_groups_sensor_temperature_by_zones)
             groups_sensor_temp_by_ubi: CreateGroupsGenericByUbication = CreateGroupsGenericByUbication(df_entidades,
                                                                                           DomainEntitiesIsmartEnum.sensor,
                                                                                           "mdi:home-thermometer",
@@ -152,7 +179,7 @@ class CreateViewMainUseCase(GenericUseCase):
                                                                                           NameOfGroupEnum.sensor_humedad,
                                                                                           NameEntitiesIsmartEnum.Humedad,
                                                                                           NameTitlesIsmartEnum.humedad_por_zona)
-            df_groups_sensor_humedad_by_zones = await groups_sensor_humedad_by_zones.execute()
+            df_groups_sensor_humedad_by_zones,df_paths_yamls_groups_sensor_humedad_by_zones  = await groups_sensor_humedad_by_zones.execute()
 
 
             
@@ -191,7 +218,7 @@ class CreateViewMainUseCase(GenericUseCase):
             
             
             
-            df_groups_covers_by_zones = await groups_cover_by_zones.execute()
+            df_groups_covers_by_zones,df_paths_yamls_groups_covers_by_zones  = await groups_cover_by_zones.execute()
 
            
 
