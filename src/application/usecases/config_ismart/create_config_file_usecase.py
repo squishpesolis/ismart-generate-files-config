@@ -132,10 +132,9 @@ class CreateConfigFileUseCase(GenericUseCase):
             yaml_content = self.recursive_dict_format(scconfiguration_dic)
 
             
-            #yaml_str =str(scconfiguration_dic).replace("'", '')
-
+            
             YamlUtilUseCase.save_file_yaml_string(PathsIsmartUseCase.path_join_any_directores([path_save_yaml, name_file_yaml]),yaml_content )
-           
+            #YamlUtilUseCase.save_file_yaml(PathsIsmartUseCase.path_join_any_directores([path_save_yaml, name_file_yaml]),scconfiguration_dic )
    
             
             
@@ -157,7 +156,9 @@ class CreateConfigFileUseCase(GenericUseCase):
             elif isinstance(value, str) and value.startswith('!'):
                 output += f"{indentation}{key}: {value}\n"
             else:
+                print("-------------------------")
                 output += f"{indentation}{key}: {value}\n"
+                print(output)
         return output
 
         

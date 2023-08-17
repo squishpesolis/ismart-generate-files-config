@@ -91,11 +91,11 @@ class ConfigFileUtilUseCase():
                 
         for index, row in dataframe_yamls_paths_created_groups.iterrows():
 
-            name ='sensor' + row[NameColumnDfGroupPathFulesEnum.name_.value]
+            name ='sensor ' + row[NameColumnDfGroupPathFulesEnum.name_.value]
             path_yaml = row[NameColumnDfGroupPathFulesEnum.path_.value]           
-            sensor1 = {name:'!include_dir_merge_list'+path_yaml}
+            sensor1 = {name:'!include_dir_merge_list '+path_yaml}
 
-            #data.update(sensor1)
+            data.update(sensor1)
 
         return data
     
