@@ -59,3 +59,9 @@ ENV=test pytest
 # API Documentation
 
 swagger: `http://127.0.0.1:8000/docs`
+
+
+# Utilitarios
+# http://patorjk.com/software/taag/#p=display&f=Banner3&t=Type%20Something%20
+#Generacion de codigo uuid
+#https://www.uuidgenerator.net/ P

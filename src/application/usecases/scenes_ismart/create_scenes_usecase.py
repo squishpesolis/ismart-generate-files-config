@@ -161,8 +161,8 @@ class CreateScenesUseCase(GenericUseCase):
         for group_by_name in df_groups_by_name.groups:
             df_scenes_by_name = df_groups_by_name.get_group(group_by_name)
             name_scene = df_scenes_by_name[NameColumnDfSceneEnum.name_.value].iloc[0] 
-            name_scene_with_area = name_scene + " admin"
-            id_scene = df_scenes_by_name[NameColumnDfSceneEnum.name_.value].iloc[0] + " admin"
+            name_scene_with_area = name_scene + " Admin"
+            id_scene = df_scenes_by_name[NameColumnDfSceneEnum.name_.value].iloc[0] + " Admin"
             icon = df_scenes_by_name[NameColumnDfSceneEnum.icon.value].iloc[0]
             order =  df_scenes_by_name[NameColumnDfSceneEnum.orden_view.value].iloc[0]
 

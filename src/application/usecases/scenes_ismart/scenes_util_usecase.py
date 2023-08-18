@@ -27,7 +27,7 @@ class ScenesUtilUseCase():
 
         scene_object = {
                 'name': name_scene_with_area,
-                'id': ScenesUtilUseCase.build_unique_id(id_scene),
+                #'id': ScenesUtilUseCase.build_unique_id(id_scene),
                 'icon': icon,
                 'entities': {}
         }
