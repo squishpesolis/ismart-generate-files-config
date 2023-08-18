@@ -21,11 +21,12 @@ from src.application.usecases.groups_ismart.groups_util_usecase import GroupsUti
 from src.application.usecases.enums.name_column_df_group_path_files_yaml import NameColumnDfGroupPathFulesEnum
 
 class CreateGroupsSwitchByAreasAndLightUseCase(GenericUseCase):
-    def __init__(self, df: pd.DataFrame, configurar_con_entidades_demos: bool) -> None:
+    def __init__(self, df: pd.DataFrame, configurar_con_entidades_demos: bool,domain: DomainEntitiesIsmartEnum) -> None:
         self.df = df
         self.configurar_con_entidades_demos = configurar_con_entidades_demos
         paths_usecase: PathsIsmartUseCase = PathsIsmartUseCase()
         self.path_ismart_principal = paths_usecase.get_root_path_ismar_home_assintant_principal_grupos()
+        self.domain = domain
 
        
 
@@ -88,7 +89,8 @@ class CreateGroupsSwitchByAreasAndLightUseCase(GenericUseCase):
 
                             row_df_path_yamls= {
                                 NameColumnDfGroupPathFulesEnum.name_.value:name_group_by_area, 
-                                NameColumnDfGroupPathFulesEnum.path_.value:path_save_yaml
+                                NameColumnDfGroupPathFulesEnum.path_.value:path_save_yaml,
+                                NameColumnDfGroupPathFulesEnum.domain_.value: self.domain.value
                             }
                                 
                             df_yamls_paths = df_yamls_paths.append(row_df_path_yamls, ignore_index=True)

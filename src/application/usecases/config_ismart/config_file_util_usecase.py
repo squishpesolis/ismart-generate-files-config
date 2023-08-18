@@ -64,6 +64,7 @@ class ConfigFileUtilUseCase():
             },
            'http': {},
            'default_config':'',
+           'demo':'',
            'tts': [
                 {
                    'platform':'google_translate'
@@ -91,9 +92,9 @@ class ConfigFileUtilUseCase():
                 
         for index, row in dataframe_yamls_paths_created_groups.iterrows():
 
-            name ='sensor ' + row[NameColumnDfGroupPathFulesEnum.name_.value]
+            name =row[NameColumnDfGroupPathFulesEnum.domain_.value] + ' ' + row[NameColumnDfGroupPathFulesEnum.name_.value]
             path_yaml = row[NameColumnDfGroupPathFulesEnum.path_.value]           
-            sensor1 = {name:'!include_dir_merge_list '+path_yaml}
+            sensor1 = {name:'!include_dir_merge_list '+StringUtilUseCase.replace_string(str(path_yaml),'\\','/') + '/'}
 
             data.update(sensor1)
 

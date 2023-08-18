@@ -156,9 +156,7 @@ class CreateConfigFileUseCase(GenericUseCase):
             elif isinstance(value, str) and value.startswith('!'):
                 output += f"{indentation}{key}: {value}\n"
             else:
-                print("-------------------------")
                 output += f"{indentation}{key}: {value}\n"
-                print(output)
         return output
 
         

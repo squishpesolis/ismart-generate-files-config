@@ -94,17 +94,17 @@ class CreateViewMainUseCase(GenericUseCase):
              ######   ###  ###  ####    ##     ######  ##     ## ########  ######  
 
 
-            groups_by_zones_and_swithes_light: CreateGroupsSwitchByZoneAndLightUseCase = CreateGroupsSwitchByZoneAndLightUseCase(df_entidades,self.configurar_con_entidades_demos)
+            groups_by_zones_and_swithes_light: CreateGroupsSwitchByZoneAndLightUseCase = CreateGroupsSwitchByZoneAndLightUseCase(df_entidades,self.configurar_con_entidades_demos,DomainEntitiesIsmartEnum.switch)
             df_by_zones_and_swithes_light, df_paths_yamls_by_zones_and_swithes_light = await groups_by_zones_and_swithes_light.execute()
 
             df_yamls_paths_created_groups = df_yamls_paths_created_groups.append(df_paths_yamls_by_zones_and_swithes_light)
 
-            groups_by_ubi_and_swithes_light: CreateGroupsSwitchByUbicationAndLightUseCase = CreateGroupsSwitchByUbicationAndLightUseCase(df_entidades,self.configurar_con_entidades_demos)
+            groups_by_ubi_and_swithes_light: CreateGroupsSwitchByUbicationAndLightUseCase = CreateGroupsSwitchByUbicationAndLightUseCase(df_entidades,self.configurar_con_entidades_demos,DomainEntitiesIsmartEnum.switch)
             df_by_ubi_and_swithes_light, df_path_yaml_by_ubi_and_swithes_light = await groups_by_ubi_and_swithes_light.execute()
 
             df_yamls_paths_created_groups = df_yamls_paths_created_groups.append(df_path_yaml_by_ubi_and_swithes_light)
 
-            groups_by_area_and_swithes_light: CreateGroupsSwitchByAreasAndLightUseCase = CreateGroupsSwitchByAreasAndLightUseCase(df_entidades,self.configurar_con_entidades_demos)
+            groups_by_area_and_swithes_light: CreateGroupsSwitchByAreasAndLightUseCase = CreateGroupsSwitchByAreasAndLightUseCase(df_entidades,self.configurar_con_entidades_demos,DomainEntitiesIsmartEnum.switch)
             df_by_areas_and_swithes_light,df_paths_yaml_by_areas_and_swithes_light = await groups_by_area_and_swithes_light.execute()
 
             df_yamls_paths_created_groups = df_yamls_paths_created_groups.append(df_paths_yaml_by_areas_and_swithes_light)
@@ -270,7 +270,7 @@ class CreateViewMainUseCase(GenericUseCase):
             ##    ## ##     ## ##   ### ##        ##  ##    ##  ##     ## ##    ##  ##     ##    ##     ##  ##     ## ##   ### 
              ######   #######  ##    ## ##       ####  ######    #######  ##     ## ##     ##    ##    ####  #######  ##    ## 
 
-            #df_yamls_paths_created_groups[NameColumnDfGroupPathFulesEnum.path_.value] = df_yamls_paths_created_groups[NameColumnDfGroupPathFulesEnum.path_.value].str.replace(str(path_ismar_home_assintant_config),'')
+            
             
             for index, row in df_yamls_paths_created_groups.iterrows():
  

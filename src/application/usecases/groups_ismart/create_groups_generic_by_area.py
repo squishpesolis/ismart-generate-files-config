@@ -102,8 +102,9 @@ class CreateGroupsGenericByArea(GenericUseCase):
 
             
                             row_df_path_yamls= {
-                                                                    NameColumnDfGroupPathFulesEnum.name_.value:name_group_generic_by_area, 
-                                                                    NameColumnDfGroupPathFulesEnum.path_.value:path_save_yaml
+                                                    NameColumnDfGroupPathFulesEnum.name_.value:name_group_generic_by_area, 
+                                                    NameColumnDfGroupPathFulesEnum.path_.value:path_save_yaml,
+                                                    NameColumnDfGroupPathFulesEnum.domain_.value: name_domain
                                                 }
                             
                             df_yamls_paths_created_groups_generic_by_area = df_yamls_paths_created_groups_generic_by_area.append(row_df_path_yamls, ignore_index=True)

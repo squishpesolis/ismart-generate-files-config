@@ -108,8 +108,9 @@ class CreateGroupsGenericByZone(GenericUseCase):
                     df_groups_generic_by_zone = df_groups_generic_by_zone.append(row_df_generic_group_by_zone, ignore_index=True)
                     
                     row_df_path_yamls= {
-                                                            NameColumnDfGroupPathFulesEnum.name_.value:name_group_generic_by_zone, 
-                                                            NameColumnDfGroupPathFulesEnum.path_.value:path_save_yaml
+                                            NameColumnDfGroupPathFulesEnum.name_.value:name_group_generic_by_zone, 
+                                            NameColumnDfGroupPathFulesEnum.path_.value:path_save_yaml,
+                                            NameColumnDfGroupPathFulesEnum.domain_.value: name_domain
                                         }
                     df_yamls_paths_created_groups_generic_by_zone = df_yamls_paths_created_groups_generic_by_zone.append(row_df_path_yamls, ignore_index=True)
             

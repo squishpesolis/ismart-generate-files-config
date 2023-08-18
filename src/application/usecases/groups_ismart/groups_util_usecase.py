@@ -131,6 +131,6 @@ class GroupsUtilUseCase():
     @staticmethod
     def build_df_empty_to_build_paths_files_yaml_groups() -> pd.DataFrame:
 
-        columnsName = [NameColumnDfGroupPathFulesEnum.name_.value,NameColumnDfGroupPathFulesEnum.path_.value]
+        columnsName = [NameColumnDfGroupPathFulesEnum.name_.value,NameColumnDfGroupPathFulesEnum.path_.value,NameColumnDfGroupPathFulesEnum.domain_.value]
          
         return pd.DataFrame(columns=columnsName)
