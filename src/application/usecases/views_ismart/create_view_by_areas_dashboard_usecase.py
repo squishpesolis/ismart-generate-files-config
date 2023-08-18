@@ -130,11 +130,11 @@ class CreateViewByAreasDashboardUseCase(GenericUseCase):
         name_area = area_row[ColumnsNameExcelConfigISmart.Sub_Zona.value]
 
         df_scenes_by_area = self.df_scenes[(self.df_scenes[NameColumnDfSceneEnum.area.value] == name_area)] 
-        #df_scenes_by_area.loc[df_scenes_by_area[NameColumnDfSceneEnum.] > 1990, 'First Season'] = 1
+        
 
 
         df_switch_group_by_area = self.df_switches_gropus_by_areas_and_light[(self.df_switches_gropus_by_areas_and_light[NameColumnDfSceneEnum.name_.value] == name_area)] 
-        #df_switch_group_by_area.loc[df_switch_group_by_area[NameColumnDfSceneEnum.] > 1990, 'First Season'] = 1
+
         
 
         df_switches_by_area = self.get_entities_by_area_and_domain(df_entities, name_area, DomainEntitiesIsmartEnum.switch.value)
@@ -249,14 +249,18 @@ class CreateViewByAreasDashboardUseCase(GenericUseCase):
         
         df_select_config_card_group_switch_entities = self.get_config_cards_by_name_card_i_smart(df_cards_orden_in_view,NamesCardsISmartEnum.card_group_switch_entities)
         
+        card_group_switch_entities = {}
 
-        card_group_switch_entities = CreateCustomComponentsViewsUsecase.create_card_entities(
-            df_scenes_by_area[NameColumnDfGroupEnum.title.value].iloc[0],
-            True,
-            df_switch_formater_by_build_card
-        )
+        if not df_scenes_by_area.empty:
+
+            card_group_switch_entities = CreateCustomComponentsViewsUsecase.create_card_entities(
+                df_scenes_by_area[NameColumnDfGroupEnum.title.value].iloc[0],
+                True,
+                df_switch_formater_by_build_card
+            )
 
         list_card_card_group_switch_entities = self.build_list_of_cards(df_select_config_card_group_switch_entities,card_group_switch_entities)
+        
         if list_card_card_group_switch_entities:
             df_list_cards =df_list_cards.append(list_card_card_group_switch_entities, ignore_index=True)
 
