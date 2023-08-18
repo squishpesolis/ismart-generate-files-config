@@ -285,7 +285,8 @@ class CreateViewMainUseCase(GenericUseCase):
             
             await create_config_file_use_case.execute()
 
-            
+            print("1-------------")
+            print(df_by_zones_and_swithes_light)
 
             create_view_admin:CreateViewAdminDashboardUseCase = CreateViewAdminDashboardUseCase(df_areas,
                                                                                                 self.configurar_con_entidades_demos,

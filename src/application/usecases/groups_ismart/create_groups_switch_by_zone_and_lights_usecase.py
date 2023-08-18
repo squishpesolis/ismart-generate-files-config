@@ -6,6 +6,7 @@ from src.application.utils.error_handling_utils import ErrorHandlingUtils
 
 from src.application.usecases.utils.paths_usecase import PathsIsmartUseCase;
 from src.application.usecases.utils.yaml_util_usecase import YamlUtilUseCase
+from src.application.usecases.utils.string_util_usecase import StringUtilUseCase
 from src.application.usecases.utils.folder_creator_usecase import FolderCreator
 
 from src.application.usecases.enums.names_columns_excel_ismart_configuration_enum import ColumnsNameExcelConfigISmart
@@ -64,7 +65,9 @@ class CreateGroupsSwitchByZoneAndLightUseCase(GenericUseCase):
 
                     row_df_switches_by_zone_and_light = {
                                                             NameColumnDfGroupEnum.title.value:'Luces de Zona', 
-                                                            NameColumnDfGroupEnum.entity.value:'switch.'+unique_id,
+                                                            #NameColumnDfGroupEnum.entity.value:'switch.'+unique_id,
+                                                            NameColumnDfGroupEnum.entity.value:'switch.'+StringUtilUseCase.tranform_string_to_slug(name_group_by_zone),
+                                                            
                                                             NameColumnDfGroupEnum.name_.value:name_group_by_zone, 
                                                             NameColumnDfGroupEnum.icon.value:'mdi:lightbulb-group', 
                                                             NameColumnDfGroupEnum.tap_action.value:'none'

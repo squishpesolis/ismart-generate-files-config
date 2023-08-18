@@ -31,20 +31,19 @@ class GroupsUtilUseCase():
             return data
 
 
-        data = {
-            'switch': [
-                {
-                    'platform': 'group',
-                    'name': name_group,
-                    #'unique_id': unique_id,
-                    'entities': []
-                }
-            ]
-        }
+        data = [
+            {
+                'platform': 'group',
+                'name': StringUtilUseCase.tranform_string_to_slug(name_group),
+                #'unique_id': unique_id,
+                'entities': []
+            }
+        ]
 
         for final_id in df[ColumnsNameExcelConfigISmart.final_id.value]:
 
-            data['switch'][0]['entities'].append(final_id.replace(" ", ""))
+            #data['switch'][0]['entities'].append(final_id.replace(" ", ""))
+            data[0]['entities'].append(final_id.replace(" ", ""))
 
 
         return data

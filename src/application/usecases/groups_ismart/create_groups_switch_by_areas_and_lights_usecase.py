@@ -6,6 +6,7 @@ from src.application.utils.error_handling_utils import ErrorHandlingUtils
 
 from src.application.usecases.utils.paths_usecase import PathsIsmartUseCase;
 from src.application.usecases.utils.yaml_util_usecase import YamlUtilUseCase
+from src.application.usecases.utils.string_util_usecase import StringUtilUseCase
 from src.application.usecases.utils.folder_creator_usecase import FolderCreator
 
 from src.application.usecases.enums.names_columns_excel_ismart_configuration_enum import ColumnsNameExcelConfigISmart
@@ -62,7 +63,7 @@ class CreateGroupsSwitchByAreasAndLightUseCase(GenericUseCase):
                         name_group_by_area = name_group +" " + zona +" "+ ubi + " " + area
 
                         unique_id = GroupsUtilUseCase.build_unique_id(name_file_yaml +name_group_by_area)
-                        dict_df_switches_by_area = GroupsUtilUseCase.build_dict_group_switch(df_switches_by_area, unique_id, unique_id)
+                        dict_df_switches_by_area = GroupsUtilUseCase.build_dict_group_switch(df_switches_by_area, name_group_by_area, unique_id)
 
                         if dict_df_switches_by_area:
 
@@ -75,7 +76,7 @@ class CreateGroupsSwitchByAreasAndLightUseCase(GenericUseCase):
 
                             row_df_switches_by_area_and_light = {
                                                                     NameColumnDfGroupEnum.title.value:NameTitlesIsmartEnum.luces_por_area.value, 
-                                                                    NameColumnDfGroupEnum.entity.value:'switch.'+unique_id,
+                                                                    NameColumnDfGroupEnum.entity.value:'switch.'+StringUtilUseCase.tranform_string_to_slug(name_group_by_area),
                                                                     #NameColumnDfGroupEnum.name_.value:name_group_by_area, 
                                                                     NameColumnDfGroupEnum.name_.value:area, 
                                                                     NameColumnDfGroupEnum.icon.value:'mdi:lightbulb-group', 
