@@ -62,7 +62,7 @@ class GroupsUtilUseCase():
                 {
                     'platform': 'group',
                     'type': type,
-                    'name': name_group,
+                    'name': StringUtilUseCase.tranform_string_to_slug(name_group),
                     'unique_id': unique_id,
                     'entities': []
                 }
@@ -102,7 +102,7 @@ class GroupsUtilUseCase():
         data = [
             {
                 'platform': 'group',
-                'name': name_group,
+                'name': StringUtilUseCase.tranform_string_to_slug(name_group),
                 'unique_id': unique_id,
                 'entities': []
             }

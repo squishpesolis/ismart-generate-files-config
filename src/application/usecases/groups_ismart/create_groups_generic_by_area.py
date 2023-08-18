@@ -6,6 +6,7 @@ from src.application.utils.error_handling_utils import ErrorHandlingUtils
 
 from src.application.usecases.utils.paths_usecase import PathsIsmartUseCase;
 from src.application.usecases.utils.yaml_util_usecase import YamlUtilUseCase
+from src.application.usecases.utils.string_util_usecase import StringUtilUseCase
 from src.application.usecases.utils.folder_creator_usecase import FolderCreator
 
 from src.application.usecases.enums.names_columns_excel_ismart_configuration_enum import ColumnsNameExcelConfigISmart
@@ -91,7 +92,7 @@ class CreateGroupsGenericByArea(GenericUseCase):
                             
                             row_df_generic_by_area = {
                                                                     NameColumnDfGroupEnum.title.value:name_title_ismart.value, 
-                                                                    NameColumnDfGroupEnum.entity.value:name_domain +'.'+unique_id_generic,
+                                                                    NameColumnDfGroupEnum.entity.value:name_domain +'.'+StringUtilUseCase.tranform_string_to_slug(name_group_generic_by_area),
                                                                     NameColumnDfGroupEnum.name_.value:area, 
                                                                     NameColumnDfGroupEnum.icon.value:icon_domain, 
                                                                     NameColumnDfGroupEnum.tap_action.value:'none'

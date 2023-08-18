@@ -7,6 +7,7 @@ from src.application.utils.error_handling_utils import ErrorHandlingUtils
 from src.application.usecases.utils.paths_usecase import PathsIsmartUseCase;
 from src.application.usecases.utils.yaml_util_usecase import YamlUtilUseCase
 from src.application.usecases.utils.folder_creator_usecase import FolderCreator
+from src.application.usecases.utils.string_util_usecase import StringUtilUseCase
 
 from src.application.usecases.enums.names_columns_excel_ismart_configuration_enum import ColumnsNameExcelConfigISmart
 from src.application.usecases.enums.domain_entities_ismart_enum import DomainEntitiesIsmartEnum
