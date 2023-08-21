@@ -95,6 +95,9 @@ class CreateCustomComponentsViewsUsecase():
                     }
         
         return card_generic
+    
+
+
 
     @staticmethod
     def create_card_entities( title: str, show_header_toggle: bool, df: pd.DataFrame):
@@ -279,7 +282,7 @@ class CreateCustomComponentsViewsUsecase():
 
                 cards_temp = CreateCustomComponentsViewsUsecase.create_card_generic(
                 temp[NameColumnDfGroupEnum.entity.value],
-                temp[NameColumnDfGroupEnum.name_.value],
+                StringUtilUseCase.create_abbreviation(temp[NameColumnDfGroupEnum.name_.value], 4),
                 temp[NameColumnDfGroupEnum.icon.value])
 
                 list_cards_temp.append(cards_temp)
@@ -296,7 +299,7 @@ class CreateCustomComponentsViewsUsecase():
 
                 cards_humed = CreateCustomComponentsViewsUsecase.create_card_generic(
                 humed[NameColumnDfGroupEnum.entity.value],
-                humed[NameColumnDfGroupEnum.name_.value],
+                StringUtilUseCase.create_abbreviation(humed[NameColumnDfGroupEnum.name_.value], 3),
                 humed[NameColumnDfGroupEnum.icon.value])
 
                 list_cards_humed.append(cards_humed)

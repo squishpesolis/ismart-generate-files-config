@@ -27,6 +27,16 @@ class StringUtilUseCase():
         result = pyfiglet.figlet_format(text, font = fuente )
         return result
     
+    @staticmethod
+    def create_abbreviation(word: str, num_letter: int):
+        result = word
+        phrases = word.split()
+        
+        if len(phrases) >= 2:
+            result = phrases[0][0:num_letter] + "." + " "+ "".join([str(elem) for elem in phrases[1:]])
+            return result
+        
+        return result
 
 
     
